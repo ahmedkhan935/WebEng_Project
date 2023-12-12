@@ -1,17 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Input,
-  Paper,
-  Typography,
-} from "@mui/material";
-import Stack from "@mui/material/Stack";
-import mainPageImage from "../Assets/Images/MainPage.png";
-import cleanSlateImage from "../Assets/Images/Hat.png";
+import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
+
+import mainPageImage from "../assets/images/MainPage.png";
+import cleanSlateImage from "../assets/images/Hat.png";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
@@ -56,7 +48,6 @@ const LoginPage = () => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={0}>
-        {/* Combine the two sides without spacing */}
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>
             <Typography variant="h5">
