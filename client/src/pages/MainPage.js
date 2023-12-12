@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-import mainPageImage from "../Images/MainPage.png";
-import cleanSlateImage from "../Images/Hat.png";
+import mainPageImage from "../Assets/Images/MainPage.png";
+import cleanSlateImage from "../Assets/Images/Hat.png";
 
 const MainPage = () => {
   const styles = {
@@ -19,8 +19,9 @@ const MainPage = () => {
       margin: "10px",
     },
     mainPageImage: {
-      width: "100%",
-      height: "100%",
+      marginTop: "50px",
+      width: "600px",
+      height: "600px",
     },
   };
 
@@ -30,24 +31,40 @@ const MainPage = () => {
         {/* Combine the two sides without spacing */}
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>
-            <Typography variant="h5" >
-              <img src={cleanSlateImage} alt="CleanSlate" style={{ width: "100%" }} ></img>
-              CleanSlate
+            <Typography variant="h5">
+              <img
+                src={cleanSlateImage}
+                alt="CleanSlate"
+                style={{ width: "80%" }}
+              ></img>
+              <h1>CleanSlate</h1>
             </Typography>
-            <Container sx={{display:"flex",flexDirection:"row"}}>
-            <Button variant="contained" color="primary" sx={styles.button}>
-              Login as Teacher
-            </Button>
-            <Button variant="contained" color="secondary" sx={styles.button}>
-              Login as Student
-            </Button>
+            <Container
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                marginBottom: "20px",
+              }}
+              style={{ marginTop: "50px" }}
+            >
+              <Button
+                variant="contained"
+                style={{ marginLeft: "100px", marginRight: "50px" }}
+              >
+                Login As Student
+              </Button>
+              <Button variant="outlined">Login As Teacher</Button>
             </Container>
           </Paper>
         </Grid>
 
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0}>
-            <img src={mainPageImage} alt="Main Page" style={styles.mainPageImage} />
+            <img
+              src={mainPageImage}
+              alt="Main Page"
+              style={styles.mainPageImage}
+            />
           </Paper>
         </Grid>
       </Grid>
