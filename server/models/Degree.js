@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Course = require('./Course');
 
 const DegreeSchema = new mongoose.Schema({
     name: {
