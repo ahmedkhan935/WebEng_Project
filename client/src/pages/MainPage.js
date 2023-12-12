@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-import mainPageImage from "../Assets/Images/MainPage.png";
-import cleanSlateImage from "../Assets/Images/Hat.png";
-import "../Assets/Styles/MainPage.css";
+import mainPageImage from "../assets/images/MainPage.png";
+import cleanSlateImage from "../assets/images/Hat.png";
+import "../assets/styles/MainPage.css";
 import { Link } from "react-router-dom";
 const MainPage = () => {
   const styles = {

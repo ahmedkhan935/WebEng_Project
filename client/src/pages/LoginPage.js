@@ -10,8 +10,8 @@ import {
   Typography,
 } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import mainPageImage from "../Assets/Images/MainPage.png";
-import cleanSlateImage from "../Assets/Images/Hat.png";
+import mainPageImage from "../assets/images/MainPage.png";
+import cleanSlateImage from "../assets/images/cleanslateLogo.png";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
