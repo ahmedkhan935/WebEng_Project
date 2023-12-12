@@ -1,9 +1,15 @@
-import './App.css';
+import "./App.css";
+import MainPage from "./pages/MainPage";
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 
 function App() {
   return (
     <div className="App">
-      <h1>Clean Slate</h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />}></Route>
+        </Routes>
+      </Router>
     </div>
   );
 }
