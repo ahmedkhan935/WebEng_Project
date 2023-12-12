@@ -1,9 +1,11 @@
 import React from "react";
+import mainPageImage from "../Images/MainPage.png";
+
 function MainPage() {
   return (
-    <>
-      <img src="/client/src/Images/MainPage.png" />
-    </>
+    <div>
+      <img src={mainPageImage} alt="" />
+    </div>
   );
 }
 
