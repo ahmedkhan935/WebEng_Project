@@ -46,21 +46,23 @@ const MainPage = () => {
                 flexDirection: "row",
                 marginBottom: "20px",
               }}
-              style={{ marginTop: "50px" }}
+              style={{ marginTop: "50px", textDecoration: "none" }}
+              component={Link}
+              to="/login"
             >
               <Button
                 variant="contained"
                 style={{
-                  marginLeft: "220px",
+                  marginLeft: "100px",
                   marginRight: "50px",
                   backgroundColor: "#2525AD",
-                  width: "150px",
                 }}
                 component={Link}
                 to="/login"
               >
-                Login
+                Login As Student
               </Button>
+              <Button variant="outlined">Login As Teacher</Button>
             </Container>
           </Paper>
         </Grid>

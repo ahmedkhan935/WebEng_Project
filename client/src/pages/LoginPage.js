@@ -16,7 +16,6 @@ import cleanSlateImage from "../Assets/Images/Hat.png";
 const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -26,9 +25,6 @@ const LoginPage = () => {
     setEmail(event.target.value);
   };
 
-  const handleRoleChange = (event) => {
-    setRole(event.target.value);
-  };
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -95,12 +91,6 @@ const LoginPage = () => {
                   placeholder="password"
                   onChange={handlePasswordChange}
                 />
-                <br />
-                <select onChange={handleRoleChange}>
-                  <option value={role}>Admin</option>
-                  <option value={role}>Student</option>
-                  <option value={role}>Teacher</option>
-                </select>
                 <br />
 
                 <Button
