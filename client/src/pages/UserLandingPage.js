@@ -1,14 +1,18 @@
-import NavBar from "../components/Navbar";
 import React from 'react';
-import { Button } from 'react-daisyui';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import NavBar from "../components/Navbar"
 
 function UserLandingPage() {
     return (
-        <div>
-            <Button tag="a" color="primary" className="normal-case text-xl"> Helo! </Button>
+        <Box>
             <NavBar />
-            <h1>User Landing Page</h1>
-        </div>
+            <Box>
+                <Button variant="contained" color="primary">Helo!</Button>
+                <Typography variant="h1">User Landing Page</Typography>
+            </Box>
+        </Box>
     )
 }
 

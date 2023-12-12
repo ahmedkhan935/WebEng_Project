@@ -5,7 +5,7 @@ import UserLandingPage from "./pages/UserLandingPage";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
