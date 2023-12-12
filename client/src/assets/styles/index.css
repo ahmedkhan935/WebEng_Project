@@ -1,5 +1,12 @@
 @import url('https://fonts.googleapis.com/css?family=Istok Web');
 @import url('https://fonts.googleapis.com/css?family=League Spartan');
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 body {
   margin: 0;
   font-family: 'League Spartan', sans-serif;
