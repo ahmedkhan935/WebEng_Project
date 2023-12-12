@@ -2,7 +2,8 @@ import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import mainPageImage from "../Assets/Images/MainPage.png";
 import cleanSlateImage from "../Assets/Images/Hat.png";
-
+import "../Assets/Styles/MainPage.css";
+import { Link } from "react-router-dom";
 const MainPage = () => {
   const styles = {
     container: {
@@ -49,11 +50,17 @@ const MainPage = () => {
             >
               <Button
                 variant="contained"
-                style={{ marginLeft: "100px", marginRight: "50px" }}
+                style={{
+                  marginLeft: "220px",
+                  marginRight: "50px",
+                  backgroundColor: "#2525AD",
+                  width: "150px",
+                }}
+                component={Link}
+                to="/login"
               >
-                Login As Student
+                Login
               </Button>
-              <Button variant="outlined">Login As Teacher</Button>
             </Container>
           </Paper>
         </Grid>
