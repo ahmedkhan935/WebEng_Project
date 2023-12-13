@@ -1,0 +1,67 @@
+/* AddForm.css */
+.add-form {
+  width: 900px;
+  padding: 20px;
+  background-color: #f0f0f0;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  background-color: rgb(255, 255, 255) 9ce;
+  border-radius: 8px;
+  margin: auto;
+  margin-top: 100px;
+  box-shadow: 0 0 10px rgba(118, 130, 142, 0.977);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-group {
+  border: 2px solid white;
+  padding: 10px;
+  border-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  width: 90%;
+}
+
+.form-group label {
+  font-size: 15px;
+  width: 30%;
+  margin-right: 10px;
+  text-align: left;
+}
+
+.form-group .form-input {
+  width: 70%;
+}
+
+.rounded-input {
+  width: 400px;
+  height: 40px;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+.gradient-button {
+  background: linear-gradient(to right, #4a63a3, #2b59ce);
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 150px;
+  height: 50px;
+  margin-top: 10px;
+  margin-left: 350px;
+}
+
+.gradient-button:hover {
+  filter: brightness(1.2);
+}
+
+h2 {
+  color: #2525ad;
+}

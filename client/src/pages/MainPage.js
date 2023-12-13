@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
-import "../assets/styles/MainPage.css";
+
 import { Link } from "react-router-dom";
 const MainPage = () => {
   const styles = {
@@ -23,6 +23,7 @@ const MainPage = () => {
       marginTop: "50px",
       width: "600px",
       height: "600px",
+      "object-fit": "contain",
     },
   };
 
@@ -32,13 +33,13 @@ const MainPage = () => {
         {/* Combine the two sides without spacing */}
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>
-            <Typography variant="h5">
+            <Typography variant="h2" sx={{fontWeight:"bold"}}>
               <img
                 src={cleanSlateImage}
                 alt="CleanSlate"
-                style={{ width: "80%" }}
+                style={{ width: "100%" }}
               ></img>
-              <h1>CleanSlate</h1>
+              CleanSlate
             </Typography>
             <Container
               sx={{

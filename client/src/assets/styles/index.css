@@ -1,11 +1,9 @@
 @import url("https://fonts.googleapis.com/css?family=Istok Web");
 @import url("https://fonts.googleapis.com/css?family=League Spartan");
 
-
 body {
   margin: 0;
   font-family: "League Spartan", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
