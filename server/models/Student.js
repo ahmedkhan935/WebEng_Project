@@ -6,11 +6,11 @@ const studentSchema = new mongoose.Schema({
     password: String,
     name: String,
     rollNumber: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
-    degreeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Degree' },
+    degreeName: { type: String, default: "" },
     CNIC: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
     contactNumber: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
     address: { type: String, default: "" },
-    
+
     semesters: { //Semester array For students 
         type: [
             { //Structure of each object in semesters array
@@ -28,6 +28,13 @@ const studentSchema = new mongoose.Schema({
                     ]
                 }
             },
+        ], sparse: true,
+    },
+    classes: {
+        type: [
+            {
+                classCode: { type: String, default: "" }, //Class code of the class
+            }
         ], sparse: true,
     },
 });
