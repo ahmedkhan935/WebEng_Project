@@ -23,34 +23,19 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
-          <Route path="/student" element={<UserLandingPage />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/adminpanel" element={<LandingPage />}></Route>
-          <Route path="/addTeacherForm" element={<AddTeacherForm />}></Route>
-          <Route path="/addStudentForm" element={<AddStudentForm />}></Route>
-          <Route path="/medalHolders" element={<MedalHoldersPage />}></Route>
-          <Route path="/debarlist" element={<DebarList />}></Route>
-          <Route path="/warninglist" element={<WarningList />}></Route>
-          <Route path="/deanslist" element={<DeansList />}></Route>
-          <Route path="/rectorslist" element={<RectorsList />}></Route>
-          <Route path="/viewTeachers" element={<ViewTeachers />}></Route>
-          <Route path="/viewStudents" element={<ViewStudents />}></Route>
-        </Routes>
-      </Router>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
 
-          <Route path="student"  >
+          <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
           </Route>
-          
-          <Route path="/admin" >
+
+          <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route path="viewTeachers" element={<ViewTeachers />}></Route>
+            <Route path="viewStudents" element={<ViewStudents />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
@@ -60,8 +45,6 @@ function App() {
               <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
             </Route>
           </Route>
-
-
         </Routes>
       </Router>
     </ThemeProvider>
