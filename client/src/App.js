@@ -8,18 +8,17 @@ import DebarList from "./pages/DebarList";
 import WarningList from "./pages/WarningList";
 import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
-
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 
 function App() {
   return (
-      <div>
-        <Router>
-          <Routes>
-            <Route path="/" element={<MainPage />}></Route>
-            <Route path="/student" element={<UserLandingPage />} ></Route>
-            <Route path="/login" element={<LoginPage />}></Route>
+    <div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />}></Route>
+          <Route path="/student" element={<UserLandingPage />}></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/adminpanel" element={<LandingPage />}></Route>
           <Route path="/addTeacherForm" element={<AddTeacherForm />}></Route>
           <Route path="/addStudentForm" element={<AddStudentForm />}></Route>
@@ -28,9 +27,10 @@ function App() {
           <Route path="/warninglist" element={<WarningList />}></Route>
           <Route path="/deanslist" element={<DeansList />}></Route>
           <Route path="/rectorslist" element={<RectorsList />}></Route>
-          </Routes>
-        </Router>
-      </div>
+          <Route path="/landingPage" element={<LandingPage />}></Route>
+        </Routes>
+      </Router>
+    </div>
   );
 }
 
