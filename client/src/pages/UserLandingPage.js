@@ -1,12 +1,14 @@
 import NavBar from "../components/Navbar";
 import React from 'react';
-import { Button } from 'react-daisyui';
+import Button from '@material-ui/core/Button';
 
 function UserLandingPage() {
     return (
         <div>
-            <Button tag="a" color="primary" className="normal-case text-xl"> Helo! </Button>
             <NavBar />
+            <Button variant="contained" color="primary">
+                Hello World
+            </Button>
             <h1>User Landing Page</h1>
         </div>
     )

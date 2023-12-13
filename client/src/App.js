@@ -5,15 +5,15 @@ import UserLandingPage from "./pages/UserLandingPage";
 
 function App() {
   return (
-    <div className="App">
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainPage />}></Route>
-          <Route path="/student" element = { <UserLandingPage /> } ></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
-        </Routes>
-      </Router>
-    </div>
+      <div className="App">
+        <Router>
+          <Routes>
+            <Route path="/" element={<MainPage />}></Route>
+            <Route path="/student" element={<UserLandingPage />} ></Route>
+            <Route path="/login" element={<LoginPage />}></Route>
+          </Routes>
+        </Router>
+      </div>
   );
 }
 
