@@ -10,13 +10,15 @@ import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
 
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import UserLandingPage from "./pages/UserLandingPage";
 
 function App() {
   return (
-    <div className="App">
+    <div>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
+          <Route path="/student" element = { <UserLandingPage /> } ></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/adminpanel" element={<LandingPage />}></Route>
           <Route path="/addTeacherForm" element={<AddTeacherForm />}></Route>
