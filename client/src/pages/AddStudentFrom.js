@@ -1,5 +1,5 @@
 // AddStudentForm.js
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
@@ -18,7 +18,24 @@ const AddStudentForm = () => {
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
   const [postalCodePermanent, setPostalCodePermanent] = useState("");
   const [cityPermanent, setCityPermanent] = useState("");
-  const [countryPermanent, setCountryPermanent] = useState("");
+  const [countryPermanent, setCountryPermanent] = useState([]);
+  const [countries, setCountries] = useState([]);
+
+  useEffect(() => {
+    // Fetch countries from the API
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch("https://restcountries.com/v3.1/all");
+        const data = await response.json();
+        const countryNames = data.map((country) => country.name.common);
+        setCountries(countryNames);
+      } catch (error) {
+        console.error("Error fetching countries:", error);
+      }
+    };
+
+    fetchCountries();
+  }, []);
 
   const handleAddStudent = (event) => {
     event.preventDefault();
@@ -32,7 +49,7 @@ const AddStudentForm = () => {
       width: "900px",
       padding: "20px",
       fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-      background: "linear-gradient(to right, #cedbfa, #fefeff)",
+      background: "#ebfafc",
       borderRadius: "8px",
       margin: "auto",
       marginTop: "100px",
@@ -69,7 +86,7 @@ const AddStudentForm = () => {
       boxSizing: "border-box",
     },
     gradientButton: {
-      background: "linear-gradient(to right, #4a63a3, #2b59ce)",
+      background: "linear-gradient(to right, #6ABDC9, #22717d)",
       color: "white",
       padding: "10px 15px",
       border: "none",
@@ -84,7 +101,7 @@ const AddStudentForm = () => {
       filter: "brightness(1.2)",
     },
     h2: {
-      color: "#2525ad",
+      color: "#22717d",
     },
   };
 
@@ -135,19 +152,60 @@ const AddStudentForm = () => {
           />
 
           <label style={styles.label}>Degree:</label>
-          <input
-            type="text"
+          <select
             value={degree}
             onChange={(e) => setDegree(e.target.value)}
             style={styles.roundedInput}
-          />
+          >
+            <option value="">Select Degree</option>
+            <option value="Bachelor of Business Administration">
+              Bachelor of Business Administration
+            </option>
+            <option value="Bachelor of Science (Accounting and Finance)">
+              Bachelor of Science (Accounting and Finance)
+            </option>
+            <option value="Bachelor of Science (Artificial Intelligence)">
+              Bachelor of Science (Artificial Intelligence)
+            </option>
+            <option value="Bachelor of Science (Business Analytics)">
+              Bachelor of Science (Business Analytics)
+            </option>
+            <option value="Bachelor of Science (Civil Engineering)">
+              Bachelor of Science (Civil Engineering)
+            </option>
+            <option value="Bachelor of Science (Computer Science)">
+              Bachelor of Science (Computer Science)
+            </option>
+            <option value="Bachelor of Science (Cyber Security)">
+              Bachelor of Science (Cyber Security)
+            </option>
+            <option value="Bachelor of Science (Data Science)">
+              Bachelor of Science (Data Science)
+            </option>
+            <option value="Bachelor of Science (Electrical Engineering)">
+              Bachelor of Science (Electrical Engineering)
+            </option>
+            <option value="Bachelor of Science (Financial Technologies)">
+              Bachelor of Science (Financial Technologies)
+            </option>
+            <option value="Bachelor of Science (Software Engineering)">
+              Bachelor of Science (Software Engineering)
+            </option>
+          </select>
+
           <label style={styles.label}>Campus:</label>
-          <input
-            type="text"
+          <select
             value={campus}
             onChange={(e) => setCampus(e.target.value)}
             style={styles.roundedInput}
-          />
+          >
+            <option value="">Select Campus</option>
+            <option value="Chiniot-Faisalabad">Chiniot-Faisalabad</option>
+            <option value="Islamabad">Islamabad</option>
+            <option value="Karachi">Karachi</option>
+            <option value="Lahore">Lahore</option>
+            <option value="Peshawar">Peshawar</option>
+          </select>
         </div>
 
         {/* Personal Information */}
@@ -222,12 +280,18 @@ const AddStudentForm = () => {
             style={styles.roundedInput}
           />
           <label style={styles.label}>Country:</label>
-          <input
-            type="text"
+          <select
             value={countryPermanent}
             onChange={(e) => setCountryPermanent(e.target.value)}
             style={styles.roundedInput}
-          />
+          >
+            <option value="">Select Country</option>
+            {countries.map((country, index) => (
+              <option key={index} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit" style={styles.gradientButton}>
