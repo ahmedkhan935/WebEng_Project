@@ -8,6 +8,8 @@ import DebarList from "./pages/DebarList";
 import WarningList from "./pages/WarningList";
 import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
+import ViewStudents from "./pages/ViewStudentS";
+import ViewTeachers from "./pages/ViewTeachers";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 
@@ -28,6 +30,8 @@ function App() {
           <Route path="/deanslist" element={<DeansList />}></Route>
           <Route path="/rectorslist" element={<RectorsList />}></Route>
           <Route path="/landingPage" element={<LandingPage />}></Route>
+          <Route path="/viewTeachers" element={<ViewTeachers />}></Route>
+          <Route path="/viewStudents" element={<ViewStudents />}></Route>
         </Routes>
       </Router>
     </div>

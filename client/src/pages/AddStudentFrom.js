@@ -101,18 +101,14 @@ const AddStudentForm = () => {
             onChange={(e) => setStudentName(e.target.value)}
             style={styles.roundedInput}
           />
-          <label style={styles.label} style={styles.label}>
-            Email:
-          </label>
+          <label style={styles.label}>Email:</label>
           <input
             type="text"
             value={studentEmail}
             onChange={(e) => setStudentEmail(e.target.value)}
             style={styles.roundedInput}
           />
-          <label style={styles.label} style={styles.label}>
-            Password:
-          </label>
+          <label style={styles.label}>Password:</label>
           <input
             type="password"
             value={password}
@@ -123,18 +119,14 @@ const AddStudentForm = () => {
 
         <h3>University Information</h3>
         <div style={styles.formGroup}>
-          <label style={styles.label} style={styles.label}>
-            Roll No:
-          </label>
+          <label style={styles.label}>Roll No:</label>
           <input
             type="text"
             value={rollNo}
             onChange={(e) => setRollNo(e.target.value)}
             style={styles.roundedInput}
           />
-          <label style={styles.label} style={styles.label}>
-            Section:
-          </label>
+          <label style={styles.label}>Section:</label>
           <input
             type="text"
             value={section}
@@ -142,18 +134,14 @@ const AddStudentForm = () => {
             style={styles.roundedInput}
           />
 
-          <label style={styles.label} style={styles.label}>
-            Degree:
-          </label>
+          <label style={styles.label}>Degree:</label>
           <input
             type="text"
             value={degree}
             onChange={(e) => setDegree(e.target.value)}
             style={styles.roundedInput}
           />
-          <label style={styles.label} style={styles.label}>
-            Campus:
-          </label>
+          <label style={styles.label}>Campus:</label>
           <input
             type="text"
             value={campus}
