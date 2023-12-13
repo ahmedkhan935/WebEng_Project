@@ -4,6 +4,7 @@ import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme";
 import { Link } from "react-router-dom";
+
 const MainPage = () => {
   const styles = {
     container: {

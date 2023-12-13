@@ -1,46 +1,53 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
-import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
-import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
+import {
+  Box,
+  Drawer as MuiDrawer,
+  AppBar as MuiAppBar,
+  Toolbar,
+  List,
+  CssBaseline,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from '@mui/material';
 
-import HomeIcon from '@mui/icons-material/Home';
-import GradeIcon from '@mui/icons-material/Grade';
-import BookIcon from '@mui/icons-material/Book';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import ScheduleIcon from '@mui/icons-material/Schedule';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import AnnouncementIcon from '@mui/icons-material/Announcement';
-import LogoutIcon from '@mui/icons-material/Logout';
-import SettingsIcon from '@mui/icons-material/Settings';
+import {
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
+  Home as HomeIcon,
+  Grade as GradeIcon,
+  Book as BookIcon,
+  Assignment as AssignmentIcon,
+  Schedule as ScheduleIcon,
+  QuestionAnswer as QuestionAnswerIcon,
+  Announcement as AnnouncementIcon,
+  Logout as LogoutIcon,
+  Settings as SettingsIcon,
+} from '@mui/icons-material';
+
+
+import { Link } from 'react-router-dom';
 
 const drawerWidth = 240;
 const standardOptions = [
-    { title: 'Home', Icon: <HomeIcon color="primary" /> },
-    { title: 'Announcements', Icon: <AnnouncementIcon color="primary" /> },
-    { title: 'Settings', Icon: <SettingsIcon color="primary" /> },
-    { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
+  { title: 'Home', Icon: <HomeIcon color="primary" />, linkto: '/student' },
+  { title: 'Announcements', Icon: <AnnouncementIcon color="primary" /> },
+  { title: 'Settings', Icon: <SettingsIcon color="primary" /> },
+  { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
 ];
 
 const studentOptions = [
-    { title: 'Assignments', Icon: <AssignmentIcon color="primary" /> },
-    { title: 'Books', Icon: <BookIcon color="primary" /> },
-    { title: 'Grades', Icon: <GradeIcon color="primary" /> },
-    { title: 'Questions', Icon: <QuestionAnswerIcon color="primary" /> },
-    { title: 'Schedule', Icon: <ScheduleIcon color="primary" /> },
+  { title: 'Assignments', Icon: <AssignmentIcon color="primary" /> },
+  { title: 'Books', Icon: <BookIcon color="primary" /> },
+  { title: 'Grades', Icon: <GradeIcon color="primary" /> },
+  { title: 'Questions', Icon: <QuestionAnswerIcon color="primary" /> },
+  { title: 'Schedule', Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const openedMixin = (theme) => ({
@@ -138,7 +145,7 @@ export default function NavBar({ children }) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-             CleanSlate
+            CleanSlate
           </Typography>
         </Toolbar>
       </AppBar>
@@ -153,6 +160,8 @@ export default function NavBar({ children }) {
           {standardOptions.map((element, index) => (
             <ListItem key={element.title} disablePadding sx={{ display: 'block' }}>
               <ListItemButton
+                component={element.linkto ? Link : 'div'}
+                to={element.linkto || ''}
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
@@ -166,7 +175,7 @@ export default function NavBar({ children }) {
                     justifyContent: 'center',
                   }}
                 >
-                  { standardOptions[index].Icon } 
+                  {standardOptions[index].Icon}
                 </ListItemIcon>
                 <ListItemText primary={element.title} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -191,7 +200,7 @@ export default function NavBar({ children }) {
                     justifyContent: 'center',
                   }}
                 >
-                  { studentOptions[index].Icon }
+                  {studentOptions[index].Icon}
                 </ListItemIcon>
                 <ListItemText primary={element.title} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
