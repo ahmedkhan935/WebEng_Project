@@ -10,6 +10,7 @@ import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
+import Classroom from "./pages/Classroom";
 
 import { ThemeProvider } from '@mui/material'
 import theme from './assets/theme/theme'
@@ -18,21 +19,33 @@ import theme from './assets/theme/theme'
 function App() {
   return (
     <ThemeProvider theme={theme}>
-    <Router>
-      <Routes>
-        <Route path="/" element={<MainPage />}></Route>
-        <Route path="/student" element={<UserLandingPage />} ></Route>
-        <Route path="/login" element={<LoginPage />}></Route>
-        <Route path="/adminpanel" element={<LandingPage />}></Route>
-        <Route path="/addTeacherForm" element={<AddTeacherForm />}></Route>
-        <Route path="/addStudentForm" element={<AddStudentForm />}></Route>
-        <Route path="/medalHolders" element={<MedalHoldersPage />}></Route>
-        <Route path="/debarlist" element={<DebarList />}></Route>
-        <Route path="/warninglist" element={<WarningList />}></Route>
-        <Route path="/deanslist" element={<DeansList />}></Route>
-        <Route path="/rectorslist" element={<RectorsList />}></Route>
-      </Routes>
-    </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<MainPage />}></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
+
+          <Route path="student"  >
+            <Route index element={<UserLandingPage />}></Route>
+            <Route path="classes/:id" element={<Classroom />}></Route>
+          </Route>
+          
+          <Route path="/admin" >
+            <Route index element={<LandingPage />}></Route>
+            <Route path="addTeacher" element={<AddTeacherForm />}></Route>
+            <Route path="addStudent" element={<AddStudentForm />}></Route>
+
+            <Route path="list">
+              <Route path="debar" element={<DebarList />}></Route>
+              <Route path="warning" element={<WarningList />}></Route>
+              <Route path="deans" element={<DeansList />}></Route>
+              <Route path="rectors" element={<RectorsList />}></Route>
+              <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
+            </Route>
+          </Route>
+
+
+        </Routes>
+      </Router>
     </ThemeProvider>
 
   );
