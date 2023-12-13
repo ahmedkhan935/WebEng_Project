@@ -6,10 +6,10 @@ require('dotenv').config();
 
 const registerStudent = async (req, res) => {
     try {
-        const { email, password, name, rollNumber, degreeId, CNIC, contactNumber, address } = req.body;
+        const { email, password, name, rollNumber, degreeName, CNIC, contactNumber, address } = req.body;
 
         // Validation
-        if (!email || !password || !name || !rollNumber || !degreeId) {
+        if (!email || !password || !name || !rollNumber || !degreeName) {
             return res.status(400).json({ errorMessage: 'Please enter all required fields.' });
         }
 
@@ -32,7 +32,7 @@ const registerStudent = async (req, res) => {
             passwordHash,
             name,
             rollNumber,
-            degreeId,
+            degreeName,
             CNIC,
             contactNumber,
             address,
@@ -41,7 +41,22 @@ const registerStudent = async (req, res) => {
         const savedStudent = await newStudent.save();
 
         // Sign the token
-        res.status(201).json(savedStudent);
+        const token = jwt.sign(
+            {
+                user: newStudent._id,
+                email: newStudent.email,
+            },
+            process.env.JWT_SECRET
+        );
+
+        // Send the token in an HTTP-only cookie
+        // res.cookie('token', token, {
+        //     httpOnly: true,
+        // }).send({token: token});
+        // save in local storage
+        res.status(201).json({token: token});
+
+        // res.status(201).json(savedStudent);
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -92,6 +107,7 @@ const registerTeacher = async (req, res) => {
 
 const loginStudent = async (req, res) => {
     try {
+        console.log(req.body);
         const { email, password } = req.body;
 
         // Validation
