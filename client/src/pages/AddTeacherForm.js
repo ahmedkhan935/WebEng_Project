@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import NavBar from "../components/Navbar";
 
 const AddTeacherForm = () => {
   const [teacherName, setTeacherName] = useState("");
@@ -11,45 +12,45 @@ const AddTeacherForm = () => {
   };
 
   const styles = {
+    body: {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+    },
     addForm: {
-      padding: "20px",
       fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-      background: "linear-gradient(to right, #cedbfa, #fefeff)",
+      width: "500px",
+      padding: "20px",
+      background: "#ffffff",
       borderRadius: "8px",
       margin: "auto",
-      marginTop: "100px",
-      marginBottom: "20px",
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
       display: "flex",
-      flexWrap: "wrap",
       flexDirection: "column",
       alignItems: "center",
-      width: "50%",
+      justifyContent: "center",
+      marginBottom: "20px",
     },
 
     label: {
       fontSize: "15px",
-      width: "30%",
+      width: "100px",
       marginRight: "10px",
       textAlign: "left",
       marginTop: "10px",
     },
 
-    inputContainer: {
-      display: "flex",
-      marginBottom: "10px",
-    },
-
     roundedInput: {
-      width: "80%",
+      width: "300px",
       height: "40px",
       padding: "8px",
       border: "1px solid #ccc",
       borderRadius: "10px",
       boxSizing: "border-box",
+      marginTop: "5px",
     },
     gradientButton: {
-      background: "linear-gradient(to right, #4a63a3, #2b59ce)",
+      background: "linear-gradient(to right, #6ABDC9, #22717d)",
       color: "white",
       padding: "10px 15px",
       border: "none",
@@ -58,55 +59,65 @@ const AddTeacherForm = () => {
       width: "150px",
       height: "40px",
       marginTop: "10px",
-      marginLeft: "100px",
+      marginLeft: "150px",
     },
     gradientButtonHover: {
       filter: "brightness(1.2)",
     },
     h2: {
-      color: "#2525ad",
+      color: "#22717d",
+      width: "80%",
+      float: "right",
+    },
+    inputContainer: {
+      display: "flex",
+      width: "100%",
+      marginBottom: "10px",
     },
   };
 
   return (
-    <div style={styles.addForm}>
+    <>
+      <NavBar></NavBar>
       <h2 style={styles.h2}>Add Teacher</h2>
-      <form onSubmit={handleAddTeacher}>
-        <div style={styles.inputContainer}>
-          <label style={styles.label}>Teacher Name:</label>
-          <input
-            type="text"
-            value={teacherName}
-            onChange={(e) => setTeacherName(e.target.value)}
-            style={styles.roundedInput}
-          />
-        </div>
+      <div style={styles.addForm}>
+        <form onSubmit={handleAddTeacher}>
+          <div style={styles.inputContainer}>
+            <label style={styles.label}>Teacher Name:</label>
+            <input
+              type="text"
+              value={teacherName}
+              onChange={(e) => setTeacherName(e.target.value)}
+              style={styles.roundedInput}
+            />
+          </div>
 
-        <div style={styles.inputContainer}>
-          <label style={styles.label}>Email:</label>
-          <input
-            type="text"
-            value={teacherEmail}
-            onChange={(e) => setTeacherEmail(e.target.value)}
-            style={styles.roundedInput}
-          />
-        </div>
+          <div style={styles.inputContainer}>
+            <label style={styles.label}>Email:</label>
+            <input
+              type="text"
+              value={teacherEmail}
+              onChange={(e) => setTeacherEmail(e.target.value)}
+              style={styles.roundedInput}
+            />
+          </div>
 
-        <div style={styles.inputContainer}>
-          <label style={styles.label}>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setStudentpassword(e.target.value)}
-            style={styles.roundedInput}
-          />
-        </div>
+          <div style={styles.inputContainer}>
+            <label style={styles.label}>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setStudentpassword(e.target.value)}
+              style={styles.roundedInput}
+            />
+          </div>
 
-        <button type="submit" style={styles.gradientButton}>
-          Add Teacher
-        </button>
-      </form>
-    </div>
+          <button type="submit" style={styles.gradientButton}>
+            Add Teacher
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

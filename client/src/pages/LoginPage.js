@@ -4,6 +4,7 @@ import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
+import theme from "../assets/theme/theme.js";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
@@ -36,7 +37,8 @@ const LoginPage = () => {
       alignItems: "center",
     },
     input: {
-      width: "200px",
+      width: "300px",
+      padding: "5px",
       height: "25px",
       borderRadius: "5px",
     },
@@ -45,8 +47,8 @@ const LoginPage = () => {
     },
     mainPageImage: {
       marginTop: "50px",
-      width: "600px",
-      height: "600px",
+      width: "550px",
+      height: "550px",
     },
   };
 
@@ -94,7 +96,7 @@ const LoginPage = () => {
                 <Button
                   variant="contained"
                   style={{
-                    backgroundColor: "#2525AD",
+                    background: theme.palette.secondary,
                     marginTop: "20px",
                     width: "200px",
                   }}

@@ -14,12 +14,14 @@ const app = express();
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
+const authRouter = require('./routes/authRoutes');
 
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/admin', adminRoutes);
 app.use('/student', studentRoutes);
 app.use('/teacher', teacherRoutes);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');

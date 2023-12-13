@@ -1,6 +1,8 @@
 const Student = require('../models/Student');
 const Course = require('../models/Course');
 const Classroom = require('../models/Classroom');
+const Semester = require('../models/Semester');
+const Degree = require('../models/Degree');
 
 const studentController = {
     getProfile: async (req, res) => {
@@ -32,7 +34,7 @@ const studentController = {
 
     getClasses: async (req, res) => {
         try {
-            const student = await Student.findById(req.user._id);
+            const student = await Student.findById(req.user);
             const classCodes = student.classes.map(classroom => classroom.classCode);// Get the class codes of all classes
             // fetch the classes from the database
             const classes = await Classroom.find({ code: { $in: classCodes } });
