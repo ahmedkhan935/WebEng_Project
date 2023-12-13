@@ -1,5 +1,6 @@
 // AddStudentForm.js
 import React, { useState, useEffect } from "react";
+import NavBar from "../components/Navbar";
 
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
@@ -46,26 +47,30 @@ const AddStudentForm = () => {
   const styles = {
     addForm: {
       fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-      width: "900px",
+      width: "60%",
       padding: "20px",
       fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-      background: "#ebfafc",
+      background: "#ffffff",
       borderRadius: "8px",
       margin: "auto",
-      marginTop: "100px",
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
       display: "flex",
-      flexDirection: "column",
       alignItems: "center",
+      justifyContent: "center",
+      marginBottom: "20px",
     },
     formGroup: {
-      padding: "10px",
+      background: "#f2f7f7",
+      padding: "20px",
       borderRadius: "10px",
       display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
       flexWrap: "wrap",
       marginBottom: "20px",
       width: "90%",
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+      marginLeft: "40px",
     },
     label: {
       fontSize: "15px",
@@ -95,210 +100,215 @@ const AddStudentForm = () => {
       width: "150px",
       height: "50px",
       marginTop: "10px",
-      marginLeft: "350px",
+      marginLeft: "300px",
     },
     gradientButtonHover: {
       filter: "brightness(1.2)",
     },
     h2: {
       color: "#22717d",
+      width: "80%",
+      float: "right",
     },
   };
 
   return (
-    <div style={styles.addForm}>
-      <h1 style={styles.h2}>Add Student</h1>
-      <form onSubmit={handleAddStudent}>
-        <h3>Profile</h3>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Student Name:</label>
-          <input
-            type="text"
-            value={studentName}
-            onChange={(e) => setStudentName(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Email:</label>
-          <input
-            type="text"
-            value={studentEmail}
-            onChange={(e) => setStudentEmail(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Password:</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setStudentPassword(e.target.value)}
-            style={styles.roundedInput}
-          />
-        </div>
+    <>
+      <NavBar></NavBar>
+      <h1 style={styles.h2}>Student Form</h1>
+      <div style={styles.addForm}>
+        <form onSubmit={handleAddStudent}>
+          <h3>Profile</h3>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Student Name:</label>
+            <input
+              type="text"
+              value={studentName}
+              onChange={(e) => setStudentName(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Email:</label>
+            <input
+              type="text"
+              value={studentEmail}
+              onChange={(e) => setStudentEmail(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setStudentPassword(e.target.value)}
+              style={styles.roundedInput}
+            />
+          </div>
 
-        <h3>University Information</h3>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Roll No:</label>
-          <input
-            type="text"
-            value={rollNo}
-            onChange={(e) => setRollNo(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Section:</label>
-          <input
-            type="text"
-            value={section}
-            onChange={(e) => setSection(e.target.value)}
-            style={styles.roundedInput}
-          />
+          <h3>University Information</h3>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Roll No:</label>
+            <input
+              type="text"
+              value={rollNo}
+              onChange={(e) => setRollNo(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Section:</label>
+            <input
+              type="text"
+              value={section}
+              onChange={(e) => setSection(e.target.value)}
+              style={styles.roundedInput}
+            />
 
-          <label style={styles.label}>Degree:</label>
-          <select
-            value={degree}
-            onChange={(e) => setDegree(e.target.value)}
-            style={styles.roundedInput}
-          >
-            <option value="">Select Degree</option>
-            <option value="Bachelor of Business Administration">
-              Bachelor of Business Administration
-            </option>
-            <option value="Bachelor of Science (Accounting and Finance)">
-              Bachelor of Science (Accounting and Finance)
-            </option>
-            <option value="Bachelor of Science (Artificial Intelligence)">
-              Bachelor of Science (Artificial Intelligence)
-            </option>
-            <option value="Bachelor of Science (Business Analytics)">
-              Bachelor of Science (Business Analytics)
-            </option>
-            <option value="Bachelor of Science (Civil Engineering)">
-              Bachelor of Science (Civil Engineering)
-            </option>
-            <option value="Bachelor of Science (Computer Science)">
-              Bachelor of Science (Computer Science)
-            </option>
-            <option value="Bachelor of Science (Cyber Security)">
-              Bachelor of Science (Cyber Security)
-            </option>
-            <option value="Bachelor of Science (Data Science)">
-              Bachelor of Science (Data Science)
-            </option>
-            <option value="Bachelor of Science (Electrical Engineering)">
-              Bachelor of Science (Electrical Engineering)
-            </option>
-            <option value="Bachelor of Science (Financial Technologies)">
-              Bachelor of Science (Financial Technologies)
-            </option>
-            <option value="Bachelor of Science (Software Engineering)">
-              Bachelor of Science (Software Engineering)
-            </option>
-          </select>
-
-          <label style={styles.label}>Campus:</label>
-          <select
-            value={campus}
-            onChange={(e) => setCampus(e.target.value)}
-            style={styles.roundedInput}
-          >
-            <option value="">Select Campus</option>
-            <option value="Chiniot-Faisalabad">Chiniot-Faisalabad</option>
-            <option value="Islamabad">Islamabad</option>
-            <option value="Karachi">Karachi</option>
-            <option value="Lahore">Lahore</option>
-            <option value="Peshawar">Peshawar</option>
-          </select>
-        </div>
-
-        {/* Personal Information */}
-        <h3>Personal Information</h3>
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Date of Birth:</label>
-          <input
-            type="date"
-            value={dob}
-            onChange={(e) => setDob(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>CNIC:</label>
-          <input
-            type="text"
-            value={cnic}
-            onChange={(e) => setCnic(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Mobile No:</label>
-          <input
-            type="text"
-            value={mobileNo}
-            onChange={(e) => setMobileNo(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Blood Group:</label>
-          <input
-            type="text"
-            value={bloodGroup}
-            onChange={(e) => setBloodGroup(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Nationality:</label>
-          <input
-            type="text"
-            value={nationality}
-            onChange={(e) => setNationality(e.target.value)}
-            style={styles.roundedInput}
-          />
-        </div>
-
-        <h3>Contact Information</h3>
-
-        <div style={styles.formGroup}>
-          <label style={styles.label}>Address:</label>
-          <input
-            type="text"
-            value={permanentAddress}
-            onChange={(e) => setPermanentAddress(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Home Phone:</label>
-          <input
-            type="text"
-            value={homePhonePermanent}
-            onChange={(e) => setHomePhonePermanent(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Postal Code:</label>
-          <input
-            type="text"
-            value={postalCodePermanent}
-            onChange={(e) => setPostalCodePermanent(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>City:</label>
-          <input
-            type="text"
-            value={cityPermanent}
-            onChange={(e) => setCityPermanent(e.target.value)}
-            style={styles.roundedInput}
-          />
-          <label style={styles.label}>Country:</label>
-          <select
-            value={countryPermanent}
-            onChange={(e) => setCountryPermanent(e.target.value)}
-            style={styles.roundedInput}
-          >
-            <option value="">Select Country</option>
-            {countries.map((country, index) => (
-              <option key={index} value={country}>
-                {country}
+            <label style={styles.label}>Degree:</label>
+            <select
+              value={degree}
+              onChange={(e) => setDegree(e.target.value)}
+              style={styles.roundedInput}
+            >
+              <option value="">Select Degree</option>
+              <option value="Bachelor of Business Administration">
+                Bachelor of Business Administration
               </option>
-            ))}
-          </select>
-        </div>
+              <option value="Bachelor of Science (Accounting and Finance)">
+                Bachelor of Science (Accounting and Finance)
+              </option>
+              <option value="Bachelor of Science (Artificial Intelligence)">
+                Bachelor of Science (Artificial Intelligence)
+              </option>
+              <option value="Bachelor of Science (Business Analytics)">
+                Bachelor of Science (Business Analytics)
+              </option>
+              <option value="Bachelor of Science (Civil Engineering)">
+                Bachelor of Science (Civil Engineering)
+              </option>
+              <option value="Bachelor of Science (Computer Science)">
+                Bachelor of Science (Computer Science)
+              </option>
+              <option value="Bachelor of Science (Cyber Security)">
+                Bachelor of Science (Cyber Security)
+              </option>
+              <option value="Bachelor of Science (Data Science)">
+                Bachelor of Science (Data Science)
+              </option>
+              <option value="Bachelor of Science (Electrical Engineering)">
+                Bachelor of Science (Electrical Engineering)
+              </option>
+              <option value="Bachelor of Science (Financial Technologies)">
+                Bachelor of Science (Financial Technologies)
+              </option>
+              <option value="Bachelor of Science (Software Engineering)">
+                Bachelor of Science (Software Engineering)
+              </option>
+            </select>
 
-        <button type="submit" style={styles.gradientButton}>
-          Add Student
-        </button>
-      </form>
-    </div>
+            <label style={styles.label}>Campus:</label>
+            <select
+              value={campus}
+              onChange={(e) => setCampus(e.target.value)}
+              style={styles.roundedInput}
+            >
+              <option value="">Select Campus</option>
+              <option value="Chiniot-Faisalabad">Chiniot-Faisalabad</option>
+              <option value="Islamabad">Islamabad</option>
+              <option value="Karachi">Karachi</option>
+              <option value="Lahore">Lahore</option>
+              <option value="Peshawar">Peshawar</option>
+            </select>
+          </div>
+
+          {/* Personal Information */}
+          <h3>Personal Information</h3>
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Date of Birth:</label>
+            <input
+              type="date"
+              value={dob}
+              onChange={(e) => setDob(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>CNIC:</label>
+            <input
+              type="text"
+              value={cnic}
+              onChange={(e) => setCnic(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Mobile No:</label>
+            <input
+              type="text"
+              value={mobileNo}
+              onChange={(e) => setMobileNo(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Blood Group:</label>
+            <input
+              type="text"
+              value={bloodGroup}
+              onChange={(e) => setBloodGroup(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Nationality:</label>
+            <input
+              type="text"
+              value={nationality}
+              onChange={(e) => setNationality(e.target.value)}
+              style={styles.roundedInput}
+            />
+          </div>
+
+          <h3>Contact Information</h3>
+
+          <div style={styles.formGroup}>
+            <label style={styles.label}>Address:</label>
+            <input
+              type="text"
+              value={permanentAddress}
+              onChange={(e) => setPermanentAddress(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Home Phone:</label>
+            <input
+              type="text"
+              value={homePhonePermanent}
+              onChange={(e) => setHomePhonePermanent(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Postal Code:</label>
+            <input
+              type="text"
+              value={postalCodePermanent}
+              onChange={(e) => setPostalCodePermanent(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>City:</label>
+            <input
+              type="text"
+              value={cityPermanent}
+              onChange={(e) => setCityPermanent(e.target.value)}
+              style={styles.roundedInput}
+            />
+            <label style={styles.label}>Country:</label>
+            <select
+              value={countryPermanent}
+              onChange={(e) => setCountryPermanent(e.target.value)}
+              style={styles.roundedInput}
+            >
+              <option value="">Select Country</option>
+              {countries.map((country, index) => (
+                <option key={index} value={country}>
+                  {country}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button type="submit" style={styles.gradientButton}>
+            Add Student
+          </button>
+        </form>
+      </div>
+    </>
   );
 };
 

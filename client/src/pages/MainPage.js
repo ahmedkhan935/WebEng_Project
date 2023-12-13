@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
-
+import theme from "../assets/theme/theme";
 import { Link } from "react-router-dom";
 const MainPage = () => {
   const styles = {
@@ -33,7 +33,7 @@ const MainPage = () => {
         {/* Combine the two sides without spacing */}
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>
-            <Typography variant="h2" sx={{fontWeight:"bold"}}>
+            <Typography variant="h2" sx={{ fontWeight: "bold" }}>
               <img
                 src={cleanSlateImage}
                 alt="CleanSlate"
@@ -56,7 +56,7 @@ const MainPage = () => {
                 style={{
                   marginLeft: "100px",
                   marginRight: "50px",
-                  backgroundColor: "#2525AD",
+                  background: theme.palette.secondary,
                 }}
                 component={Link}
                 to="/login"
