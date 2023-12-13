@@ -59,7 +59,7 @@ const AnnouncementSchema = new mongoose.Schema({
 
 const ClassroomSchema = new mongoose.Schema({
 
-    name: {
+    name: {// course name
         type: String,
         required: true
     },
@@ -71,10 +71,6 @@ const ClassroomSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    },
-    section:{
-        type: String,
         required: true
     },
     teachers:{
