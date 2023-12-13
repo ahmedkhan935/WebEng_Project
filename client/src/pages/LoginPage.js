@@ -35,6 +35,11 @@ const LoginPage = () => {
       flexDirection: "column",
       alignItems: "center",
     },
+    input: {
+      width: "200px",
+      height: "25px",
+      borderRadius: "5px",
+    },
     button: {
       margin: "10px",
     },
@@ -72,6 +77,7 @@ const LoginPage = () => {
                   value={email}
                   placeholder="email"
                   onChange={handleEmailChange}
+                  style={styles.input}
                 />
                 <br />
                 <br />
@@ -81,6 +87,7 @@ const LoginPage = () => {
                   value={password}
                   placeholder="password"
                   onChange={handlePasswordChange}
+                  style={styles.input}
                 />
                 <br />
 

@@ -16,34 +16,32 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 
 import HomeIcon from '@mui/icons-material/Home';
 import GradeIcon from '@mui/icons-material/Grade';
-import ClassIcon from '@mui/icons-material/Class';
 import BookIcon from '@mui/icons-material/Book';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 const drawerWidth = 240;
-
 const standardOptions = [
-    { title: 'Home', Icon: <HomeIcon /> },
-    { title: 'Announcements', Icon: <AnnouncementIcon /> },
-    { title: 'Logout', Icon: <LogoutIcon /> },
-  ];
-  
-  const studentOptions = [
-    { title: 'Assignments', Icon: <AssignmentIcon /> },
-    { title: 'Books', Icon: <BookIcon /> },
-    { title: 'Grades', Icon: <GradeIcon /> },
-    { title: 'Questions', Icon: <QuestionAnswerIcon /> },
-    { title: 'Schedule', Icon: <ScheduleIcon /> },
-  ];
+    { title: 'Home', Icon: <HomeIcon color="primary" /> },
+    { title: 'Announcements', Icon: <AnnouncementIcon color="primary" /> },
+    { title: 'Settings', Icon: <SettingsIcon color="primary" /> },
+    { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
+];
+
+const studentOptions = [
+    { title: 'Assignments', Icon: <AssignmentIcon color="primary" /> },
+    { title: 'Books', Icon: <BookIcon color="primary" /> },
+    { title: 'Grades', Icon: <GradeIcon color="primary" /> },
+    { title: 'Questions', Icon: <QuestionAnswerIcon color="primary" /> },
+    { title: 'Schedule', Icon: <ScheduleIcon color="primary" /> },
+];
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -110,7 +108,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-export default function NavBar() {
+export default function NavBar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -203,34 +201,7 @@ export default function NavBar() {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-
-        <Typography paragraph>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua. Rhoncus dolor purus non
-          enim praesent elementum facilisis leo vel. Risus at ultrices mi tempus
-          imperdiet. Semper risus in hendrerit gravida rutrum quisque non tellus.
-          Convallis convallis tellus id interdum velit laoreet id donec ultrices.
-          Odio morbi quis commodo odio aenean sed adipiscing. Amet nisl suscipit
-          adipiscing bibendum est ultricies integer quis. Cursus euismod quis viverra
-          nibh cras. Metus vulputate eu scelerisque felis imperdiet proin fermentum
-          leo. Mauris commodo quis imperdiet massa tincidunt. Cras tincidunt lobortis
-          feugiat vivamus at augue. At augue eget arcu dictum varius duis at
-          consectetur lorem. Velit sed ullamcorper morbi tincidunt. Lorem donec massa
-          sapien faucibus et molestie ac.
-        </Typography>
-        <Typography paragraph>
-          Consequat mauris nunc congue nisi vitae suscipit. Fringilla est ullamcorper
-          eget nulla facilisi etiam dignissim diam. Pulvinar elementum integer enim
-          neque volutpat ac tincidunt. Ornare suspendisse sed nisi lacus sed viverra
-          tellus. Purus sit amet volutpat consequat mauris. Elementum eu facilisis
-          sed odio morbi. Euismod lacinia at quis risus sed vulputate odio. Morbi
-          tincidunt ornare massa eget egestas purus viverra accumsan in. In hendrerit
-          gravida rutrum quisque non tellus orci ac. Pellentesque nec nam aliquam sem
-          et tortor. Habitant morbi tristique senectus et. Adipiscing elit duis
-          tristique sollicitudin nibh sit. Ornare aenean euismod elementum nisi quis
-          eleifend. Commodo viverra maecenas accumsan lacus vel facilisis. Nulla
-          posuere sollicitudin aliquam ultrices sagittis orci a.
-        </Typography>
+        {children} {/* This is where the content of the page will be rendered */}
       </Box>
     </Box>
   );

@@ -1,16 +1,17 @@
 import React from 'react';
-import { Button  } from '@mui/material';
+import { Button, Container } from '@mui/material';
+import CoursesList from '../components/CoursesList';
 import NavBar from '../components/Navbar';
+import AnnouncementList from '../components/AnnouncementList';
 
 function UserLandingPage() {
     return (
-        <div>
-            <NavBar />
-            <Button variant="contained" color="primary">
-                Hello World
-            </Button>
-            <h1>User Landing Page</h1>
-        </div>
+        <NavBar >
+            <Container>
+                <AnnouncementList></AnnouncementList>
+                <CoursesList></CoursesList>
+            </Container>
+        </NavBar>
     )
 }
 
