@@ -4,6 +4,7 @@ import classroomHeader from '../assets/images/classroomHeader.jpg'; // import th
 import NavBar from '../components/Navbar';
 import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
+import ClassroomStreamCard from "../components/ClassroomStreamCard";
 
 function Classroom() {
   return (
@@ -33,22 +34,15 @@ function Classroom() {
           <CardContent>
             <CompletedCourseBadge /> {/* This will be displayed only if student is viewing an old course */}
             <Grid container spacing={2}>
-  <Grid item xs={12} sm={3}>
-    <UpcomingWork />
-  </Grid>
-  <Grid item xs={12} sm={9}>
-    <Card>
-      <CardContent>
-        <Typography variant="h6" color="text.secondary" margin="10px">
-          Assignment 1
-        </Typography>
-        <Typography variant="body2" color="text.secondary" margin="10px">
-          Due: 10/10/2021
-        </Typography>
-      </CardContent>
-    </Card>
-  </Grid>
-</Grid>
+              <Grid item xs={12} sm={3}>
+                <UpcomingWork />
+              </Grid>
+              <Grid item xs={12} sm={9}>
+              <ClassroomStreamCard cardType={"assignment"} />
+              <ClassroomStreamCard cardType={"material"}/>
+              <ClassroomStreamCard cardType={"announcement"} />
+              </Grid>
+            </Grid>
           </CardContent>
         </Card>
       </Container>

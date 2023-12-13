@@ -19,12 +19,15 @@ function InfoBox({ icon: Icon, text }) {
     );
 }
 function CompletedCourseBadge() {
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+    
     return (
         <Card sx={{ width: '100%', bgcolor: 'primary.main', color: 'white', padding: '20px', marginBottom: '20px' }}>
             <CardContent>
                 <Box display="flex" justifyContent="center" alignItems="center" mb={2}>
                     <CheckCircleOutlineIcon />
-                    <Typography variant="h5" component="div" color="white">
+                    <Typography variant="h5" component="div" color="white" align={isSmallScreen ? 'center' : 'inherit'}>
                    You have completed this course
                     </Typography>
                 </Box>
