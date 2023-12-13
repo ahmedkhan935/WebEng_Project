@@ -36,7 +36,7 @@ const MainPage = () => {
               <img
                 src={cleanSlateImage}
                 alt="CleanSlate"
-                style={{ width: "80%" }}
+                style={{ width: "50%" }}
               ></img>
               <h1>CleanSlate</h1>
             </Typography>
