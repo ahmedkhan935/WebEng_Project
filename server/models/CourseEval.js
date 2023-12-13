@@ -14,6 +14,20 @@ const CourseEvalSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Semester',
     },
+    lectures: {
+        type: [
+            {
+                date: {
+                    type: Date,
+                    default: Date.now
+                },
+                duration: {
+                    type: Number,
+                    required: true
+                },
+            }
+        ]
+    },
     evaluations: {
         type: [
             {
@@ -53,6 +67,4 @@ const CourseEvalSchema = new mongoose.Schema({
         required: true,
         default: false
     }
-
-
 });

@@ -7,6 +7,9 @@ const studentSchema = new mongoose.Schema({
     name: String,
     rollNumber: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
     degreeId: { type: mongoose.Schema.Types.ObjectId, ref: 'Degree' },
+    CNIC: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
+    contactNumber: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
+    address: { type: String, default: "" },
     
     semesters: { //Semester array For students 
         type: [

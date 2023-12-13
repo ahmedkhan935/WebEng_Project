@@ -36,6 +36,24 @@ const StudentEvalSchema = new mongoose.Schema({
             }
         ]
     },
+    lectures: {
+        type: [
+            {
+                date: {
+                    type: Date,
+                    default: Date.now
+                },
+                duration: {
+                    type: Number,
+                    required: true
+                },
+                status: {
+                    type: String,
+                    default: 'P'
+                },
+            }
+        ]
+    },
     totalObtainedAbs: {
         type: Number,
         required: true
@@ -45,5 +63,12 @@ const StudentEvalSchema = new mongoose.Schema({
         required: true,
         default: 'I'
     },
-
+    attendance: {
+        type: Number,
+        required: true
+    },
+    feedback: {
+        type: String,
+        required: true
+    }
 });
