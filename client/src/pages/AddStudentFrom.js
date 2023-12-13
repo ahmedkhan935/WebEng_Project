@@ -1,6 +1,5 @@
 // AddStudentForm.js
 import React, { useState } from "react";
-import "../assets/styles/AddForm.css";
 
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
@@ -27,150 +26,223 @@ const AddStudentForm = () => {
     // Add logic to send data to the server or perform other actions
   };
 
+  const styles = {
+    addForm: {
+      fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
+      width: "900px",
+      padding: "20px",
+      fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
+      background: "linear-gradient(to right, #cedbfa, #fefeff)",
+      borderRadius: "8px",
+      margin: "auto",
+      marginTop: "100px",
+      boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+    },
+    formGroup: {
+      padding: "10px",
+      borderRadius: "10px",
+      display: "flex",
+      flexWrap: "wrap",
+      marginBottom: "20px",
+      width: "90%",
+      boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+    },
+    label: {
+      fontSize: "15px",
+      width: "30%",
+      marginRight: "10px",
+      textAlign: "left",
+    },
+    formInput: {
+      width: "70%",
+    },
+    roundedInput: {
+      width: "400px",
+      height: "40px",
+      padding: "8px",
+      marginTop: "5px",
+      border: "1px solid #ccc",
+      borderRadius: "10px",
+      boxSizing: "border-box",
+    },
+    gradientButton: {
+      background: "linear-gradient(to right, #4a63a3, #2b59ce)",
+      color: "white",
+      padding: "10px 15px",
+      border: "none",
+      borderRadius: "10px",
+      cursor: "pointer",
+      width: "150px",
+      height: "50px",
+      marginTop: "10px",
+      marginLeft: "350px",
+    },
+    gradientButtonHover: {
+      filter: "brightness(1.2)",
+    },
+    h2: {
+      color: "#2525ad",
+    },
+  };
+
   return (
-    <div className="add-form">
-      <h2>Add Student</h2>
+    <div style={styles.addForm}>
+      <h1 style={styles.h2}>Add Student</h1>
       <form onSubmit={handleAddStudent}>
         <h3>Profile</h3>
-        <div className="form-group">
-          <label>Student Name:</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Student Name:</label>
           <input
             type="text"
             value={studentName}
             onChange={(e) => setStudentName(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Email:</label>
+          <label style={styles.label} style={styles.label}>
+            Email:
+          </label>
           <input
             type="text"
             value={studentEmail}
             onChange={(e) => setStudentEmail(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Password:</label>
+          <label style={styles.label} style={styles.label}>
+            Password:
+          </label>
           <input
             type="password"
             value={password}
             onChange={(e) => setStudentPassword(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
         </div>
 
-        {/* University Information */}
         <h3>University Information</h3>
-        <div className="form-group">
-          <label>Roll No:</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label} style={styles.label}>
+            Roll No:
+          </label>
           <input
             type="text"
             value={rollNo}
             onChange={(e) => setRollNo(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Section:</label>
+          <label style={styles.label} style={styles.label}>
+            Section:
+          </label>
           <input
             type="text"
             value={section}
             onChange={(e) => setSection(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
 
-          <label>Degree:</label>
+          <label style={styles.label} style={styles.label}>
+            Degree:
+          </label>
           <input
             type="text"
             value={degree}
             onChange={(e) => setDegree(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Campus:</label>
+          <label style={styles.label} style={styles.label}>
+            Campus:
+          </label>
           <input
             type="text"
             value={campus}
             onChange={(e) => setCampus(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
         </div>
 
         {/* Personal Information */}
         <h3>Personal Information</h3>
-        <div className="form-group">
-          <label>Date of Birth:</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Date of Birth:</label>
           <input
             type="date"
             value={dob}
             onChange={(e) => setDob(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>CNIC:</label>
+          <label style={styles.label}>CNIC:</label>
           <input
             type="text"
             value={cnic}
             onChange={(e) => setCnic(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Mobile No:</label>
+          <label style={styles.label}>Mobile No:</label>
           <input
             type="text"
             value={mobileNo}
             onChange={(e) => setMobileNo(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Blood Group:</label>
+          <label style={styles.label}>Blood Group:</label>
           <input
             type="text"
             value={bloodGroup}
             onChange={(e) => setBloodGroup(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Nationality:</label>
+          <label style={styles.label}>Nationality:</label>
           <input
             type="text"
             value={nationality}
             onChange={(e) => setNationality(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
         </div>
 
         <h3>Contact Information</h3>
 
-        <div className="form-group">
-          <label>Address:</label>
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Address:</label>
           <input
             type="text"
             value={permanentAddress}
             onChange={(e) => setPermanentAddress(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Home Phone:</label>
+          <label style={styles.label}>Home Phone:</label>
           <input
             type="text"
             value={homePhonePermanent}
             onChange={(e) => setHomePhonePermanent(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Postal Code:</label>
+          <label style={styles.label}>Postal Code:</label>
           <input
             type="text"
             value={postalCodePermanent}
             onChange={(e) => setPostalCodePermanent(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>City:</label>
+          <label style={styles.label}>City:</label>
           <input
             type="text"
             value={cityPermanent}
             onChange={(e) => setCityPermanent(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
-          <label>Country:</label>
+          <label style={styles.label}>Country:</label>
           <input
             type="text"
             value={countryPermanent}
             onChange={(e) => setCountryPermanent(e.target.value)}
-            className="rounded-input"
+            style={styles.roundedInput}
           />
         </div>
 
-        <button type="submit" className="gradient-button">
+        <button type="submit" style={styles.gradientButton}>
           Add Student
         </button>
       </form>

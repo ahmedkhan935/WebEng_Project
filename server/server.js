@@ -5,6 +5,11 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 require('dotenv').config();
 
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connection.on('connected', () => {
+    console.log('Connected to database');
+});
+
 const app = express();
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');

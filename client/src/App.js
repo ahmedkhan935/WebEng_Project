@@ -8,7 +8,6 @@ import DebarList from "./pages/DebarList";
 import WarningList from "./pages/WarningList";
 import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
-
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const DegreeSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     semCourses: {
         type: [
@@ -25,5 +26,4 @@ const DegreeSchema = new mongoose.Schema({
         type: Number,
         required: true
     }
-    
 });

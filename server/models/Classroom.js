@@ -8,6 +8,7 @@ const AnnouncementSchema = new mongoose.Schema({
     },
     title: {
         type: String,
+        unique: true
     },
     content: {
         type: String,
@@ -54,12 +55,42 @@ const AnnouncementSchema = new mongoose.Schema({
                 }
             }
         ]
+    },
+    submissions: {
+        type: [
+            {
+                studentId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'User',
+                    required: true
+                },
+                date: {
+                    type: Date,
+                    required: true
+                },
+                attachments: {
+                    type: [
+                        {
+                            name: {
+                                type: String,
+                                required: true
+                            },
+                            url: {
+                                type: String,
+                                required: true
+                            }
+                        }
+                    ]
+                }
+            }
+        ]
+    
     }
 });
 
 const ClassroomSchema = new mongoose.Schema({
 
-    name: {
+    name: {// course name
         type: String,
         required: true
     },
@@ -71,10 +102,6 @@ const ClassroomSchema = new mongoose.Schema({
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
-    },
-    section:{
-        type: String,
         required: true
     },
     teachers:{
@@ -95,3 +122,6 @@ const ClassroomSchema = new mongoose.Schema({
         type: [AnnouncementSchema]
     }
 });
+
+const Classroom = mongoose.model('Classroom', ClassroomSchema);
+module.exports = Classroom;
