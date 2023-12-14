@@ -1,11 +1,13 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 
 const Authmiddleware = (req, res, next) => {
     try {
-        //const token = req.cookies.token;
-        const token = req.headers.authorization;
+        const token = req.cookies.token;
         console.log(token);
+        // const token = req.headers.authorization;
+        // console.log(token);
         if (!token) {
             return res.status(401).json({ errorMessage: "Unauthorized" });
         }

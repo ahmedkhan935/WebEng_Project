@@ -6,6 +6,11 @@ const DegreeSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    abbreviation: {
+        type: String,
+        required: true,
+        unique: true
+    },
     semCourses: {
         type: [
             {

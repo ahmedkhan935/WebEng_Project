@@ -25,17 +25,19 @@ function App() {
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
 
-          <Route path="student"  >
+          <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
           </Route>
-          
-          <Route path="/admin" >
+
+          <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route path="viewTeachers" element={<ViewTeachers />}></Route>
+            <Route path="viewStudents" element={<ViewStudents />}></Route>
 
-            <Route path="list">
+            <Route path="/list">
               <Route path="debar" element={<DebarList />}></Route>
               <Route path="warning" element={<WarningList />}></Route>
               <Route path="deans" element={<DeansList />}></Route>
@@ -45,8 +47,6 @@ function App() {
               <Route path="students" element={<ViewStudents />}></Route>
             </Route>
           </Route>
-
-
         </Routes>
       </Router>
     </ThemeProvider>

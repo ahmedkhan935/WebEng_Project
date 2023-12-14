@@ -1,6 +1,7 @@
 // LandingPage.js
 import React from "react";
 import { Link } from "react-router-dom";
+import NavBar from "../components/Navbar";
 
 const LandingPage = () => {
   const landingPageStyles = {
@@ -41,44 +42,47 @@ const LandingPage = () => {
   };
 
   return (
-    <div style={landingPageStyles}>
-      <h2 style={h1Styles}>Welcome Admin!</h2>
-      <p style={pStyles}>Choose an option:</p>
-      <Link
-        to="/addTeacherForm"
-        className="link-button"
-        style={linkButtonStyles}
-        activeStyle={linkButtonHoverStyles}
-      >
-        Add Teacher
-      </Link>
-      <br />
-      <Link
-        to="/addStudentForm"
-        className="link-button"
-        style={linkButtonStyles}
-        activeStyle={linkButtonHoverStyles}
-      >
-        Add Student
-      </Link>
-      <br />
-      <Link
-        to="/viewTeachers"
-        className="link-button"
-        style={linkButtonStyles}
-        activeStyle={linkButtonHoverStyles}
-      >
-        View Teachers
-      </Link>
-      <br />
-      <Link
-        to="/viewStudents"
-        className="link-button"
-        style={linkButtonStyles}
-        activeStyle={linkButtonHoverStyles}
-      >
-        View Students
-      </Link>
+    <div>
+      <NavBar></NavBar>
+      <div style={landingPageStyles}>
+        <h2 style={h1Styles}>Welcome Admin!</h2>
+        <p style={pStyles}>Choose an option:</p>
+        <Link
+          to="/admin/addTeacher"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          Add Teacher
+        </Link>
+        <br />
+        <Link
+          to="/admin/addStudent"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          Add Student
+        </Link>
+        <br />
+        <Link
+          to="/admin/viewTeachers"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          View Teachers
+        </Link>
+        <br />
+        <Link
+          to="/admin/viewStudents"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          View Students
+        </Link>
+      </div>
     </div>
   );
 };

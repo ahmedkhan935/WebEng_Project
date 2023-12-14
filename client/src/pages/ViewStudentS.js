@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import NavBar from "../components/Navbar";
 
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -60,12 +61,12 @@ const ViewStudents = () => {
 
   return (
     <div>
+      <NavBar></NavBar>
       <div
         style={{
           display: "flex",
           justifyContent: "flex-end",
           marginBottom: "20px",
-          marginTop: "20px",
         }}
       >
         <FormControl variant="outlined" style={{ marginRight: "10px" }}>
@@ -114,7 +115,10 @@ const ViewStudents = () => {
         </FormControl>
       </div>
 
-      <TableContainer component={Paper}>
+      <TableContainer
+        component={Paper}
+        style={{ width: "95%", float: "right", marginRight: "10px" }}
+      >
         <Table>
           <TableHead>
             <TableRow style={{ background: "#22717d" }}>

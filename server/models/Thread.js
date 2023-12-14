@@ -9,6 +9,10 @@ const threadSchema = new mongoose.Schema({
     content: {
         type: [
             {
+                title: {
+                    type: String,
+                    required: true
+                },
                 content: {
                     type: String,
                     required: true
