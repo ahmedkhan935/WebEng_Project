@@ -29,8 +29,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
-
+          <Route path="/login/student" element={<LoginPage />}></Route>
+          <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>

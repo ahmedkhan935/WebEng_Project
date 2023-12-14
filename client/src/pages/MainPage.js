@@ -24,7 +24,7 @@ const MainPage = () => {
       marginTop: "50px",
       width: "600px",
       height: "600px",
-      "object-fit": "contain",
+      objectFit: "contain",
     },
   };
 
@@ -60,11 +60,21 @@ const MainPage = () => {
                   background: theme.palette.secondary,
                 }}
                 component={Link}
-                to="/login"
+                to={{
+                  pathname: "/login/student"
+                  
+                }}
               >
                 Login As Student
               </Button>
-              <Button variant="outlined">Login As Teacher</Button>
+              <Button
+                variant="outlined"
+                component={Link}
+                to={{
+                  pathname: "/login/teacher"
+                
+                }}
+              >Login As Teacher</Button>
             </Container>
           </Paper>
         </Grid>

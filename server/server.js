@@ -19,7 +19,12 @@ const teacherRoutes = require('./routes/teacherRoutes');
 const authRouter = require('./routes/authRoutes');
 
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors(
+    {
+        origin: "http://localhost:5000",
+        credentials: true
+    }
+));
 app.use('/admin', adminRoutes);
 app.use('/student', studentRoutes);
 app.use('/teacher', teacherRoutes);

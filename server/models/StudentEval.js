@@ -72,3 +72,6 @@ const StudentEvalSchema = new mongoose.Schema({
         required: true
     }
 });
+
+const StudentEval = mongoose.model('StudentEval', StudentEvalSchema);
+module.exports = StudentEval;
