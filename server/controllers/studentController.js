@@ -3,6 +3,7 @@ const Course = require('../models/Course');
 const Classroom = require('../models/Classroom');
 const Semester = require('../models/Semester');
 const Degree = require('../models/Degree');
+const Thread = require('../models/Thread');
 
 const studentController = {
     getProfile: async (req, res) => {
@@ -45,6 +46,15 @@ const studentController = {
         }
     },
 
+    getTodos: async (req, res) => {
+        try {
+            const student = await Student.findById(req.user);
+            res.status(200).json(student.todos);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    },
+
     getNotifications: async (req, res) => {
         try {
             const student = await Student.findById(req.user);
@@ -58,13 +68,21 @@ const studentController = {
         try {
             const student = await Student.findById(req.user).populate('threads');
             const threads = student.threads;
-            res.status(200).json(threads);
+            res.status(201).json(threads);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
 
-    
+    getThread: async (req, res) => {
+        try {
+            const student = await Student.findById(req.user).populate('threads');
+            const thread = student.threads.filter(thread => thread._id == req.params.threadId);
+            res.status(201).json(thread);
+        } catch (err) {
+            res.status(500).json({ error: err.message });
+        }
+    },
 };
 
 module.exports = studentController;

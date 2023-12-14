@@ -42,22 +42,8 @@ const registerStudent = async (req, res) => {
         const savedStudent = await newStudent.save();
 
         // Sign the token
-        const token = jwt.sign(
-            {
-                user: newStudent._id,
-                email: newStudent.email,
-            },
-            process.env.JWT_SECRET
-        );
-
-        // Send the token in an HTTP-only cookie
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        // }).send({token: token});
-        // save in local storage
-        res.status(201).json({token: token});
-
-        // res.status(201).json(savedStudent);
+        
+        res.status(201).json(savedStudent);
     } catch (err) {
         console.error(err);
         res.status(500).send();
