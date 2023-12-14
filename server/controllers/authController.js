@@ -122,9 +122,11 @@ const loginStudent = async (req, res) => {
         );
 
         // Send the token in an HTTP-only cookie
-        res.cookie('token', token, {
+        res.status(200).cookie('token', token, {
             httpOnly: true,
-        }).send();
+            sameSite: 'None',
+            secure: true,
+        }).send({role: 'student'});
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -160,9 +162,9 @@ const loginTeacher = async (req, res) => {
             process.env.JWT_SECRET
         );
 
-        res.cookie('token', token, {
+        res.status(200).cookie('token', token, {
             httpOnly: true,
-        }).send();
+        }).send({role: 'teacher'});
     } catch (err) {
         console.error(err);
         res.status(500).send();

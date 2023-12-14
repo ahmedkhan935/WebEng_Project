@@ -24,6 +24,7 @@ import { CSThemeProvider } from './assets/theme/CSThemeProvider'; //Custom Clean
 
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
+import ViewLogs from "./pages/ViewLog";
 
 function App() {
   return (
@@ -31,6 +32,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
+          <Route path="/login/student" element={<LoginPage />}></Route>
+          <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="settings" element={<Settings />}></Route>
 
@@ -52,6 +55,7 @@ function App() {
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
             <Route path="updateCourse" element={<UpdateCourseForm />}></Route>
+            <Route path="viewLogs" element={<ViewLogs />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>

@@ -3,11 +3,12 @@ const jwt = require('jsonwebtoken');
 
 const Authmiddleware = (req, res, next) => {
     try {
+        console.log("Authmiddleware");
         const token = req.cookies.token;
-        console.log(token);
         // const token = req.headers.authorization;
         // console.log(token);
         if (!token) {
+            console.log("No token");
             return res.status(401).json({ errorMessage: "Unauthorized" });
         }
         const verified = jwt.verify(token, process.env.JWT_SECRET);
@@ -16,8 +17,25 @@ const Authmiddleware = (req, res, next) => {
         req.role = verified.role;
         next();
     } catch (err) {
+        console.log("Authmiddleware error");
         console.error(err);
-        res.status(401).json({ errorMessage: "Unauthorized" });
+        return res.status(401).json({ errorMessage: "Unauthorized" });
+    }
+}
+const StudentRoleMiddleware = (req, res, next) => {
+    if (req.role === 'student') {
+        next();
+    }
+    else {
+        return res.status(401).json({ errorMessage: "Unauthorized" });
+    }
+}
+const TeacherRoleMiddleware = (req, res, next) => {
+    if (req.role === 'teacher') {
+        next();
+    }
+    else {
+        return res.status(401).json({ errorMessage: "Unauthorized" });
     }
 }
 

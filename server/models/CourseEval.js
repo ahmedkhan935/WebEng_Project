@@ -68,3 +68,5 @@ const CourseEvalSchema = new mongoose.Schema({
         default: false
     }
 });
+const CourseEval = mongoose.model('CourseEval', CourseEvalSchema);
+module.exports = CourseEval;
