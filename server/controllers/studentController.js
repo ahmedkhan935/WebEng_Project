@@ -7,7 +7,7 @@ const Degree = require('../models/Degree');
 const studentController = {
     getProfile: async (req, res) => {
         try {
-            const student = await Student.findById(req.user._id);
+            const student = await Student.findById(req.user);
             res.status(200).json(student);
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -16,7 +16,7 @@ const studentController = {
 
     getCourses: async (req, res) => {
         try {
-            const student = await Student.findById(req.user._id);
+            const student = await Student.findById(req.user);
             const courseCodes = student.semesters[student.semesters.length - 1].courses.map(course => course.courseCode);// Get the course codes of the last semester
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -25,7 +25,7 @@ const studentController = {
 
     getAllCourses: async (req, res) => {
         try {
-            const student = await Student.findById(req.user._id);
+            const student = await Student.findById(req.user);
             const courseCodes = student.semesters.map(semester => semester.courses.map(course => course.courseCode));// Get the course codes of all semesters
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -47,23 +47,22 @@ const studentController = {
 
     getNotifications: async (req, res) => {
         try {
-            const student = await Student.findById(req.user._id);
+            const student = await Student.findById(req.user);
             res.status(200).json(student.notifications);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
-    regCourse: async (req, res) => {
 
-        try
-        {
-            
-
-        }
-        catch (err) {
+    getThreads: async (req, res) => {
+        try {
+            const student = await Student.findById(req.user).populate('threads');
+            const threads = student.threads;
+            res.status(200).json(threads);
+        } catch (err) {
             res.status(500).json({ error: err.message });
         }
-    }
+    },
 
     
 };

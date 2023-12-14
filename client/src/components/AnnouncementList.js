@@ -15,7 +15,6 @@ function AnnouncementList() {
                 <Announcement> </Announcement>
                 <Button variant="contained" sx={{ alignSelf: 'flex-end' }}>View All</Button>
             </Container>
-          
         </Box>
     )
 }

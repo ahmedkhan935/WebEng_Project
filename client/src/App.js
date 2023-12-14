@@ -43,6 +43,8 @@ function App() {
               <Route path="deans" element={<DeansList />}></Route>
               <Route path="rectors" element={<RectorsList />}></Route>
               <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
+              <Route path="teachers" element={<ViewTeachers />}></Route>
+              <Route path="students" element={<ViewStudents />}></Route>
             </Route>
           </Route>
         </Routes>
