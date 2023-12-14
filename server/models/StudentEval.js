@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const StudentEvalSchema = new mongoose.Schema({
 
@@ -72,3 +72,6 @@ const StudentEvalSchema = new mongoose.Schema({
         required: true
     }
 });
+
+const StudentEval = mongoose.model('StudentEval', StudentEvalSchema);
+module.exports = StudentEval;

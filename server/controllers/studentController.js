@@ -78,7 +78,7 @@ const studentController = {
 
     getThreads: async (req, res) => {
         try {
-            const student = await Student.findById(req.user).populate('threads');
+            const student = await Student.findById(req.user).populate('threads.threadId');
             const threads = student.threads;
             console.log(threads);
             res.status(201).json(threads);
@@ -89,7 +89,7 @@ const studentController = {
 
     getThread: async (req, res) => {
         try {
-            const student = await Student.findById(req.user).populate('threads');
+            const student = await Student.findById(req.user).populate('threads.threadId');
             const thread = student.threads.filter(thread => thread._id == req.params.threadId);
             res.status(201).json(thread);
         } catch (err) {
