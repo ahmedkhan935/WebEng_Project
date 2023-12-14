@@ -32,3 +32,6 @@ const DegreeSchema = new mongoose.Schema({
         required: true
     }
 });
+
+const Degree = mongoose.model('Degree', DegreeSchema);
+module.exports = Degree;

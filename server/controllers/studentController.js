@@ -38,7 +38,7 @@ const studentController = {
             const student = await Student.findById(req.user);
             const classCodes = student.classes.map(classroom => classroom.classCode);// Get the class codes of all classes
             // fetch the classes from the database
-            const classes = await Classroom.find({ code: { $in: classCodes } });
+            const classes = await Classroom.find({ code: { $in: classCodes } }).populate('announcements').populate('students').populate('teachers').populate('courseId');
             res.status(201).json(classes);
 
         } catch (err) {
@@ -49,7 +49,19 @@ const studentController = {
     getTodos: async (req, res) => {
         try {
             const student = await Student.findById(req.user);
-            res.status(200).json(student.todos);
+            const classCodes = student.classes.map(classroom => classroom.classCode); // Get the class codes of all classes
+            const classes = await Classroom.find({ code: { $in: classCodes } });
+
+            let todos = [];
+            classes.forEach(classroom => {
+                classroom.announcements.forEach(announcement => {
+                    if ((announcement.type === 'assignment' || announcement.type === 'quiz') && new Date(announcement.dueDate) > new Date()) {
+                        todos.push(announcement);
+                    }
+                });
+            }); // Get the todos of all classes
+
+            res.status(201).json(todos);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
@@ -66,8 +78,9 @@ const studentController = {
 
     getThreads: async (req, res) => {
         try {
-            const student = await Student.findById(req.user).populate('threads');
+            const student = await Student.findById(req.user).populate('threads.threadId');
             const threads = student.threads;
+            console.log(threads);
             res.status(201).json(threads);
         } catch (err) {
             res.status(500).json({ error: err.message });
@@ -76,13 +89,15 @@ const studentController = {
 
     getThread: async (req, res) => {
         try {
-            const student = await Student.findById(req.user).populate('threads');
+            const student = await Student.findById(req.user).populate('threads.threadId');
             const thread = student.threads.filter(thread => thread._id == req.params.threadId);
             res.status(201).json(thread);
         } catch (err) {
             res.status(500).json({ error: err.message });
         }
     },
+
+
 };
 
 module.exports = studentController;

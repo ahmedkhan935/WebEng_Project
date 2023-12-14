@@ -106,8 +106,6 @@ const loginStudent = async (req, res) => {
         if (!existingStudent) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
-        console.log(existingStudent);
-        console.log(password);
         const passwordCorrect = await bcrypt.compare(password, existingStudent.password);
         if (!passwordCorrect) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
@@ -118,6 +116,7 @@ const loginStudent = async (req, res) => {
             {
                 user: existingStudent._id,
                 email: existingStudent.email,
+                role: 'student',
             },
             process.env.JWT_SECRET
         );
@@ -156,11 +155,11 @@ const loginTeacher = async (req, res) => {
             {
                 user: existingTeacher._id,
                 email: existingTeacher.email,
+                role: 'teacher',
             },
             process.env.JWT_SECRET
         );
 
-        // Send the token in an HTTP-only cookie
         res.cookie('token', token, {
             httpOnly: true,
         }).send();
