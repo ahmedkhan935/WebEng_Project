@@ -1,7 +1,11 @@
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
+
 const Authmiddleware = (req, res, next) => {
     try {
-        const token = req.cookies.token;
+        //const token = req.cookies.token;
+        const token = req.headers.authorization;
+        console.log(token);
         if (!token) {
             return res.status(401).json({ errorMessage: "Unauthorized" });
         }
@@ -14,3 +18,5 @@ const Authmiddleware = (req, res, next) => {
         res.status(401).json({ errorMessage: "Unauthorized" });
     }
 }
+
+module.exports = Authmiddleware;

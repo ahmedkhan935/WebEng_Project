@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const SemesterSchema = new mongoose.Schema({
     name: { // Fall, Spring
