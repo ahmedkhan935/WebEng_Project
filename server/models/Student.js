@@ -37,6 +37,13 @@ const studentSchema = new mongoose.Schema({
             }
         ], sparse: true,
     },
+    threads: {
+        type: [
+            {
+                threadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Thread' }, //Id of the thread as foreign key
+            }
+        ], default: [],// add main thread id on creation
+    },
 });
 
 const Student = mongoose.model('Student', studentSchema);
