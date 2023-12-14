@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
@@ -10,9 +10,12 @@ import Modal from "@mui/material/Modal";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import {addCourse,viewAllCourses} from "../services/AdminService"
 
-const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
+// const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
+
 const CreateCourseForm = () => {
+  const [prerequisites, setPrerequisites] = useState([]);
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
   const [courseCredits, setCourseCredits] = useState("");
@@ -21,10 +24,29 @@ const CreateCourseForm = () => {
   const [selectedPrerequisite, setSelectedPrerequisite] = useState("");
   const [prereqs, setPrereqs] = useState([]);
   const [isFormSubmitted, setFormSubmitted] = useState(false);
+  useEffect(() => {
+    const fetchPrerequisites = async () => {
+      const response = await viewAllCourses();
+      console.log(response);
+        const courses = response.map((course) => course.courseCode);
+        setPrerequisites(courses);
 
-  const handleFormSubmit = (e) => {
+    };
+    fetchPrerequisites();
+  }, []);
+  const handleFormSubmit = async (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    
+    const resp=await addCourse({courseCode, courseName, courseCredits, courseType, prereqs});
+    console.log(resp);
+    if(resp.status===200){
+
+      setFormSubmitted(true);
+    }
+    else{
+      setFormSubmitted(false);
+    }
+
   };
   const handleModalClose = () => {
     setFormSubmitted(false);

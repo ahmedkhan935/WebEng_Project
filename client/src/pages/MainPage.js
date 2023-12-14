@@ -75,8 +75,12 @@ const MainPage = () => {
               >
                 Login As Student
               </Button>
+             
               <Button
                 variant="outlined"
+                style={{
+                  width: isScreenSmall ? "100%" : "auto", // Full width on smaller screens
+                }}
                 component={Link}
                 to={{
                   pathname: "/login/teacher",
