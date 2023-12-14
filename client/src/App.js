@@ -23,23 +23,6 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
-          <Route path="/student" element={<UserLandingPage />}></Route>
-          <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/adminpanel" element={<LandingPage />}></Route>
-          <Route path="/addTeacherForm" element={<AddTeacherForm />}></Route>
-          <Route path="/addStudentForm" element={<AddStudentForm />}></Route>
-          <Route path="/medalHolders" element={<MedalHoldersPage />}></Route>
-          <Route path="/debarlist" element={<DebarList />}></Route>
-          <Route path="/warninglist" element={<WarningList />}></Route>
-          <Route path="/deanslist" element={<DeansList />}></Route>
-          <Route path="/rectorslist" element={<RectorsList />}></Route>
-          <Route path="/viewTeachers" element={<ViewTeachers />}></Route>
-          <Route path="/viewStudents" element={<ViewStudents />}></Route>
-        </Routes>
-      </Router>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
 
           <Route path="student"  >
@@ -58,6 +41,8 @@ function App() {
               <Route path="deans" element={<DeansList />}></Route>
               <Route path="rectors" element={<RectorsList />}></Route>
               <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
+              <Route path="teachers" element={<ViewTeachers />}></Route>
+              <Route path="students" element={<ViewStudents />}></Route>
             </Route>
           </Route>
 
