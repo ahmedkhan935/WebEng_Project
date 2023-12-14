@@ -5,7 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import { Label } from "@mui/icons-material";
-
+import {studentRegister} from "../services/AuthService"
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
@@ -42,9 +42,17 @@ const AddStudentForm = () => {
     fetchCountries();
   }, []);
 
-  const handleAddStudent = (event) => {
+  const handleAddStudent = async (event) => {
     event.preventDefault();
-    console.log("Adding student:", studentName);
+    const resp=await studentRegister(studentEmail,password,studentName,rollNo,cnic,permanentAddress,mobileNo,degree);
+    if(resp.status===201){
+      alert("Student Added Successfully");
+    }
+    else{
+      alert("Error Adding Student");
+    }
+
+
   };
   const styles = {
     addForm: {

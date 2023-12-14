@@ -4,6 +4,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
+import {teacherRegister} from "../services/AuthService"
 
 const AddTeacherForm = () => {
   const [teacherName, setTeacherName] = useState("");
@@ -39,10 +40,17 @@ const AddTeacherForm = () => {
     fetchCountries();
   }, []);
 
-  const handleAddTeacher = (event) => {
+  const handleAddTeacher = async (event) => {
     event.preventDefault();
-    console.log("Adding teacher:", teacherName);
-    // Add logic to send data to the server or perform other actions
+    const resp= await teacherRegister(teacherEmail, password, teacherName, cnic, permanentAddress, mobileNo);
+    if(resp.status == 201){
+      alert("Teacher added successfully");
+    }
+    else{
+      alert("Error adding teacher");
+    }
+
+    
   };
 
   const styles = {
