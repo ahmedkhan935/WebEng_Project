@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+import * as React from "react";
+import { styled, useTheme } from "@mui/material/styles";
 import {
   Box,
   Drawer as MuiDrawer,
@@ -14,7 +14,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
-} from '@mui/material';
+} from "@mui/material";
 
 import {
   Menu as MenuIcon,
@@ -29,91 +29,171 @@ import {
   Announcement as AnnouncementIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
-} from '@mui/icons-material';
+} from "@mui/icons-material";
 
-
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 const standardOptions = [
-  { title: 'Home', Icon: <HomeIcon color="primary" />, linkto: '/student' },
-  { title: 'Threads', Icon: <AnnouncementIcon color="primary" />, linkto: '/student/threads' },
-  { title: 'Settings', Icon: <SettingsIcon color="primary" />, linkto: '/settings' },
-  { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
+  { title: "Home", Icon: <HomeIcon color="primary" />, linkto: "/student" },
+  {
+    title: "Threads",
+    Icon: <AnnouncementIcon color="primary" />,
+    linkto: "/student/threads",
+  },
+  {
+    title: "Settings",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/settings",
+  },
+  { title: "Logout", Icon: <LogoutIcon color="primary" /> },
+];
+
+const adminOptions = [
+  {
+    title: "Landing Page",
+    Icon: <HomeIcon color="primary" />,
+    linkto: "/admin",
+  },
+  {
+    title: "Add Student",
+    Icon: <AnnouncementIcon color="primary" />,
+    linkto: "/admin/addStudent",
+  },
+  {
+    title: "Add Teacher",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/addTeacher",
+  },
+  {
+    title: "Add Course",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/createCourse",
+  },
+  {
+    title: "View Courses",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/searchCourses",
+  },
+  {
+    title: "View Students",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/viewStudents",
+  },
+  {
+    title: "View Teachers",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/viewTeachers",
+  },
+  {
+    title: "Deans List",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/list/deans",
+  },
+  {
+    title: "Debar List",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/list/debar",
+  },
+  {
+    title: "Medal Holders",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/list/medalHolders",
+  },
+  {
+    title: "Rectors List",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/list/rectors",
+  },
+  {
+    title: "Warning List",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/list/warning",
+  },
+  {
+    title: "View Session Logs",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/viewLogs",
+  },
+  {
+    title: "View Feedbacks",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/admin/viewFeedbacks",
+  },
 ];
 
 const studentOptions = [
-  { title: 'Assignments', Icon: <AssignmentIcon color="primary" /> },
-  { title: 'Books', Icon: <BookIcon color="primary" /> },
-  { title: 'Grades', Icon: <GradeIcon color="primary" /> },
-  { title: 'Questions', Icon: <QuestionAnswerIcon color="primary" /> },
-  { title: 'Schedule', Icon: <ScheduleIcon color="primary" /> },
+  { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
+  { title: "Books", Icon: <BookIcon color="primary" /> },
+  { title: "Grades", Icon: <GradeIcon color="primary" /> },
+  { title: "Questions", Icon: <QuestionAnswerIcon color="primary" /> },
+  { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
 }));
 
 const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
 
 export default function NavBar({ children }) {
   const theme = useTheme();
@@ -128,7 +208,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -139,7 +219,7 @@ export default function NavBar({ children }) {
             edge="start"
             sx={{
               marginRight: 5,
-              ...(open && { display: 'none' }),
+              ...(open && { display: "none" }),
             }}
           >
             <MenuIcon />
@@ -152,32 +232,43 @@ export default function NavBar({ children }) {
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+            {theme.direction === "rtl" ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
           {standardOptions.map((element, index) => (
-            <ListItem key={element.title} disablePadding sx={{ display: 'block' }}>
+            <ListItem
+              key={element.title}
+              disablePadding
+              sx={{ display: "block" }}
+            >
               <ListItemButton
-                component={element.linkto ? Link : 'div'}
-                to={element.linkto || ''}
+                component={element.linkto ? Link : "div"}
+                to={element.linkto || ""}
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
                   {standardOptions[index].Icon}
                 </ListItemIcon>
-                <ListItemText primary={element.title} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={element.title}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -185,24 +276,65 @@ export default function NavBar({ children }) {
         <Divider />
         <List>
           {studentOptions.map((element, index) => (
-            <ListItem key={element.title} disablePadding sx={{ display: 'block' }}>
+            <ListItem
+              key={element.title}
+              disablePadding
+              sx={{ display: "block" }}
+            >
               <ListItemButton
                 sx={{
                   minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
+                  justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
                   }}
                 >
                   {studentOptions[index].Icon}
                 </ListItemIcon>
-                <ListItemText primary={element.title} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText
+                  primary={element.title}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+        <List>
+          {adminOptions.map((element, index) => (
+            <ListItem
+              key={element.title}
+              disablePadding
+              sx={{ display: "block" }}
+            >
+              <ListItemButton
+                component={element.linkto ? Link : "div"}
+                to={element.linkto || ""}
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                  {adminOptions[index].Icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={element.title}
+                  sx={{ opacity: open ? 1 : 0 }}
+                />
               </ListItemButton>
             </ListItem>
           ))}
@@ -210,7 +342,8 @@ export default function NavBar({ children }) {
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        {children} {/* This is where the content of the page will be rendered */}
+        {children}{" "}
+        {/* This is where the content of the page will be rendered */}
       </Box>
     </Box>
   );
