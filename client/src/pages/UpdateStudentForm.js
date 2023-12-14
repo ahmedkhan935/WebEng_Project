@@ -4,9 +4,8 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import { Label } from "@mui/icons-material";
 
-const AddStudentForm = () => {
+const UpdateStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
   const [password, setStudentPassword] = useState("");
@@ -27,7 +26,6 @@ const AddStudentForm = () => {
   const [countries, setCountries] = useState([]);
 
   useEffect(() => {
-    // Fetch countries from the API
     const fetchCountries = async () => {
       try {
         const response = await fetch("https://restcountries.com/v3.1/all");
@@ -42,10 +40,11 @@ const AddStudentForm = () => {
     fetchCountries();
   }, []);
 
-  const handleAddStudent = (event) => {
+  const handleUpdateStudent = (event) => {
     event.preventDefault();
-    console.log("Adding student:", studentName);
+    console.log("Updating student:", studentName);
   };
+
   const styles = {
     addForm: {
       fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
@@ -65,9 +64,14 @@ const AddStudentForm = () => {
       background: "#f2f7f7",
       padding: "20px",
       borderRadius: "10px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      flexWrap: "wrap",
       marginBottom: "20px",
       width: "90%",
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+      marginLeft: "40px",
     },
     label: {
       fontSize: "15px",
@@ -76,14 +80,9 @@ const AddStudentForm = () => {
       textAlign: "left",
     },
     roundedInput: {
-      width: "100%",
+      width: "400px",
+      height: "40px",
       marginBottom: "15px",
-    },
-    form: {
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
     },
     gradientButton: {
       background: "linear-gradient(to right, #6ABDC9, #22717d)",
@@ -95,6 +94,7 @@ const AddStudentForm = () => {
       width: "150px",
       height: "50px",
       marginTop: "10px",
+      marginLeft: "300px",
     },
     gradientButtonHover: {
       filter: "brightness(1.2)",
@@ -109,57 +109,62 @@ const AddStudentForm = () => {
   return (
     <>
       <NavBar>
-        <h1 style={styles.h2}>Student Form</h1>
+        <h1 style={styles.h2}>Update Student</h1>
         <Container style={styles.addForm}>
-          <form onSubmit={handleAddStudent} style={styles.form}>
+          <form onSubmit={handleUpdateStudent}>
             <h3>Profile</h3>
             <Container style={styles.formGroup}>
+              <label style={styles.label}>Student Name:</label>
               <TextField
-                label="Student Name"
-                variant="outlined"
+                type="text"
                 value={studentName}
                 onChange={(e) => setStudentName(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Email:</label>
               <TextField
-                label="Email"
-                variant="outlined"
+                type="text"
                 value={studentEmail}
                 onChange={(e) => setStudentEmail(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Password:</label>
               <TextField
-                label="Password"
                 type="password"
-                variant="outlined"
                 value={password}
                 onChange={(e) => setStudentPassword(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
             </Container>
 
             <h3>University Information</h3>
             <Container style={styles.formGroup}>
+              <label style={styles.label}>Roll No:</label>
               <TextField
-                label="Roll No"
-                variant="outlined"
+                type="text"
                 value={rollNo}
                 onChange={(e) => setRollNo(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Section:</label>
               <TextField
-                label="Section"
-                variant="outlined"
+                type="text"
                 value={section}
                 onChange={(e) => setSection(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+
+              <label style={styles.label}>Degree:</label>
               <TextField
                 select
-                label="Degree"
-                variant="outlined"
                 value={degree}
                 onChange={(e) => setDegree(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               >
                 <MenuItem value="">Select Degree</MenuItem>
@@ -169,14 +174,41 @@ const AddStudentForm = () => {
                 <MenuItem value="Bachelor of Science (Accounting and Finance)">
                   Bachelor of Science (Accounting and Finance)
                 </MenuItem>
-                {/* Add other degrees as needed */}
+                <MenuItem value="Bachelor of Science (Artificial Intelligence)">
+                  Bachelor of Science (Artificial Intelligence)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Business Analytics)">
+                  Bachelor of Science (Business Analytics)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Civil Engineering)">
+                  Bachelor of Science (Civil Engineering)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Computer Science)">
+                  Bachelor of Science (Computer Science)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Cyber Security)">
+                  Bachelor of Science (Cyber Security)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Data Science)">
+                  Bachelor of Science (Data Science)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Electrical Engineering)">
+                  Bachelor of Science (Electrical Engineering)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Financial Technologies)">
+                  Bachelor of Science (Financial Technologies)
+                </MenuItem>
+                <MenuItem value="Bachelor of Science (Software Engineering)">
+                  Bachelor of Science (Software Engineering)
+                </MenuItem>
               </TextField>
+
+              <label style={styles.label}>Campus:</label>
               <TextField
                 select
-                label="Campus"
-                variant="outlined"
                 value={campus}
                 onChange={(e) => setCampus(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               >
                 <MenuItem value="">Select Campus</MenuItem>
@@ -193,80 +225,89 @@ const AddStudentForm = () => {
             {/* Personal Information */}
             <h3>Personal Information</h3>
             <Container style={styles.formGroup}>
-              <p>Date of Birth</p>{" "}
+              <label style={styles.label}>Date of Birth:</label>
               <TextField
                 type="date"
-                variant="outlined"
                 value={dob}
                 onChange={(e) => setDob(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>CNIC:</label>
               <TextField
-                label="CNIC"
-                variant="outlined"
+                type="text"
                 value={cnic}
                 onChange={(e) => setCnic(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Mobile No:</label>
               <TextField
-                label="Mobile No"
-                variant="outlined"
+                type="text"
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Blood Group:</label>
               <TextField
-                label="Blood Group"
-                variant="outlined"
+                type="text"
                 value={bloodGroup}
                 onChange={(e) => setBloodGroup(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Nationality:</label>
               <TextField
-                label="Nationality"
-                variant="outlined"
+                type="text"
                 value={nationality}
                 onChange={(e) => setNationality(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
             </Container>
 
             <h3>Contact Information</h3>
+
             <Container style={styles.formGroup}>
+              <label style={styles.label}>Address:</label>
               <TextField
-                label="Address"
-                variant="outlined"
+                type="text"
                 value={permanentAddress}
                 onChange={(e) => setPermanentAddress(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Home Phone:</label>
               <TextField
-                label="Home Phone"
-                variant="outlined"
+                type="text"
                 value={homePhonePermanent}
                 onChange={(e) => setHomePhonePermanent(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Postal Code:</label>
               <TextField
-                label="Postal Code"
-                variant="outlined"
+                type="text"
                 value={postalCodePermanent}
                 onChange={(e) => setPostalCodePermanent(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>City:</label>
               <TextField
-                label="City"
-                variant="outlined"
+                type="text"
                 value={cityPermanent}
                 onChange={(e) => setCityPermanent(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               />
+              <label style={styles.label}>Country:</label>
               <TextField
                 select
-                label="Country"
-                variant="outlined"
                 value={countryPermanent}
                 onChange={(e) => setCountryPermanent(e.target.value)}
+                variant="outlined"
                 style={styles.roundedInput}
               >
                 <MenuItem value="">Select Country</MenuItem>
@@ -284,7 +325,7 @@ const AddStudentForm = () => {
               color="primary"
               style={styles.gradientButton}
             >
-              Add Student
+              Update
             </Button>
           </form>
         </Container>
@@ -293,4 +334,4 @@ const AddStudentForm = () => {
   );
 };
 
-export default AddStudentForm;
+export default UpdateStudentForm;

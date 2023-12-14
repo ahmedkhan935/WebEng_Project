@@ -13,9 +13,12 @@ import ViewTeachers from "./pages/ViewTeachers";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 import Classroom from "./pages/Classroom";
+import CreateCourseForm from "./pages/CreateCourseForm";
+import SearchCourses from "./pages/SearchCourses";
 
 import { ThemeProvider } from "@mui/material";
 import theme from "./assets/theme/theme";
+import UpdateStudentForm from "./pages/UpdateStudentForm";
 
 function App() {
   return (
@@ -34,8 +37,11 @@ function App() {
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route path="updateStudent" element={<UpdateStudentForm />}></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
+            <Route path="createCourse" element={<CreateCourseForm />}></Route>
+            <Route path="searchCourses" element={<SearchCourses />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>

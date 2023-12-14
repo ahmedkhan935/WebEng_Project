@@ -1,10 +1,11 @@
 import React from "react";
 import { useState } from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-
+import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
+import Stack from "@mui/material/Stack";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
@@ -50,6 +51,9 @@ const LoginPage = () => {
       width: "550px",
       height: "550px",
     },
+    input: {
+      width: "60%",
+    },
   };
 
   return (
@@ -69,28 +73,32 @@ const LoginPage = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                marginBottom: "20px",
+                marginBottom: "100px",
               }}
               style={{ marginTop: "50px" }}
             >
               <form onSubmit={handleSubmit}>
-                <input
-                  type="email"
-                  value={email}
-                  placeholder="email"
-                  onChange={handleEmailChange}
-                  style={styles.input}
-                />
-                <br />
-                <br />
+                <Container sx={styles.input}>
+                  <Stack>
+                    <TextField
+                      type="email"
+                      value={email}
+                      label="Email"
+                      onChange={handleEmailChange}
+                      id="courseCode"
+                      margin="normal"
+                    />
+                    <TextField
+                      type="password"
+                      value={password}
+                      label="Password"
+                      onChange={handlePasswordChange}
+                      id="courseCode"
+                      margin="normal"
+                    />
+                  </Stack>
+                </Container>
 
-                <input
-                  type="password"
-                  value={password}
-                  placeholder="password"
-                  onChange={handlePasswordChange}
-                  style={styles.input}
-                />
                 <br />
 
                 <Button
