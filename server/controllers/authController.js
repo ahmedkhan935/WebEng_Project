@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 require('dotenv').config();
@@ -28,35 +28,22 @@ const registerStudent = async (req, res) => {
 
         // Save a new student account to the database
         const newStudent = new Student({
-            email,
-            passwordHash,
-            name,
-            rollNumber,
-            degreeName,
-            CNIC,
-            contactNumber,
-            address,
+           email: email,
+            password: passwordHash,
+                name: name,
+                rollNumber: rollNumber,
+                degreeName: degreeName,
+                CNIC: CNIC,
+                contactNumber: contactNumber,
+                address: address,
+
         });
 
         const savedStudent = await newStudent.save();
 
         // Sign the token
-        const token = jwt.sign(
-            {
-                user: newStudent._id,
-                email: newStudent.email,
-            },
-            process.env.JWT_SECRET
-        );
-
-        // Send the token in an HTTP-only cookie
-        // res.cookie('token', token, {
-        //     httpOnly: true,
-        // }).send({token: token});
-        // save in local storage
-        res.status(201).json({token: token});
-
-        // res.status(201).json(savedStudent);
+        
+        res.status(201).json(savedStudent);
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -88,7 +75,7 @@ const registerTeacher = async (req, res) => {
         // Save a new teacher account to the database
         const newTeacher = new Teacher({
             email,
-            passwordHash,
+            password: passwordHash,
             name,
             CNIC,
             contactNumber,
@@ -107,7 +94,7 @@ const registerTeacher = async (req, res) => {
 
 const loginStudent = async (req, res) => {
     try {
-        console.log(req.body);
+        
         const { email, password } = req.body;
 
         // Validation
@@ -119,8 +106,9 @@ const loginStudent = async (req, res) => {
         if (!existingStudent) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
-
-        const passwordCorrect = await bcrypt.compare(password, existingStudent.passwordHash);
+        console.log(existingStudent);
+        console.log(password);
+        const passwordCorrect = await bcrypt.compare(password, existingStudent.password);
         if (!passwordCorrect) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
@@ -158,7 +146,7 @@ const loginTeacher = async (req, res) => {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
 
-        const passwordCorrect = await bcrypt.compare(password, existingTeacher.passwordHash);
+        const passwordCorrect = await bcrypt.compare(password, existingTeacher.password);
         if (!passwordCorrect) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }

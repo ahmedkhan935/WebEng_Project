@@ -18,6 +18,9 @@ const AnnouncementSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    dueDate: {
+        type: Date,
+    },
     attachments: {
         type: [
             {

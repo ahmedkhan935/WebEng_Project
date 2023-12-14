@@ -37,7 +37,7 @@ import { Link } from 'react-router-dom';
 const drawerWidth = 240;
 const standardOptions = [
   { title: 'Home', Icon: <HomeIcon color="primary" />, linkto: '/student' },
-  { title: 'Announcements', Icon: <AnnouncementIcon color="primary" /> },
+  { title: 'Threads', Icon: <AnnouncementIcon color="primary" />, linkto: '/student/threads' },
   { title: 'Settings', Icon: <SettingsIcon color="primary" /> },
   { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
 ];

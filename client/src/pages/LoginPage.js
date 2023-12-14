@@ -5,11 +5,16 @@ import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
+import { studentlogin } from "../services/AuthService.js";
+import { useNavigate } from 'react-router-dom';
+
 import Stack from "@mui/material/Stack";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [ErrorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -19,11 +24,24 @@ const LoginPage = () => {
     setEmail(event.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     console.log("Email:", email);
     console.log("Password:", password);
+
+    event.preventDefault();
+    const resp=await studentlogin(email,password);
+    console.log(resp);
+    const data=await resp.json();
+    if(resp.status===200){
+      console.log("Login Successful");
+      console.log(data);
+      navigate("/student");
+    }
+    else{
+      setErrorMessage(data.message);
+    }
   };
 
   const styles = {
@@ -108,9 +126,12 @@ const LoginPage = () => {
                     marginTop: "20px",
                     width: "200px",
                   }}
+                  onClick={handleSubmit}
+                  
                 >
                   Sign In
                 </Button>
+                <p>{ErrorMessage}</p>
               </form>
             </Container>
           </Paper>
