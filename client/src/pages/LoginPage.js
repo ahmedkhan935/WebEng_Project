@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
-import { studentlogin } from "../services/AuthService.js";
-import { useNavigate } from "react-router-dom";
+import { studentlogin,teacherLogin } from "../services/AuthService.js";
+import { useNavigate,useLocation } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,6 +16,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [ErrorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -32,24 +33,22 @@ const LoginPage = () => {
     console.log("Password:", password);
 
     event.preventDefault();
-    const resp=await studentlogin(email,password);
-    console.log(resp.cookies);
-    //save as http only cookie
-    const cookie=resp.cookies;
-    const daaa=await fetch("http://localhost:3000/student/classes",{
-      credentials: 'include'
-    });  
-    
+    let resp;
+    const student=location.pathname.includes("student");
 
     
+    if(student)
+      resp=await studentlogin(email,password); 
+    else
+      resp=await teacherLogin(email,password);
     if(resp.status===200){
       console.log("Login Successful");
-     
+      /*change here when teacher ui is done*/
       navigate("/student");
     }
     else{
       const data=await resp.json();
-      setErrorMessage(data.message);
+      setErrorMessage(data.errorMessage);
     }
   };
 

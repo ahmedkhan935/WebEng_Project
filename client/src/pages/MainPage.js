@@ -26,6 +26,7 @@ const MainPage = () => {
       width: "600px",
       height: "600px",
       objectFit: "contain",
+      objectFit: "contain",
       display: isScreenSmall ? "none" : "block", // Hide on smaller screens
     },
   };
@@ -63,10 +64,21 @@ const MainPage = () => {
                   width: isScreenSmall ? "100%" : "auto", // Full width on smaller screens
                 }}
                 component={Link}
-                to="/login"
+                to={{
+                  pathname: "/login/student"
+                  
+                }}
               >
                 Login As Student
               </Button>
+              <Button
+                variant="outlined"
+                component={Link}
+                to={{
+                  pathname: "/login/teacher"
+                
+                }}
+              >Login As Teacher</Button>
               <Button
                 variant="outlined"
                 style={{
