@@ -13,6 +13,8 @@ import ViewTeachers from "./pages/ViewTeachers";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 import Classroom from "./pages/Classroom";
+import Threads from "./pages/Threads";
+import Thread from "./pages/Thread";
 
 import { ThemeProvider } from "@mui/material";
 import theme from "./assets/theme/theme";
@@ -28,6 +30,9 @@ function App() {
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
+            <Route path="threads" element={<Threads />}></Route>
+            <Route path="threads/:id" element={<Thread />}></Route>
+
           </Route>
 
           <Route path="/admin">
