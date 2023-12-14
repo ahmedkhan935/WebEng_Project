@@ -1,6 +1,5 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const cookieParser = require('cookie-parser');
 
 const Authmiddleware = (req, res, next) => {
     try {
