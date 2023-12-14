@@ -6,7 +6,7 @@ require('dotenv').config();
 
 const registerStudent = async (req, res) => {
     try {
-        const { email, password, name, rollNumber, degreeName, CNIC, contactNumber, address } = req.body;
+        const { email, password, name, rollNumber, degreeName, CNIC, contactNumber, address,semesters,classes,threads } = req.body;
 
         // Validation
         if (!email || !password || !name || !rollNumber || !degreeName) {
@@ -36,6 +36,9 @@ const registerStudent = async (req, res) => {
                 CNIC: CNIC,
                 contactNumber: contactNumber,
                 address: address,
+                semesters: semesters,
+                classes: classes,
+                threads: threads,
 
         });
 
@@ -164,6 +167,8 @@ const loginTeacher = async (req, res) => {
 
         res.status(200).cookie('token', token, {
             httpOnly: true,
+            sameSite: 'None',
+            secure: true,
         }).send({role: 'teacher'});
     } catch (err) {
         console.error(err);
