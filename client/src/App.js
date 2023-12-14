@@ -17,19 +17,23 @@ import Threads from "./pages/Threads";
 import Thread from "./pages/Thread";
 import CreateCourseForm from "./pages/CreateCourseForm";
 import SearchCourses from "./pages/SearchCourses";
+import Settings from './pages/Settings';
+//import { ThemeProvider } from "@mui/material";
+//import theme from "./assets/theme/theme";
+import { CSThemeProvider } from './assets/theme/CSThemeProvider'; //Custom Clean Slate theme provider
 
-import { ThemeProvider } from "@mui/material";
-import theme from "./assets/theme/theme";
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <CSThemeProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="settings" element={<Settings />}></Route>
+
 
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
@@ -61,7 +65,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </ThemeProvider>
+    </CSThemeProvider>
   );
 }
 
