@@ -31,14 +31,22 @@ const LoginPage = () => {
 
     event.preventDefault();
     const resp=await studentlogin(email,password);
-    console.log(resp);
-    const data=await resp.json();
+    console.log(resp.cookies);
+    //save as http only cookie
+    const cookie=resp.cookies;
+    const daaa=await fetch("http://localhost:3000/student/classes",{
+      credentials: 'include'
+    });  
+    
+
+    
     if(resp.status===200){
       console.log("Login Successful");
-      console.log(data);
+     
       navigate("/student");
     }
     else{
+      const data=await resp.json();
       setErrorMessage(data.message);
     }
   };
