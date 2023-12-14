@@ -4,6 +4,7 @@ export async function getProfile(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -13,6 +14,7 @@ export async function getCourses(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -22,6 +24,7 @@ export async function getAllCourses(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -31,6 +34,7 @@ export async function getClasses(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -40,6 +44,7 @@ export async function getTodos(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -49,6 +54,7 @@ export async function getNotifications(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -58,6 +64,7 @@ export async function getThreads(userId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
 
@@ -67,5 +74,6 @@ export async function getThread(userId, threadId) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include'
     });
 }
