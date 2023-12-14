@@ -38,7 +38,7 @@ const drawerWidth = 240;
 const standardOptions = [
   { title: 'Home', Icon: <HomeIcon color="primary" />, linkto: '/student' },
   { title: 'Threads', Icon: <AnnouncementIcon color="primary" />, linkto: '/student/threads' },
-  { title: 'Settings', Icon: <SettingsIcon color="primary" /> },
+  { title: 'Settings', Icon: <SettingsIcon color="primary" />, linkto: '/settings' },
   { title: 'Logout', Icon: <LogoutIcon color="primary" /> },
 ];
 

@@ -15,24 +15,27 @@ import UserLandingPage from "./pages/UserLandingPage";
 import Classroom from "./pages/Classroom";
 import Threads from "./pages/Threads";
 import Thread from "./pages/Thread";
+import Settings from './pages/Settings';
+//import { ThemeProvider } from "@mui/material";
+//import theme from "./assets/theme/theme";
+import { CSThemeProvider } from './assets/theme/CSThemeProvider'; //Custom Clean Slate theme provider
 
-import { ThemeProvider } from "@mui/material";
-import theme from "./assets/theme/theme";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <CSThemeProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="settings" element={<Settings />}></Route>
+
 
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
-
           </Route>
 
           <Route path="/admin">
@@ -54,7 +57,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </ThemeProvider>
+    </CSThemeProvider>
   );
 }
 
