@@ -17,20 +17,27 @@ import Threads from "./pages/Threads";
 import Thread from "./pages/Thread";
 import CreateCourseForm from "./pages/CreateCourseForm";
 import SearchCourses from "./pages/SearchCourses";
+import Settings from './pages/Settings';
+//import { ThemeProvider } from "@mui/material";
+//import theme from "./assets/theme/theme";
+import { CSThemeProvider } from './assets/theme/CSThemeProvider'; //Custom Clean Slate theme provider
 
-import { ThemeProvider } from "@mui/material";
-import theme from "./assets/theme/theme";
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
+import ViewLogs from "./pages/ViewLog";
 
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <CSThemeProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
+          <Route path="/login" element={<LoginPage />}></Route>
+          <Route path="settings" element={<Settings />}></Route>
+
+
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
@@ -48,6 +55,7 @@ function App() {
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
             <Route path="updateCourse" element={<UpdateCourseForm />}></Route>
+            <Route path="viewLogs" element={<ViewLogs />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
@@ -61,7 +69,7 @@ function App() {
           </Route>
         </Routes>
       </Router>
-    </ThemeProvider>
+    </CSThemeProvider>
   );
 }
 
