@@ -6,7 +6,7 @@ import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { studentlogin } from "../services/AuthService.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 
@@ -31,15 +31,14 @@ const LoginPage = () => {
     console.log("Password:", password);
 
     event.preventDefault();
-    const resp=await studentlogin(email,password);
+    const resp = await studentlogin(email, password);
     console.log(resp);
-    const data=await resp.json();
-    if(resp.status===200){
+    const data = await resp.json();
+    if (resp.status === 200) {
       console.log("Login Successful");
       console.log(data);
       navigate("/student");
-    }
-    else{
+    } else {
       setErrorMessage(data.message);
     }
   };
@@ -58,18 +57,24 @@ const LoginPage = () => {
     input: {
       width: "300px",
       padding: "5px",
-      height: "25px",
+      height: "20px",
       borderRadius: "5px",
     },
     button: {
       margin: "10px",
     },
     mainPageImage: {
-      marginTop: "50px",
+      marginTop: "40px",
       width: "550px",
       height: "550px",
     },
     input: {
+      width: "300px",
+      height: "20px",
+      margin: "20px",
+      borderRadius: "5px",
+    },
+    inputcontainer: {
       width: "60%",
     },
   };
@@ -93,10 +98,9 @@ const LoginPage = () => {
                 flexDirection: "column",
                 marginBottom: "100px",
               }}
-              style={{ marginTop: "50px" }}
             >
               <form onSubmit={handleSubmit}>
-                <Container sx={styles.input}>
+                <Container style={styles.inputcontainer}>
                   <Stack>
                     <TextField
                       type="email"
@@ -105,6 +109,7 @@ const LoginPage = () => {
                       onChange={handleEmailChange}
                       id="courseCode"
                       margin="normal"
+                      sx={styles.input}
                     />
                     <TextField
                       type="password"
@@ -112,6 +117,7 @@ const LoginPage = () => {
                       label="Password"
                       onChange={handlePasswordChange}
                       id="courseCode"
+                      sx={styles.input}
                       margin="normal"
                     />
                   </Stack>
@@ -127,7 +133,6 @@ const LoginPage = () => {
                     width: "200px",
                   }}
                   onClick={handleSubmit}
-                  
                 >
                   Sign In
                 </Button>

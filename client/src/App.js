@@ -21,6 +21,7 @@ import SearchCourses from "./pages/SearchCourses";
 import { ThemeProvider } from "@mui/material";
 import theme from "./assets/theme/theme";
 import UpdateStudentForm from "./pages/UpdateStudentForm";
+import UpdateCourseForm from "./pages/updateCourse";
 
 function App() {
   return (
@@ -35,7 +36,6 @@ function App() {
             <Route path="classes/:id" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
-
           </Route>
 
           <Route path="/admin">
@@ -47,6 +47,7 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
+            <Route path="updateCourse" element={<UpdateCourseForm />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
