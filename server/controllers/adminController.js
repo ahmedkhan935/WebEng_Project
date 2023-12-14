@@ -161,11 +161,34 @@ const updateStudent= async (req, res) => {
 const AddCourse = async (req, res) => {
     try
     {
-        const {courseCode, courseName, courseCredits, courseType, prereq} = req.body;
+        const {courseCode, courseName, courseCredits, courseType, prereqs} = req.body;
         if (!courseCode || !courseName || !courseCredits || !courseType) {
             throw new Error('Please provide values for courseCode, courseName, courseCredits, and courseType.');
         }
-        const course = new Course({courseCode, courseName, courseCredits, courseType, prereq});
+        //check for circular prereq
+        if(prereqs)
+        {
+            for(const prereq of prereqs)
+            {
+                
+            
+                const course = await Course.find({courseCode:prereq.courseCode});
+                if(course.prereq)
+                {
+                    for(const coursePrereq of course.prereq)
+                    {
+                        if(coursePrereq.courseCode===courseCode)
+                        {
+                            return res.status(400).json({ errorMessage: 'Circular Prerequisite' });
+                        }
+                    }
+                }
+            }
+        }
+
+
+        const course = new Course({courseCode, courseName, courseCredits, courseType, prereq:prereqs});
+
         const savedCourse = await course.save();
         res.status(201).json(savedCourse);
 

@@ -4,6 +4,7 @@ const BASE_URL = url;
 const handleResponse = async (response) => {
     const data = await response.json();
     if (response.ok) {
+      
       return data;
     } else {
       throw new Error(data.error);
