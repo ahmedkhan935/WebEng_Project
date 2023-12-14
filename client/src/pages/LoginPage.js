@@ -35,11 +35,9 @@ const LoginPage = () => {
     console.log(resp.cookies);
     //save as http only cookie
     const cookie=resp.cookies;
-    const daaa=await fetch("http://localhost:3000/student/classes",{
+    const daaa=await fetch("http://localhost:3000/student/classes",{ //jeee ahmed what is this variable naming convention?
       credentials: 'include'
     });  
-    
-
     
     if(resp.status===200){
       console.log("Login Successful");
