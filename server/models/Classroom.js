@@ -102,6 +102,11 @@ const ClassroomSchema = new mongoose.Schema({
         required: true,
         unique:true
     },
+    courseId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Course',
+        required: true
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

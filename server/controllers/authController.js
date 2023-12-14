@@ -118,6 +118,7 @@ const loginStudent = async (req, res) => {
             {
                 user: existingStudent._id,
                 email: existingStudent.email,
+                role: 'student',
             },
             process.env.JWT_SECRET
         );
@@ -156,6 +157,7 @@ const loginTeacher = async (req, res) => {
             {
                 user: existingTeacher._id,
                 email: existingTeacher.email,
+                role: 'teacher',
             },
             process.env.JWT_SECRET
         );
