@@ -29,6 +29,13 @@ const ViewTeachers = () => {
     console.log(`Updating teacher with ID: ${teacherId}`);
   };
 
+  const styles = {
+    h2: {
+      color: "#22717d",
+      float: "left",
+    },
+  };
+
   const rows = [
     {
       teacherId: "123",
@@ -55,8 +62,8 @@ const ViewTeachers = () => {
     );
 
   return (
-    <div>
-      <NavBar></NavBar>
+    <NavBar>
+      <h1 style={styles.h2}>Teachers</h1>
       <div
         style={{
           display: "flex",
@@ -115,7 +122,7 @@ const ViewTeachers = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </NavBar>
   );
 };
 

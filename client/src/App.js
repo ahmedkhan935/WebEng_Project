@@ -13,9 +13,15 @@ import ViewTeachers from "./pages/ViewTeachers";
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 import Classroom from "./pages/Classroom";
+import Threads from "./pages/Threads";
+import Thread from "./pages/Thread";
+import CreateCourseForm from "./pages/CreateCourseForm";
+import SearchCourses from "./pages/SearchCourses";
 
 import { ThemeProvider } from "@mui/material";
 import theme from "./assets/theme/theme";
+import UpdateStudentForm from "./pages/UpdateStudentForm";
+import UpdateCourseForm from "./pages/updateCourse";
 
 function App() {
   return (
@@ -28,14 +34,20 @@ function App() {
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
+            <Route path="threads" element={<Threads />}></Route>
+            <Route path="threads/:id" element={<Thread />}></Route>
           </Route>
 
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route path="updateStudent" element={<UpdateStudentForm />}></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
+            <Route path="createCourse" element={<CreateCourseForm />}></Route>
+            <Route path="searchCourses" element={<SearchCourses />}></Route>
+            <Route path="updateCourse" element={<UpdateCourseForm />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>

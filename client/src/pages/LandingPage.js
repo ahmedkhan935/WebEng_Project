@@ -82,6 +82,24 @@ const LandingPage = () => {
         >
           View Students
         </Link>
+        <br />
+        <Link
+          to="/admin/createCourse"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          Create Course
+        </Link>
+        <br />
+        <Link
+          to="/admin/searchCourses"
+          className="link-button"
+          style={linkButtonStyles}
+          activeStyle={linkButtonHoverStyles}
+        >
+          View Courses
+        </Link>
       </div>
     </div>
   );
