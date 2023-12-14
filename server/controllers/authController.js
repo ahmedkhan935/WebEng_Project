@@ -104,7 +104,7 @@ const loginStudent = async (req, res) => {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
 
-        const passwordCorrect = await bcrypt.compare(password, existingStudent.passwordHash);
+        const passwordCorrect = await bcrypt.compare(password, existingStudent.password);
         if (!passwordCorrect) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
@@ -142,7 +142,7 @@ const loginTeacher = async (req, res) => {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
 
-        const passwordCorrect = await bcrypt.compare(password, existingTeacher.passwordHash);
+        const passwordCorrect = await bcrypt.compare(password, existingTeacher.password);
         if (!passwordCorrect) {
             return res.status(401).json({ errorMessage: 'Wrong email or password.' });
         }
