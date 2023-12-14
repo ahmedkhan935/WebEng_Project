@@ -37,7 +37,7 @@ function App() {
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
 
-            <Route path="list">
+            <Route path="/list">
               <Route path="debar" element={<DebarList />}></Route>
               <Route path="warning" element={<WarningList />}></Route>
               <Route path="deans" element={<DeansList />}></Route>
