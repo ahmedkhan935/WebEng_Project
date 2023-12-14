@@ -10,6 +10,7 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
+import theme from "../assets/theme/theme";
 
 const CustomTable = ({ columns, rows, title }) => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -25,7 +26,7 @@ const CustomTable = ({ columns, rows, title }) => {
       <h1
         style={{
           fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-          marginLeft: "550px",
+          color: "#22717d",
         }}
       >
         {title}
@@ -44,10 +45,12 @@ const CustomTable = ({ columns, rows, title }) => {
       />
       <TableContainer component={Paper}>
         <Table>
-          <TableHead>
+          <TableHead style={{ background: "#22717d" }}>
             <TableRow>
               {columns.map((column) => (
-                <TableCell key={column}>{column.toUpperCase()}</TableCell>
+                <TableCell key={column} style={{ color: "#FFFFFF" }}>
+                  {column.toUpperCase()}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>

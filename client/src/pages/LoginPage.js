@@ -1,13 +1,14 @@
 import React from "react";
 import { useState } from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-
+import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { studentlogin } from "../services/AuthService.js";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
+import Stack from "@mui/material/Stack";
 
 const LoginPage = () => {
   const [password, setPassword] = useState("");
@@ -31,14 +32,22 @@ const LoginPage = () => {
 
     event.preventDefault();
     const resp=await studentlogin(email,password);
-    console.log(resp);
-    const data=await resp.json();
+    console.log(resp.cookies);
+    //save as http only cookie
+    const cookie=resp.cookies;
+    const daaa=await fetch("http://localhost:3000/student/classes",{
+      credentials: 'include'
+    });  
+    
+
+    
     if(resp.status===200){
       console.log("Login Successful");
-      console.log(data);
+     
       navigate("/student");
     }
     else{
+      const data=await resp.json();
       setErrorMessage(data.message);
     }
   };
@@ -57,16 +66,25 @@ const LoginPage = () => {
     input: {
       width: "300px",
       padding: "5px",
-      height: "25px",
+      height: "20px",
       borderRadius: "5px",
     },
     button: {
       margin: "10px",
     },
     mainPageImage: {
-      marginTop: "50px",
+      marginTop: "40px",
       width: "550px",
       height: "550px",
+    },
+    input: {
+      width: "300px",
+      height: "20px",
+      margin: "20px",
+      borderRadius: "5px",
+    },
+    inputcontainer: {
+      width: "60%",
     },
   };
 
@@ -87,28 +105,33 @@ const LoginPage = () => {
               sx={{
                 display: "flex",
                 flexDirection: "column",
-                marginBottom: "20px",
+                marginBottom: "100px",
               }}
-              style={{ marginTop: "50px" }}
             >
               <form onSubmit={handleSubmit}>
-                <input
-                  type="email"
-                  value={email}
-                  placeholder="email"
-                  onChange={handleEmailChange}
-                  style={styles.input}
-                />
-                <br />
-                <br />
+                <Container style={styles.inputcontainer}>
+                  <Stack>
+                    <TextField
+                      type="email"
+                      value={email}
+                      label="Email"
+                      onChange={handleEmailChange}
+                      id="courseCode"
+                      margin="normal"
+                      sx={styles.input}
+                    />
+                    <TextField
+                      type="password"
+                      value={password}
+                      label="Password"
+                      onChange={handlePasswordChange}
+                      id="courseCode"
+                      sx={styles.input}
+                      margin="normal"
+                    />
+                  </Stack>
+                </Container>
 
-                <input
-                  type="password"
-                  value={password}
-                  placeholder="password"
-                  onChange={handlePasswordChange}
-                  style={styles.input}
-                />
                 <br />
 
                 <Button
@@ -119,7 +142,6 @@ const LoginPage = () => {
                     width: "200px",
                   }}
                   onClick={handleSubmit}
-                  
                 >
                   Sign In
                 </Button>
