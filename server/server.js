@@ -13,6 +13,12 @@ mongoose.connection.on('connected', () => {
 
 const app = express();
 app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(cors({
+  origin: 'http://localhost:5000', // specify the origin
+  credentials: true // include credentials
+}));
+
 const adminRoutes = require('./routes/adminRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
