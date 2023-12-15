@@ -10,25 +10,20 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+import { useParams } from "react-router-dom";
 
+import {viewTeacher,updateTeacher} from "../services/AdminService";
 const UpdateTeacherForm = () => {
   const [teacherName, setTeacherName] = useState("");
   const [teacherEmail, setTeacherEmail] = useState("");
-  const [password, setTeacherPassword] = useState("");
-  const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
-  const [mobileNo, setMobileNo] = useState("");
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [nationality, setNationality] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
-  const [postalCodePermanent, setPostalCodePermanent] = useState("");
-  const [cityPermanent, setCityPermanent] = useState("");
-  const [countryPermanent, setCountryPermanent] = useState("");
   const [countries, setCountries] = useState([]);
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
+  const {id} = useParams();
 
   useEffect(() => {
     // Fetch countries from the API
@@ -41,29 +36,40 @@ const UpdateTeacherForm = () => {
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
+
     };
+    viewTeacher(id).then((res) => {
+      console.log(res);
+      setTeacherName(res.name);
+      setTeacherEmail(res.email);
+      setCnic(res.CNIC);
+      setPermanentAddress(res.address);
+      setHomePhonePermanent(res.contactNumber);
+    });
+
+
+
+
 
     fetchCountries();
+
   }, []);
 
   const handleAddTeacher = async (event) => {
     event.preventDefault();
-    const resp = await teacherRegister(
-      teacherEmail,
-      password,
-      teacherName,
-      cnic,
-      permanentAddress,
-      mobileNo
-    );
+    const resp = await updateTeacher(id, {
+      email: teacherEmail,
+      address: permanentAddress,
+      contactNumber: homePhonePermanent,
+    });
     if (resp.status === 500 || resp.status === 400) {
-      setsubmitmsg("Cannot Add Teacher!");
+      setsubmitmsg("Cannot Update Teacher!");
       setstatus(false);
       setFormSubmitted(true);
     } else {
       console.log(resp);
       setstatus(true);
-      setsubmitmsg("  Teacher successfully added!");
+      setsubmitmsg("  Teacher successfully Updated!");
       setFormSubmitted(true);
     }
   };
@@ -147,6 +153,7 @@ const UpdateTeacherForm = () => {
                 value={teacherName}
                 onChange={(e) => setTeacherName(e.target.value)}
                 style={styles.roundedInput}
+                disabled
               />
               <TextField
                 label="Email"
@@ -155,55 +162,21 @@ const UpdateTeacherForm = () => {
                 onChange={(e) => setTeacherEmail(e.target.value)}
                 style={styles.roundedInput}
               />
-              <TextField
-                label="Password"
-                type="password"
-                variant="outlined"
-                value={password}
-                onChange={(e) => setTeacherPassword(e.target.value)}
-                style={styles.roundedInput}
-              />
             </Container>
 
             {/* Personal Information */}
             <h3>Personal Information</h3>
             <Container style={styles.formGroup}>
-              <p>Date of Birth</p>{" "}
-              <TextField
-                type="date"
-                variant="outlined"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                style={styles.roundedInput}
-              />
+              
               <TextField
                 label="CNIC"
                 variant="outlined"
                 value={cnic}
                 onChange={(e) => setCnic(e.target.value)}
                 style={styles.roundedInput}
+                disabled
               />
-              <TextField
-                label="Mobile No"
-                variant="outlined"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Blood Group"
-                variant="outlined"
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Nationality"
-                variant="outlined"
-                value={nationality}
-                onChange={(e) => setNationality(e.target.value)}
-                style={styles.roundedInput}
-              />
+              
             </Container>
 
             <h3>Contact Information</h3>
@@ -222,36 +195,7 @@ const UpdateTeacherForm = () => {
                 onChange={(e) => setHomePhonePermanent(e.target.value)}
                 style={styles.roundedInput}
               />
-              <TextField
-                label="Postal Code"
-                variant="outlined"
-                value={postalCodePermanent}
-                onChange={(e) => setPostalCodePermanent(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="City"
-                variant="outlined"
-                value={cityPermanent}
-                onChange={(e) => setCityPermanent(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                select
-                label="Country"
-                variant="outlined"
-                value={countryPermanent}
-                onChange={(e) => setCountryPermanent(e.target.value)}
-                style={styles.roundedInput}
-              >
-                <MenuItem value="">Select Country</MenuItem>
-                {countries.map((country, index) => (
-                  <MenuItem key={index} value={country}>
-                    {country}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Container>
+                         </Container>
 
             <Button
               type="submit"
@@ -259,7 +203,7 @@ const UpdateTeacherForm = () => {
               color="primary"
               style={styles.gradientButton}
             >
-              Add Teacher
+              Update Teacher
             </Button>
           </form>
         </Container>

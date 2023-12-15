@@ -78,78 +78,171 @@
 //     });
 // }
 
+// import axios from 'axios';
+
+// const port = 3000;
+
+// export async function getProfile() {
+//     return await axios.get(`http://localhost:${port}/student/profile`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getCourses() {
+//     return await axios.get(`http://localhost:${port}/student/courses`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getAllCourses() {
+//     return await axios.get(`http://localhost:${port}/student/allCourses`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getClasses() {
+//     return await axios.get(`http://localhost:${port}/student/classes`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getTodos() {
+//     return await axios.get(`http://localhost:${port}/student/todos`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getNotifications() {
+//     return await axios.get(`http://localhost:${port}/student/notifications`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getThreads() {
+//     return await axios.get(`http://localhost:${port}/student/threads`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
+// export async function getThread(threadId) {
+//     return await axios.get(`http://localhost:${port}/student/threads/${threadId}`, {
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         withCredentials: true
+//     });
+// }
+
 import axios from 'axios';
+import { url } from './url';
 
-const port = 3000;
+const BASE_URL = url;
 
-export async function getProfile() {
-    return await axios.get(`http://localhost:${port}/student/profile`, {
+const handleResponse = async (response) => {
+    if (response.status >= 200 && response.status < 300) {
+        return response.data;
+    } else {
+        return { error: response.data.errorMessage };
+    }
+};
+
+export const getProfile = async () => {
+    const response = await axios.get(`${BASE_URL}/student/profile`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getCourses() {
-    return await axios.get(`http://localhost:${port}/student/courses`, {
+export const getCourses = async () => {
+    const response = await axios.get(`${BASE_URL}/student/courses`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getAllCourses() {
-    return await axios.get(`http://localhost:${port}/student/allCourses`, {
+export const getAllCourses = async () => {
+    const response = await axios.get(`${BASE_URL}/student/allCourses`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getClasses() {
-    return await axios.get(`http://localhost:${port}/student/classes`, {
+export const getClasses = async () => {
+    const response = await axios.get(`${BASE_URL}/student/classes`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getTodos() {
-    return await axios.get(`http://localhost:${port}/student/todos`, {
+export const getTodos = async () => {
+    const response = await axios.get(`${BASE_URL}/student/todos`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getNotifications() {
-    return await axios.get(`http://localhost:${port}/student/notifications`, {
+export const getNotifications = async () => {
+    const response = await axios.get(`${BASE_URL}/student/notifications`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getThreads() {
-    return await axios.get(`http://localhost:${port}/student/threads`, {
+export const getThreads = async () => {
+    const response = await axios.get(`${BASE_URL}/student/threads`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};
 
-export async function getThread(threadId) {
-    return await axios.get(`http://localhost:${port}/student/threads/${threadId}`, {
+export const getThread = async (threadId) => {
+    const response = await axios.get(`${BASE_URL}/student/threads/${threadId}`, {
         headers: {
             'Content-Type': 'application/json',
         },
         withCredentials: true
     });
-}
+    return handleResponse(response);
+};

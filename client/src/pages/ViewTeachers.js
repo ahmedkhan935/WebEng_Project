@@ -17,6 +17,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import Pagination from "@mui/material/Pagination";
 import {viewAllTeachers,deleteTeacher} from "../services/AdminService";
+import { useNavigate } from "react-router-dom";
 
 const ViewTeachers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -24,7 +25,7 @@ const ViewTeachers = () => {
   const rowsPerPage = 5; // Set the number of rows per page
   // Add your filter states here if needed
   const [rows, setRows] = useState([]); // Contains the rows to be displayed on the current page
-
+  const navigate=useNavigate();
   const handleDelete = (teacherId) => {
     console.log(`Deleting teacher with ID: ${teacherId}`);
     deleteTeacher(teacherId).then((res) => {
@@ -52,6 +53,8 @@ const ViewTeachers = () => {
 
   const handleUpdate = (teacherId) => {
     console.log(`Updating teacher with ID: ${teacherId}`);
+    navigate(`/admin/updateTeacher/${teacherId}`);
+    
   };
 
   const styles = {
