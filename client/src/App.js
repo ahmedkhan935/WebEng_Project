@@ -26,7 +26,7 @@ import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
-import UpdateTeacherForm from "./pages/UpdateStudentForm";
+import UpdateTeacherForm from "./pages/updateTeacher";
 
 function App() {
   return (
