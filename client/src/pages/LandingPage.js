@@ -10,7 +10,6 @@ import {
   CardContent,
   Typography,
   Box,
-  IconButton,
 } from "@mui/material";
 import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
 import NavBar from "../components/Navbar";
@@ -23,7 +22,7 @@ const LandingPage = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [announcements, setAnnouncements] = useState([
-    // Hardcoded announcements
+    // Hardcoded announcements where u can add your fecthed announc... later ahmed
     {
       title: "Welcome to the New Semester!",
       content:
@@ -34,11 +33,10 @@ const LandingPage = () => {
     {
       title: "Reminder: Society Application Due Date",
       content:
-        "Don't forget, the first society interviews are on monday 30 june, Make sure to submit your applications on time.",
+        "Don't forget, the first society interviews are on Monday, 30 June. Make sure to submit your applications on time.",
       date: "2023-01-20",
       creator: "Admin",
     },
-    // Add more announcements as needed
   ]);
   const [semesterModalOpen, setSemesterModalOpen] = useState(false);
   const [semesterModalContent, setSemesterModalContent] = useState("");
@@ -86,6 +84,16 @@ const LandingPage = () => {
     setSemesterModalOpen(false);
   };
 
+  const handleEdit = (index) => {
+    console.log("Edit announcement:", announcements[index]);
+  };
+
+  const handleDelete = (index) => {
+    const updatedAnnouncements = [...announcements];
+    updatedAnnouncements.splice(index, 1);
+    setAnnouncements(updatedAnnouncements);
+  };
+
   return (
     <NavBar>
       <div
@@ -112,7 +120,12 @@ const LandingPage = () => {
             </Typography>
 
             {announcements.slice(0, 3).map((announcement, index) => (
-              <MakeAnnouncementCard key={index} {...announcement} />
+              <MakeAnnouncementCard
+                key={index}
+                {...announcement}
+                handleEdit={() => handleEdit(index)}
+                handleDelete={() => handleDelete(index)}
+              />
             ))}
 
             {announcements.length > 3 && (
@@ -185,7 +198,12 @@ const LandingPage = () => {
         </DialogTitle>
         <DialogContent>
           {announcements.map((announcement, index) => (
-            <MakeAnnouncementCard key={index} {...announcement} />
+            <MakeAnnouncementCard
+              key={index}
+              {...announcement}
+              handleEdit={() => handleEdit(index)}
+              handleDelete={() => handleDelete(index)}
+            />
           ))}
         </DialogContent>
         <DialogActions>

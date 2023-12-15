@@ -5,9 +5,20 @@ import {
   CardContent,
   Typography,
   Collapse,
+  IconButton,
+  CardActions,
 } from "@mui/material";
+import BorderColorTwoToneIcon from "@mui/icons-material/BorderColorTwoTone";
+import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
 
-function MakeAnnouncementCard({ title, content, date, creator }) {
+function MakeAnnouncementCard({
+  title,
+  content,
+  date,
+  creator,
+  handleEdit,
+  handleDelete,
+}) {
   const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
@@ -35,6 +46,19 @@ function MakeAnnouncementCard({ title, content, date, creator }) {
           </Collapse>
         </CardContent>
       </CardActionArea>
+      <CardActions
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <IconButton onClick={handleEdit} size="small">
+          <BorderColorTwoToneIcon />
+        </IconButton>
+        <IconButton onClick={handleDelete} size="small">
+          <DeleteTwoToneIcon />
+        </IconButton>
+      </CardActions>
     </Card>
   );
 }
