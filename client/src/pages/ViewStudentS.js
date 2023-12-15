@@ -50,7 +50,7 @@ const ViewStudents = () => {
     console.log(`Deleting student with ID: ${studentId}`);
     deleteStudent(studentId).then((res) => {
       console.log(res);
-      if (res.status === 200) {
+      if (!res.errorMessage) {
         alert("Student deleted successfully");
         window.location.reload();
       } else {
