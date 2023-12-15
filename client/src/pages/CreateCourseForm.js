@@ -37,12 +37,12 @@ const CreateCourseForm = () => {
     e.preventDefault();
     
     const resp=await addCourse({courseCode, courseName, courseCredits, courseType, prereqs});
-    console.log(resp);
     if(resp.status===200){
 
       setFormSubmitted(true);
     }
     else{
+      console.log(resp.error);
       setFormSubmitted(false);
     }
 
