@@ -1,8 +1,8 @@
 import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-import mainPageImage from "../assets/images/MainPage.png";
-import cleanSlateImage from "../assets/images/Hat.png";
-import theme from "../assets/theme/theme";
+import mainPageImage from "../Assets/Images/MainPage.png";
+import cleanSlateImage from "../Assets/Images/Hat.png";
+import theme from "../Assets/theme/theme";
 import { Link } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -75,7 +75,7 @@ const MainPage = () => {
               >
                 Login As Student
               </Button>
-             
+
               <Button
                 variant="outlined"
                 style={{

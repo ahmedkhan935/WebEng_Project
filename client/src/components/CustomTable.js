@@ -10,7 +10,6 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-import theme from "../assets/theme/theme";
 
 const CustomTable = ({ columns, rows, title }) => {
   const [searchKeyword, setSearchKeyword] = useState("");

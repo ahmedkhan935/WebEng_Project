@@ -1,19 +1,32 @@
-import * as React from 'react';
-import { Card, CardActionArea, CardActions, CardContent, CardMedia, Button, Typography } from '@mui/material';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
-import classroomHeader from '../assets/images/classroomHeader.jpg'; // import the image
-import { Link } from 'react-router-dom';
-
+import * as React from "react";
+import {
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Button,
+  Typography,
+} from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
+import classroomHeader from "../Assets/Images/classroomHeader.jpg"; // import the image
+import { Link } from "react-router-dom";
 
 //Course card represents a small tile containing brief info about the course.
 function CourseCard() {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
-    <Card sx={{ maxWidth: isSmallScreen ? '100%' : 345, marginTop: '10px'}}>
-      <CardActionArea component={Link} to="/student/classes/1"  onClick={() => { console.log('Card clicked!'); }}>
+    <Card sx={{ maxWidth: isSmallScreen ? "100%" : 345, marginTop: "10px" }}>
+      <CardActionArea
+        component={Link}
+        to="/student/classes/1"
+        onClick={() => {
+          console.log("Card clicked!");
+        }}
+      >
         <CardMedia
           sx={{ height: 100 }}
           image={classroomHeader}
@@ -39,4 +52,3 @@ function CourseCard() {
 }
 
 export default CourseCard;
-

@@ -20,7 +20,7 @@ import SearchCourses from "./pages/SearchCourses";
 import Settings from "./pages/Settings";
 //import { ThemeProvider } from "@mui/material";
 //import theme from "./assets/theme/theme";
-import { CSThemeProvider } from "./assets/theme/CSThemeProvider"; //Custom Clean Slate theme provider
+import { CSThemeProvider } from "./Assets/theme/CSThemeProvider"; //Custom Clean Slate theme provider
 
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
@@ -62,7 +62,10 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route path="updateCourse/:id" element={<UpdateCourseForm />}></Route>
+            <Route
+              path="updateCourse/:id"
+              element={<UpdateCourseForm />}
+            ></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
 

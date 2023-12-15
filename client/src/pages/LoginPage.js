@@ -2,11 +2,11 @@ import React from "react";
 import { useState } from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import mainPageImage from "../assets/images/MainPage.png";
-import cleanSlateImage from "../assets/images/Hat.png";
-import theme from "../assets/theme/theme.js";
-import { studentlogin,teacherLogin } from "../services/AuthService.js";
-import { useNavigate,useLocation } from "react-router-dom";
+import mainPageImage from "../Assets/Images/MainPage.png";
+import cleanSlateImage from "../Assets/Images/Hat.png";
+import theme from "../Assets/theme/theme";
+import { studentlogin, teacherLogin } from "../services/AuthService.js";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -34,20 +34,16 @@ const LoginPage = () => {
 
     event.preventDefault();
     let resp;
-    const student=location.pathname.includes("student");
+    const student = location.pathname.includes("student");
 
-    
-    if(student)
-      resp=await studentlogin(email,password); 
-    else
-      resp=await teacherLogin(email,password);
-    if(resp.status===200){
+    if (student) resp = await studentlogin(email, password);
+    else resp = await teacherLogin(email, password);
+    if (resp.status === 200) {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
       navigate("/student");
-    }
-    else{
-      const data=await resp.json();
+    } else {
+      const data = await resp.json();
       setErrorMessage(data.errorMessage);
     }
   };
