@@ -49,7 +49,7 @@ function App() {
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route path="updateStudent" element={<UpdateStudentForm />}></Route>
+            <Route path="updateStudent/:id" element={<UpdateStudentForm />}></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>

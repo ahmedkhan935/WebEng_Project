@@ -112,7 +112,7 @@ const removeStudent= async (req, res) => {
         if (!student) {
             return res.status(404).json({ errorMessage: 'Student not found' });
         }
-        res.status(204).send();
+        res.status(200).send({message:"Student removed successfully"});
     } catch (error) {
         console.error(error);
         res.status(500).json({ errorMessage: 'Internal server error' });
@@ -139,7 +139,7 @@ const updateStudent= async (req, res) => {
         if (!studentToUpdate) {
             return res.status(404).json({ errorMessage: 'Student not found' });
         }
-        const {email,adress,contactNumber}=req.body;
+        const {email,adress,contactNumber,name}=req.body;
         if (!email && !adress && !contactNumber) {
             throw new Error('Please provide values for email, adress, or contactNumber.');
         }
@@ -147,6 +147,7 @@ const updateStudent= async (req, res) => {
         studentToUpdate.email=email?email:studentToUpdate.email;
         studentToUpdate.address=adress?adress:studentToUpdate.address;
         studentToUpdate.contactNumber=contactNumber?contactNumber:studentToUpdate.contactNumber;
+        studentToUpdate.name=name?name:studentToUpdate.name;
         const student = await studentToUpdate.save();
         return res.status(200).json(student);
 
