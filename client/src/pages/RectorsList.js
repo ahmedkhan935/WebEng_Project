@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
@@ -9,6 +11,8 @@ const columns = ["studentId", "name", "Batch", "Department"];
 const RectorsList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
   const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2;
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -20,6 +24,11 @@ const RectorsList = () => {
 
   const batches = ["2020", "2021", "2022"];
   const semesters = ["Spring", "Fall", "Summer"];
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
+
   const rows = [
     {
       studentId: "34234",
@@ -46,6 +55,14 @@ const RectorsList = () => {
       Department: "CS",
     },
   ];
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   return (
     <NavBar>
@@ -100,7 +117,19 @@ const RectorsList = () => {
         </FormControl>
       </Box>
       <div style={{ margin: "20px" }}>
-        <CustomTable columns={columns} rows={rows} title="Rectors List" />
+        <CustomTable
+          columns={columns}
+          rows={paginatedRows}
+          title="Rectors List"
+        />
+        <Stack spacing={2} sx={{ marginTop: "20px" }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </Stack>
       </div>
     </NavBar>
   );

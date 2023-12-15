@@ -11,6 +11,9 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
+
 import { InputLabel, MenuItem, Select, Box } from "@mui/material";
 
 import NavBar from "../components/Navbar";
@@ -18,6 +21,8 @@ import NavBar from "../components/Navbar";
 const ViewFeedback = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
   const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 1;
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -29,6 +34,10 @@ const ViewFeedback = () => {
 
   const batches = ["2020", "2021", "2022"];
   const semesters = ["Spring", "Fall", "Summer"];
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
   const [searchKeyword, setSearchKeyword] = useState("");
 
@@ -53,6 +62,14 @@ const ViewFeedback = () => {
       feedback: "very bad",
     },
   ];
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   const filteredRows = rows.filter((row) =>
     Object.values(row).some((value) =>
@@ -135,7 +152,7 @@ const ViewFeedback = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", float: "right", marginRight: "10px" }}
+          style={{ width: "95%", marginRight: "10px" }}
         >
           <Table>
             <TableHead>
@@ -147,7 +164,7 @@ const ViewFeedback = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.map((row, index) => (
+              {paginatedRows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.StudentId}</TableCell>
                   <TableCell>{row.CourseCode}</TableCell>
@@ -158,6 +175,21 @@ const ViewFeedback = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </div>
       </NavBar>
     </div>
   );

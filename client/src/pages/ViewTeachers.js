@@ -15,11 +15,13 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
+import Pagination from "@mui/material/Pagination";
 
 const ViewTeachers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
-  const [filterBatch, setFilterBatch] = useState("");
-  const [filterDegree, setFilterDegree] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5; // Set the number of rows per page
+  // Add your filter states here if needed
 
   const handleDelete = (teacherId) => {
     console.log(`Deleting teacher with ID: ${teacherId}`);
@@ -47,19 +49,26 @@ const ViewTeachers = () => {
       name: "Fatima",
       email: "def@gmail.com",
     },
+    // Add more rows as needed
   ];
 
-  const filteredRows = rows
-    .filter(
-      (row) =>
-        (filterBatch === "" || row.batch === filterBatch) &&
-        (filterDegree === "" || row.degree === filterDegree)
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  const filteredRows = paginatedRows.filter((row) =>
+    Object.values(row).some((value) =>
+      String(value).toLowerCase().includes(searchKeyword.toLowerCase())
     )
-    .filter((row) =>
-      Object.values(row).some((value) =>
-        String(value).toLowerCase().includes(searchKeyword.toLowerCase())
-      )
-    );
+  );
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <NavBar>
@@ -92,7 +101,7 @@ const ViewTeachers = () => {
 
       <TableContainer
         component={Paper}
-        style={{ width: "95%", float: "right", marginRight: "10px" }}
+        style={{ width: "95%", marginRight: "10px" }}
       >
         <Table>
           <TableHead>
@@ -122,6 +131,21 @@ const ViewTeachers = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+        />
+      </div>
     </NavBar>
   );
 };

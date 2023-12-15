@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
-
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 const columns = ["studentId", "name", "debarCourse", "Batch", "Department"];
 
 const DebarList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
   const [selectedSemester, setSelectedSemester] = useState("Spring");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2; // Adjust as needed
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -51,6 +54,18 @@ const DebarList = () => {
 
   const batches = ["2020", "2021", "2022"];
   const semesters = ["Spring", "Fall", "Summer"];
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <NavBar>
@@ -105,7 +120,20 @@ const DebarList = () => {
       </Box>
 
       <div style={{ margin: "20px" }}>
-        <CustomTable columns={columns} rows={rows} title="Debar List" />
+        <CustomTable
+          columns={columns}
+          rows={paginatedRows}
+          title="Debar List"
+        />
+
+        <Stack spacing={2} sx={{ marginTop: "20px" }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </Stack>
       </div>
     </NavBar>
   );

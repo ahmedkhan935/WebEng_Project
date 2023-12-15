@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
@@ -9,6 +11,8 @@ const columns = ["studentId", "name", "Batch", "Department"];
 const WarningList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
   const [selectedSemester, setSelectedSemester] = useState("Spring");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2;
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -21,6 +25,9 @@ const WarningList = () => {
   const batches = ["2020", "2021", "2022"];
   const semesters = ["Spring", "Fall", "Summer"];
 
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
   const rows = [
     {
       studentId: "34234",
@@ -47,6 +54,14 @@ const WarningList = () => {
       Department: "CS",
     },
   ];
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   return (
     <NavBar>
@@ -101,7 +116,19 @@ const WarningList = () => {
         </FormControl>
       </Box>
       <div style={{ margin: "20px" }}>
-        <CustomTable columns={columns} rows={rows} title="Warning List" />
+        <CustomTable
+          columns={columns}
+          rows={paginatedRows}
+          title="Warning List"
+        />
+        <Stack spacing={2} sx={{ marginTop: "20px" }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </Stack>
       </div>
     </NavBar>
   );

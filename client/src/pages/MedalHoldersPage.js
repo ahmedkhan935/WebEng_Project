@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
 //the column names must be in camel case notation
 const columns = ["studentId", "name", "medalType", "Batch", "Department"];
@@ -9,6 +11,8 @@ const columns = ["studentId", "name", "medalType", "Batch", "Department"];
 const MedalHoldersPage = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
   const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2;
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -20,6 +24,10 @@ const MedalHoldersPage = () => {
 
   const batches = ["2020", "2021", "2022"];
   const semesters = ["Spring", "Fall", "Summer"];
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
   const rows = [
     {
@@ -51,6 +59,14 @@ const MedalHoldersPage = () => {
       Department: "CS",
     },
   ];
+
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   return (
     <NavBar>
@@ -105,7 +121,19 @@ const MedalHoldersPage = () => {
         </FormControl>
       </Box>
       <div style={{ margin: "20px" }}>
-        <CustomTable columns={columns} rows={rows} title="Medal Holders" />
+        <CustomTable
+          columns={columns}
+          rows={paginatedRows}
+          title="Medal Holders"
+        />
+        <Stack spacing={2} sx={{ marginTop: "20px" }}>
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </Stack>
       </div>
     </NavBar>
   );

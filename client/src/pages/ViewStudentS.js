@@ -15,18 +15,30 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import {viewAllStudents} from "../services/AdminService"
-
+import { viewAllStudents } from "../services/AdminService";
+import Pagination from "@mui/material/Pagination";
 const ViewStudents = () => {
-  const navigate = useNavigate();
-
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
+  const [rows, setRows] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
+
+  useEffect(() => {
+    viewAllStudents().then((res) => {
+      const rows = res.map((row) => ({
+        studentId: row.rollNumber,
+        name: row.name,
+        batch: row.batch,
+        degree: row.degreeName,
+      }));
+      setRows(rows);
+    });
+  }, []);
 
   const handleDelete = (studentId) => {
     console.log(`Deleting student with ID: ${studentId}`);
@@ -34,64 +46,34 @@ const ViewStudents = () => {
 
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
-    navigate("/admin/updateStudent");
+    // Add your navigation logic here
   };
-  const [rows, setRows] = useState([]);
-  useEffect(() => {
-    viewAllStudents().then((res) => {
-      console.log(res);
-      const rows = res.map((row) => {
-        return {
-          studentId: row.rollNumber,
-          name: row.name,
-          batch: row.batch,
-          degree: row.degreeName,
-        };
-      });
-      setRows(rows);
 
-    });
-  }, []);
+  const filteredRows = rows
+    .filter(
+      (row) =>
+        (filterBatch === "" || row.batch === filterBatch) &&
+        (filterDegree === "" || row.degree === filterDegree)
+    )
+    .filter((row) =>
+      Object.values(row).some((value) =>
+        String(value).toLowerCase().includes(searchKeyword.toLowerCase())
+      )
+    );
 
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = filteredRows.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
-
-  const styles = {
-    h2: {
-      color: "#22717d",
-      float: "left",
-    },
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
   };
-  // const rows = [
-  //   {
-  //     studentId: "34234",
-  //     name: "Fatima Bilal",
-  //     batch: "2020",
-  //     degree: "CS",
-  //   },
-  //   {
-  //     studentId: "8799",
-  //     name: "Ahmed Raza",
-  //     batch: "2021",
-  //     degree: "SE",
-  //   },
-  // ];
-
-  // const filteredRows = rows
-  //   .filter(
-  //     (row) =>
-  //       (filterBatch === "" || row.batch === filterBatch) &&
-  //       (filterDegree === "" || row.degree === filterDegree)
-  //   )
-  //   .filter((row) =>
-  //     Object.values(row).some((value) =>
-  //       String(value).toLowerCase().includes(searchKeyword.toLowerCase())
-  //     )
-  //   );
 
   return (
     <div>
       <NavBar>
-        <h1 style={styles.h2}>Students</h1>
+        <h1 style={{ color: "#22717d", float: "left" }}>Students</h1>
         <div
           style={{
             display: "flex",
@@ -122,39 +104,7 @@ const ViewStudents = () => {
               style={{ zIndex: 2000, width: "200px", height: "40px" }}
             >
               <MenuItem value="">All</MenuItem>
-              <option value="Bachelor of Business Administration">
-                Bachelor of Business Administration
-              </option>
-              <option value="Bachelor of Science (Accounting and Finance)">
-                Bachelor of Science (Accounting and Finance)
-              </option>
-              <option value="Bachelor of Science (Artificial Intelligence)">
-                Bachelor of Science (Artificial Intelligence)
-              </option>
-              <option value="Bachelor of Science (Business Analytics)">
-                Bachelor of Science (Business Analytics)
-              </option>
-              <option value="Bachelor of Science (Civil Engineering)">
-                Bachelor of Science (Civil Engineering)
-              </option>
-              <option value="Bachelor of Science (Computer Science)">
-                Bachelor of Science (Computer Science)
-              </option>
-              <option value="Bachelor of Science (Cyber Security)">
-                Bachelor of Science (Cyber Security)
-              </option>
-              <option value="Bachelor of Science (Data Science)">
-                Bachelor of Science (Data Science)
-              </option>
-              <option value="Bachelor of Science (Electrical Engineering)">
-                Bachelor of Science (Electrical Engineering)
-              </option>
-              <option value="Bachelor of Science (Financial Technologies)">
-                Bachelor of Science (Financial Technologies)
-              </option>
-              <option value="Bachelor of Science (Software Engineering)">
-                Bachelor of Science (Software Engineering)
-              </option>
+              {/* Add your degree options here */}
             </Select>
           </FormControl>
           <FormControl
@@ -178,7 +128,7 @@ const ViewStudents = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", float: "right", marginRight: "10px" }}
+          style={{ width: "95%", marginRight: "10px" }}
         >
           <Table>
             <TableHead>
@@ -191,7 +141,7 @@ const ViewStudents = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {rows && rows.map((row, index) => (
+              {paginatedRows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.studentId}</TableCell>
                   <TableCell>{row.name}</TableCell>
@@ -210,6 +160,21 @@ const ViewStudents = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </div>
       </NavBar>
     </div>
   );

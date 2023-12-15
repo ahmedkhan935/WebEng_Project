@@ -12,12 +12,15 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
-
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NavBar from "../components/Navbar";
 
 const ViewLogs = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 2;
 
   const handleDelete = (id) => {
     console.log(`Deleting Log with ID: ${id}`);
@@ -45,13 +48,26 @@ const ViewLogs = () => {
       date: "20/12/2023",
       time: "09:30:30",
     },
+    // Add more rows as needed
   ];
 
-  const filteredRows = rows.filter((row) =>
+  // Calculate the index range for the current page
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const paginatedRows = rows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(rows.length / rowsPerPage);
+
+  const filteredRows = paginatedRows.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchKeyword.toLowerCase())
     )
   );
+
+  const handlePageChange = (event, newPage) => {
+    setCurrentPage(newPage);
+  };
 
   return (
     <div>
@@ -86,7 +102,7 @@ const ViewLogs = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", float: "right", marginRight: "10px" }}
+          style={{ width: "95%", marginRight: "10px" }}
         >
           <Table>
             <TableHead>
@@ -117,6 +133,21 @@ const ViewLogs = () => {
             </TableBody>
           </Table>
         </TableContainer>
+
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Pagination
+            count={totalPages}
+            page={currentPage}
+            onChange={handlePageChange}
+            variant="outlined"
+          />
+        </div>
       </NavBar>
     </div>
   );
