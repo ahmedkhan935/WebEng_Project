@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+
 import {
   Table,
   TableBody,
@@ -22,10 +22,9 @@ import Pagination from "@mui/material/Pagination";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllStudents,deleteStudent } from "../services/AdminService";
+import { viewAllStudents, deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
-  
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
