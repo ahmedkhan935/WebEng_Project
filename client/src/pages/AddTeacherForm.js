@@ -4,14 +4,17 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import {teacherRegister} from "../services/AuthService"
+import { teacherRegister } from "../services/AuthService";
+import TagFacesIcon from "@mui/icons-material/TagFaces";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
 const AddTeacherForm = () => {
   const [teacherName, setTeacherName] = useState("");
   const [teacherEmail, setTeacherEmail] = useState("");
   const [password, setTeacherPassword] = useState("");
-  const [department, setDepartment] = useState("");
-  const [campus, setCampus] = useState("");
   const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
   const [mobileNo, setMobileNo] = useState("");
@@ -23,6 +26,9 @@ const AddTeacherForm = () => {
   const [cityPermanent, setCityPermanent] = useState("");
   const [countryPermanent, setCountryPermanent] = useState("");
   const [countries, setCountries] = useState([]);
+  const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [submitmsg, setsubmitmsg] = useState("");
+  const [status, setstatus] = useState(false);
 
   useEffect(() => {
     // Fetch countries from the API
@@ -42,15 +48,29 @@ const AddTeacherForm = () => {
 
   const handleAddTeacher = async (event) => {
     event.preventDefault();
-    const resp= await teacherRegister(teacherEmail, password, teacherName, cnic, permanentAddress, mobileNo);
-    if(resp.status == 201){
-      alert("Teacher added successfully");
+    const resp = await teacherRegister(
+      teacherEmail,
+      password,
+      teacherName,
+      cnic,
+      permanentAddress,
+      mobileNo
+    );
+    if (resp.status === 500 || resp.status === 400) {
+      setsubmitmsg("Cannot Add Teacher!");
+      setstatus(false);
+      setFormSubmitted(true);
+    } else {
+      console.log(resp);
+      setstatus(true);
+      setsubmitmsg("  Teacher successfully added!");
+      setFormSubmitted(true);
     }
-    else{
-      alert("Error adding teacher");
-    }
+  };
 
-    
+  const handleModalClose = () => {
+    setFormSubmitted(false);
+    setstatus(false);
   };
 
   const styles = {
@@ -243,6 +263,43 @@ const AddTeacherForm = () => {
             </Button>
           </form>
         </Container>
+        {isFormSubmitted && (
+          <Modal
+            open={isFormSubmitted}
+            onClose={handleModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 400,
+                borderRadius: "10px",
+                bgcolor: "background.paper",
+                boxShadow: "2px 2px 2px 1px #ffffff",
+                p: 4,
+                textAlign: "center",
+              }}
+            >
+              {status ? (
+                <TagFacesIcon style={{ fontSize: "100px", color: "#de8a57" }} />
+              ) : (
+                <SentimentVeryDissatisfiedIcon
+                  style={{ fontSize: "100px", color: "#de8a57" }}
+                />
+              )}
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                {isFormSubmitted && <>{submitmsg}</>}
+              </Typography>
+              <Button onClick={handleModalClose} style={{ marginTop: "10px" }}>
+                Close
+              </Button>
+            </Box>
+          </Modal>
+        )}
       </NavBar>
     </>
   );

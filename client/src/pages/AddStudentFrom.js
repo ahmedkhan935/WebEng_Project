@@ -4,8 +4,13 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import { Label } from "@mui/icons-material";
-import {studentRegister} from "../services/AuthService"
+import TagFacesIcon from "@mui/icons-material/TagFaces";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
+
+import { studentRegister } from "../services/AuthService";
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
@@ -17,14 +22,15 @@ const AddStudentForm = () => {
   const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [nationality, setNationality] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
   const [postalCodePermanent, setPostalCodePermanent] = useState("");
   const [cityPermanent, setCityPermanent] = useState("");
   const [countryPermanent, setCountryPermanent] = useState("");
   const [countries, setCountries] = useState([]);
+  const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [submitmsg, setsubmitmsg] = useState("");
+  const [status, setstatus] = useState(false);
 
   useEffect(() => {
     // Fetch countries from the API
@@ -44,15 +50,31 @@ const AddStudentForm = () => {
 
   const handleAddStudent = async (event) => {
     event.preventDefault();
-    const resp=await studentRegister(studentEmail,password,studentName,rollNo,cnic,permanentAddress,mobileNo,degree);
-    if(resp.status===201){
-      alert("Student Added Successfully");
+    const resp = await studentRegister(
+      studentEmail,
+      password,
+      studentName,
+      rollNo,
+      cnic,
+      permanentAddress,
+      mobileNo,
+      degree
+    );
+    if (resp.status === 400 || resp.status === 500) {
+      setsubmitmsg("Cannot Add Student!");
+      setstatus(false);
+      setFormSubmitted(true);
+    } else {
+      console.log(resp);
+      setstatus(true);
+      setsubmitmsg("  Student successfully added!");
+      setFormSubmitted(true);
     }
-    else{
-      alert("Error Adding Student");
-    }
+  };
 
-
+  const handleModalClose = () => {
+    setstatus(false);
+    setFormSubmitted(false);
   };
   const styles = {
     addForm: {
@@ -223,20 +245,6 @@ const AddStudentForm = () => {
                 onChange={(e) => setMobileNo(e.target.value)}
                 style={styles.roundedInput}
               />
-              <TextField
-                label="Blood Group"
-                variant="outlined"
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Nationality"
-                variant="outlined"
-                value={nationality}
-                onChange={(e) => setNationality(e.target.value)}
-                style={styles.roundedInput}
-              />
             </Container>
 
             <h3>Contact Information</h3>
@@ -296,6 +304,43 @@ const AddStudentForm = () => {
             </Button>
           </form>
         </Container>
+        {isFormSubmitted && (
+          <Modal
+            open={isFormSubmitted}
+            onClose={handleModalClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                width: 400,
+                borderRadius: "10px",
+                bgcolor: "background.paper",
+                boxShadow: "2px 2px 2px 1px #ffffff",
+                p: 4,
+                textAlign: "center",
+              }}
+            >
+              {status ? (
+                <TagFacesIcon style={{ fontSize: "100px", color: "#de8a57" }} />
+              ) : (
+                <SentimentVeryDissatisfiedIcon
+                  style={{ fontSize: "100px", color: "#de8a57" }}
+                />
+              )}
+              <Typography id="modal-modal-title" variant="h6" component="h2">
+                {isFormSubmitted && <>{submitmsg}</>}
+              </Typography>
+              <Button onClick={handleModalClose} style={{ marginTop: "10px" }}>
+                Close
+              </Button>
+            </Box>
+          </Modal>
+        )}
       </NavBar>
     </>
   );

@@ -3,6 +3,7 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
+import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import NavBar from "../components/Navbar";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -10,7 +11,7 @@ import Modal from "@mui/material/Modal";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
-import {addCourse,viewAllCourses} from "../services/AdminService"
+import { addCourse, viewAllCourses } from "../services/AdminService";
 
 // const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
 
@@ -20,34 +21,44 @@ const CreateCourseForm = () => {
   const [courseName, setCourseName] = useState("");
   const [courseCredits, setCourseCredits] = useState("");
   const [courseType, setCourseType] = useState("");
-  const [prereqCourseCode, setPrereqCourseCode] = useState("");
   const [selectedPrerequisite, setSelectedPrerequisite] = useState("");
   const [prereqs, setPrereqs] = useState([]);
   const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [submitmsg, setsubmitmsg] = useState("");
+  const [status, setstatus] = useState(false);
+
   useEffect(() => {
     const fetchPrerequisites = async () => {
       const response = await viewAllCourses();
-        const courses = response.map((course) => course.courseCode);
-        setPrerequisites(courses);
-
+      const courses = response.map((course) => course.courseCode);
+      setPrerequisites(courses);
     };
     fetchPrerequisites();
   }, []);
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    
-    const resp=await addCourse({courseCode, courseName, courseCredits, courseType, prereqs});
-    if(resp.status===200){
 
+    const resp = await addCourse({
+      courseCode,
+      courseName,
+      courseCredits,
+      courseType,
+      prereqs,
+    });
+
+    if (resp.error) {
+      setsubmitmsg("Cannot create Course!");
+      setstatus(false);
+      setFormSubmitted(true);
+    } else {
+      console.log(resp);
+      setstatus(true);
+      setsubmitmsg("  Course successfully created!");
       setFormSubmitted(true);
     }
-    else{
-      console.log(resp.error);
-      setFormSubmitted(false);
-    }
-
   };
   const handleModalClose = () => {
+    setstatus(false);
     setFormSubmitted(false);
   };
 
@@ -84,7 +95,7 @@ const CreateCourseForm = () => {
       textAlign: "center",
       fontSize: "24px",
     },
-   
+
     h2: {
       color: "#22717d",
       width: "100%",
@@ -241,9 +252,15 @@ const CreateCourseForm = () => {
               textAlign: "center",
             }}
           >
-            <TagFacesIcon style={{ fontSize: "100px", color: "#de8a57" }} />
+            {status ? (
+              <TagFacesIcon style={{ fontSize: "100px", color: "#de8a57" }} />
+            ) : (
+              <SentimentVeryDissatisfiedIcon
+                style={{ fontSize: "100px", color: "#de8a57" }}
+              />
+            )}
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              Course successfully created!
+              {isFormSubmitted && <>{submitmsg}</>}
             </Typography>
             <Button onClick={handleModalClose} style={{ marginTop: "10px" }}>
               Close
