@@ -41,15 +41,16 @@ const standardOptions = [
     Icon: <AnnouncementIcon color="primary" />,
     linkto: "/student/threads",
   },
-  {
-    title: "Settings",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/settings",
-  },
   { title: "Logout", Icon: <LogoutIcon color="primary" /> },
 ];
 
 const adminOptions = [
+  {
+    title:"Settings",
+    Icon:<SettingsIcon color="primary" />,
+    linkto:"/admin/settings"
+
+  },
   {
     title: "Landing Page",
     Icon: <HomeIcon color="primary" />,
@@ -124,6 +125,7 @@ const adminOptions = [
 ];
 
 const studentOptions = [
+  {title:"Settings",Icon:<SettingsIcon color="primary" />,linkto:"/student/settings"},
   { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
   { title: "Books", Icon: <BookIcon color="primary" /> },
   { title: "Grades", Icon: <GradeIcon color="primary" /> },
@@ -290,6 +292,8 @@ export default function NavBar({ children }) {
                   justifyContent: open ? "initial" : "center",
                   px: 2.5,
                 }}
+                to={element.linkto || ""}
+
               >
                 <ListItemIcon
                   sx={{
