@@ -17,16 +17,13 @@ const AddStudentForm = () => {
 
   const [rollNo, setRollNo] = useState("");
   const [degree, setDegree] = useState("");
-  const [campus, setCampus] = useState("");
-  const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
-  const [postalCodePermanent, setPostalCodePermanent] = useState("");
-  const [cityPermanent, setCityPermanent] = useState("");
   const [countryPermanent, setCountryPermanent] = useState("");
   const [countries, setCountries] = useState([]);
+  const [password, setStudentPassword] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
@@ -51,6 +48,7 @@ const AddStudentForm = () => {
     event.preventDefault();
     const resp = await studentRegister(
       studentEmail,
+      password,
       studentName,
       rollNo,
       cnic,
@@ -154,6 +152,14 @@ const AddStudentForm = () => {
                 variant="outlined"
                 value={studentEmail}
                 onChange={(e) => setStudentEmail(e.target.value)}
+                style={styles.roundedInput}
+              />
+              <TextField
+                label="Password"
+                type="password"
+                variant="outlined"
+                value={password}
+                onChange={(e) => setStudentPassword(e.target.value)}
                 style={styles.roundedInput}
               />
             </Container>
