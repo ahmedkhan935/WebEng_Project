@@ -3,35 +3,35 @@ import React, { useState } from "react";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 //the column names must be in camel case notation
-const columns = ["studentId", "name", "Batch", "Department"];
+const columns = ["studentId", "name", "debarCourse", "Batch", "Department"];
 
 const DebarList = () => {
   const rows = [
     {
-      studentId: "34234",
+      studentId: "23544",
       name: "Fatima Bilal",
-
+      debarCourse: "Maths",
       Batch: "2020",
       Department: "SE",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
-
+      debarCourse: "Marketing",
       Batch: "2021",
       Department: "CS",
     },
     {
-      studentId: "34240",
+      studentId: "34323",
       name: "Ahmed Raza",
-
+      debarCourse: "English",
       Batch: "2021",
       Department: "CS",
     },
     {
-      studentId: "34240",
+      studentId: "32434",
       name: "Ahmed Raza",
-
+      debarCourse: "CPS",
       Batch: "2021",
       Department: "CS",
     },
