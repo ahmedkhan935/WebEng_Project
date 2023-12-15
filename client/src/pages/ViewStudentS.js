@@ -25,7 +25,7 @@ import NavBar from "../components/Navbar";
 import { viewAllStudents,deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
-  const navigate = useNavigate();
+  
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
@@ -49,15 +49,6 @@ const ViewStudents = () => {
 
   const handleDelete = (studentId) => {
     console.log(`Deleting student with ID: ${studentId}`);
-    deleteStudent(studentId).then((res) => {
-      console.log(res);
-      if (res.status === 200) {
-        alert("Student deleted successfully");
-        window.location.reload();
-      } else {
-        alert("Student could not be deleted");
-      }
-    });
     deleteStudent(studentId).then((res) => {
       console.log(res);
       if (res.status === 200) {
