@@ -62,7 +62,7 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route path="updateCourse" element={<UpdateCourseForm />}></Route>
+            <Route path="updateCourse/:id" element={<UpdateCourseForm />}></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
 

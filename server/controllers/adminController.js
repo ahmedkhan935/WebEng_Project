@@ -229,34 +229,34 @@ const viewCourse = async (req, res) => {
   }
 };
 const validateCourseFields = (req) => {
-  const { courseCode, courseName, courseCredits, courseType, prereq } =
+  const {  courseName, courseCredits, prereq } =
     req.body;
 
-  if (!courseCode || !courseName || !courseCredits || !courseType) {
+  if  (!courseName || !courseCredits ) {
     throw new Error(
-      "Please provide values for courseCode, courseName, courseCredits, and courseType."
+      "Please provide values for  courseName, courseCredits."
     );
   }
 
   return {
-    courseCode,
+   
     courseName,
     courseCredits,
-    courseType,
+    
     prereq,
   };
 };
 const updateCourse = async (req, res) => {
   try {
     const validatedFields = validateCourseFields(req);
-    const course = await Course.findByIdAndUpdate(
-      req.params.id,
-      validatedFields,
-      { new: true }
-    );
+   const course=await Course.findById(req.params.id);
     if (!course) {
       return res.status(404).json({ errorMessage: "Course not found" });
     }
+    course.courseName=validatedFields.courseName?validatedFields.courseName:course.courseName;
+    course.courseCredits=validatedFields.courseCredits?validatedFields.courseCredits:course.courseCredits;
+    course.prereq=validatedFields.prereq?validatedFields.prereq:course.prereq;
+    const savedCourse = await course.save();
     res.status(200).json(course);
   } catch (error) {
     console.error(error);
@@ -269,7 +269,7 @@ const deleteCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ errorMessage: "Course not found" });
     }
-    res.status(204).send();
+    res.status(200).send({ message: "Course deleted successfully"});
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
@@ -347,7 +347,7 @@ const deleteTeacher = async (req, res) => {
     if (!teacher) {
       return res.status(404).json({ errorMessage: "Teacher not found" });
     }
-    res.status(204).send();
+    res.status(200).send({ message: "Teacher deleted successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });

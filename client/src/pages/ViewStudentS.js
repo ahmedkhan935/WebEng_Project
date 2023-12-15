@@ -16,21 +16,23 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllStudents, deleteStudent } from "../services/AdminService";
+import { viewAllStudents,deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
-  const navigate = useNavigate();
+  
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     viewAllStudents().then((res) => {
@@ -59,8 +61,8 @@ const ViewStudents = () => {
   };
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
-    navigate("/admin/updateStudent");
-    navigate("/admin/updateStudent/" + studentId);
+    navigate(`/admin/updateStudent/${studentId}`);
+    // Add your navigation logic here
   };
 
   const filteredRows = rows
