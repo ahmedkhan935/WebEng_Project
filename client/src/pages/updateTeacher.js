@@ -136,7 +136,7 @@ const UpdateTeacherForm = () => {
   return (
     <>
       <NavBar>
-        <h1 style={styles.h2}>Teacher Form</h1>
+        <h1 style={styles.h2}>Update Teacher Form</h1>
         <Container style={styles.addForm}>
           <form onSubmit={handleAddTeacher} style={styles.form}>
             <h3>Profile</h3>
