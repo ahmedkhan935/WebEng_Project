@@ -31,7 +31,7 @@ import {
   Settings as SettingsIcon,
 } from "@mui/icons-material";
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const drawerWidth = 240;
 const standardOptions = [
@@ -195,7 +195,9 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+
 export default function NavBar({ children }) {
+  const isStudent = useLocation().pathname.includes("/student");
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -275,7 +277,7 @@ export default function NavBar({ children }) {
         </List>
         <Divider />
         <List>
-          {studentOptions.map((element, index) => (
+          {isStudent && studentOptions.map((element, index) => (
             <ListItem
               key={element.title}
               disablePadding
@@ -307,7 +309,7 @@ export default function NavBar({ children }) {
         </List>
         <Divider />
         <List>
-          {adminOptions.map((element, index) => (
+          {!isStudent && adminOptions.map((element, index) => (
             <ListItem
               key={element.title}
               disablePadding

@@ -27,7 +27,6 @@ const CreateCourseForm = () => {
   useEffect(() => {
     const fetchPrerequisites = async () => {
       const response = await viewAllCourses();
-      console.log(response);
         const courses = response.map((course) => course.courseCode);
         setPrerequisites(courses);
 
