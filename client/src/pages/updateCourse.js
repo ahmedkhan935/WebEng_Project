@@ -11,7 +11,7 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import { useParams } from "react-router-dom";
-import {viewAllCourses,updateCourse} from "../services/AdminService";
+import {viewAllCourses,updateCourse,viewCourse} from "../services/AdminService";
 
 // const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
 const UpdateCourseForm = () => {
@@ -27,12 +27,22 @@ const UpdateCourseForm = () => {
 
 
   useEffect(() => {
-    viewAllCourses().then((res) => {
-      const rows = res.map((row) => ({
-        code: row.courseCode
-      }));
-      setPrerequisites(rows);
-    });
+    viewCourse(id).then((res) => {
+      setCourseCode(res.courseCode);
+      setCourseName(res.courseName);
+      setCourseCredits(res.courseCredits);
+      setCourseType(res.courseType);
+      setPrereqs(res.prereq);
+
+      viewAllCourses().then((res) => {
+        const rows = res.map((row) => ({
+          code: row.courseCode
+        }));
+     
+        setPrerequisites(rows);
+      });
+    }
+    );
   }, []);
 
 
@@ -41,7 +51,17 @@ const UpdateCourseForm = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    setFormSubmitted(true);
+    const course = {
+      
+      courseName,
+      courseCredits,
+      prereq: prereqs
+    };
+    updateCourse(id, course).then((res) => {
+  
+      setFormSubmitted(true);
+    });
+
   };
   const handleModalClose = () => {
     setFormSubmitted(false);
@@ -171,8 +191,8 @@ const UpdateCourseForm = () => {
               Select Prerequisite
             </MenuItem>
             {prerequisites.map((prerequisite, index) => (
-              <MenuItem key={index} value={prerequisite}>
-                {prerequisite}
+              <MenuItem key={index} value={prerequisite.code}>
+                {prerequisite.code}
               </MenuItem>
             ))}
           </Select>
@@ -187,7 +207,7 @@ const UpdateCourseForm = () => {
           Add Prerequisite
         </Button>
 
-        {prereqs.length > 0 && (
+        {prereqs && (
           <div style={styles.tagsContainer}>
             {prereqs.map((prereq, index) => (
               <div key={index} style={styles.tag}>

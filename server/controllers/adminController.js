@@ -255,7 +255,27 @@ const updateCourse = async (req, res) => {
     }
     course.courseName=validatedFields.courseName?validatedFields.courseName:course.courseName;
     course.courseCredits=validatedFields.courseCredits?validatedFields.courseCredits:course.courseCredits;
+    if(validatedFields.prereq) 
+    {
+        for(const prereq of validatedFields.prereq)
+        {
+            
+            const course2 = await Course.findOne({ courseCode: prereq.courseCode });
+            
+            if (course2.prereq) {
+            for (const coursePrereq of course2.prereq) {
+                if (coursePrereq.courseCode === course.courseCode) {
+                    console.log(coursePrereq.courseCode);
+                return res
+                    .status(400)
+                    .json({ errorMessage: "Circular Prerequisite" });
+                }
+            }
+            }
+        }
+    }
     course.prereq=validatedFields.prereq?validatedFields.prereq:course.prereq;
+
     const savedCourse = await course.save();
     res.status(200).json(course);
   } catch (error) {
