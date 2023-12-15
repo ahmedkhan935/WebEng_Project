@@ -4,7 +4,6 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
-import { Label } from "@mui/icons-material";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
@@ -23,8 +22,6 @@ const AddStudentForm = () => {
   const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
   const [mobileNo, setMobileNo] = useState("");
-  const [bloodGroup, setBloodGroup] = useState("");
-  const [nationality, setNationality] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
   const [postalCodePermanent, setPostalCodePermanent] = useState("");
@@ -63,7 +60,7 @@ const AddStudentForm = () => {
       mobileNo,
       degree
     );
-    if (resp.errorMessage) {
+    if (resp.status === 400 || resp.status === 500) {
       setsubmitmsg("Cannot Add Student!");
       setstatus(false);
       setFormSubmitted(true);
@@ -76,6 +73,7 @@ const AddStudentForm = () => {
   };
 
   const handleModalClose = () => {
+    setstatus(false);
     setFormSubmitted(false);
   };
   const styles = {
@@ -245,20 +243,6 @@ const AddStudentForm = () => {
                 variant="outlined"
                 value={mobileNo}
                 onChange={(e) => setMobileNo(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Blood Group"
-                variant="outlined"
-                value={bloodGroup}
-                onChange={(e) => setBloodGroup(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Nationality"
-                variant="outlined"
-                value={nationality}
-                onChange={(e) => setNationality(e.target.value)}
                 style={styles.roundedInput}
               />
             </Container>

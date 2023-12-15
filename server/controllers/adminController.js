@@ -200,7 +200,6 @@ const AddCourse = async (req, res) => {
     const savedCourse = await course.save();
     res.status(201).json(savedCourse);
   } catch (error) {
-    console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
   }
 };

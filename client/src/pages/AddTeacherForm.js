@@ -56,7 +56,7 @@ const AddTeacherForm = () => {
       permanentAddress,
       mobileNo
     );
-    if (resp.errorMessage) {
+    if (resp.status === 500 || resp.status === 400) {
       setsubmitmsg("Cannot Add Teacher!");
       setstatus(false);
       setFormSubmitted(true);
@@ -70,6 +70,7 @@ const AddTeacherForm = () => {
 
   const handleModalClose = () => {
     setFormSubmitted(false);
+    setstatus(false);
   };
 
   const styles = {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
+import {viewAllStudents} from "../services/AdminService"
 
 const ViewStudents = () => {
   const navigate = useNavigate();
@@ -35,6 +36,24 @@ const ViewStudents = () => {
     console.log(`Updating student with ID: ${studentId}`);
     navigate("/admin/updateStudent");
   };
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    viewAllStudents().then((res) => {
+      console.log(res);
+      const rows = res.map((row) => {
+        return {
+          studentId: row.rollNumber,
+          name: row.name,
+          batch: row.batch,
+          degree: row.degreeName,
+        };
+      });
+      setRows(rows);
+
+    });
+  }, []);
+
+
 
   const styles = {
     h2: {
@@ -42,32 +61,32 @@ const ViewStudents = () => {
       float: "left",
     },
   };
-  const rows = [
-    {
-      studentId: "34234",
-      name: "Fatima Bilal",
-      batch: "2020",
-      degree: "CS",
-    },
-    {
-      studentId: "8799",
-      name: "Ahmed Raza",
-      batch: "2021",
-      degree: "SE",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     studentId: "34234",
+  //     name: "Fatima Bilal",
+  //     batch: "2020",
+  //     degree: "CS",
+  //   },
+  //   {
+  //     studentId: "8799",
+  //     name: "Ahmed Raza",
+  //     batch: "2021",
+  //     degree: "SE",
+  //   },
+  // ];
 
-  const filteredRows = rows
-    .filter(
-      (row) =>
-        (filterBatch === "" || row.batch === filterBatch) &&
-        (filterDegree === "" || row.degree === filterDegree)
-    )
-    .filter((row) =>
-      Object.values(row).some((value) =>
-        String(value).toLowerCase().includes(searchKeyword.toLowerCase())
-      )
-    );
+  // const filteredRows = rows
+  //   .filter(
+  //     (row) =>
+  //       (filterBatch === "" || row.batch === filterBatch) &&
+  //       (filterDegree === "" || row.degree === filterDegree)
+  //   )
+  //   .filter((row) =>
+  //     Object.values(row).some((value) =>
+  //       String(value).toLowerCase().includes(searchKeyword.toLowerCase())
+  //     )
+  //   );
 
   return (
     <div>
@@ -172,7 +191,7 @@ const ViewStudents = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredRows.map((row, index) => (
+              {rows && rows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.studentId}</TableCell>
                   <TableCell>{row.name}</TableCell>

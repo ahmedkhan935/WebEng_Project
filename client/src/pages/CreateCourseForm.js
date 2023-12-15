@@ -46,7 +46,7 @@ const CreateCourseForm = () => {
       prereqs,
     });
 
-    if (resp.errorMessage) {
+    if (resp.error) {
       setsubmitmsg("Cannot create Course!");
       setstatus(false);
       setFormSubmitted(true);

@@ -7,7 +7,7 @@ const handleResponse = async (response) => {
       
       return data;
     } else {
-      throw new Error(data.error);
+      return { error: data.errorMessage };
     }
   };
 export const viewStudent = async (studentId) => {
