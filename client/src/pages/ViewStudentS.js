@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   Table,
   TableBody,
@@ -20,9 +21,10 @@ import Pagination from "@mui/material/Pagination";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllStudents } from "../services/AdminService";
+import { viewAllStudents, deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
+  const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
@@ -37,6 +39,7 @@ const ViewStudents = () => {
         name: row.name,
         batch: row.batch,
         degree: row.degreeName,
+        _id: row._id,
       }));
       setRows(rows);
     });
@@ -44,11 +47,20 @@ const ViewStudents = () => {
 
   const handleDelete = (studentId) => {
     console.log(`Deleting student with ID: ${studentId}`);
+    deleteStudent(studentId).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        alert("Student deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Student could not be deleted");
+      }
+    });
   };
-
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
-    // Add your navigation logic here
+    navigate("/admin/updateStudent");
+    navigate("/admin/updateStudent/" + studentId);
   };
 
   const filteredRows = rows
@@ -130,7 +142,7 @@ const ViewStudents = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", float: "right", marginRight: "10px" }}
+          style={{ width: "95%", marginRight: "10px" }}
         >
           <Table>
             <TableHead>
@@ -150,10 +162,10 @@ const ViewStudents = () => {
                   <TableCell>{row.batch}</TableCell>
                   <TableCell>{row.degree}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleUpdate(row.studentId)}>
+                    <IconButton onClick={() => handleUpdate(row._id)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(row.studentId)}>
+                    <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
