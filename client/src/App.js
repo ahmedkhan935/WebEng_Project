@@ -26,6 +26,7 @@ import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
+import UpdateTeacherForm from "./pages/UpdateStudentForm";
 
 function App() {
   return (
@@ -49,7 +50,14 @@ function App() {
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route path="updateStudent/:id" element={<UpdateStudentForm />}></Route>
+            <Route
+              path="updateStudent/:id"
+              element={<UpdateStudentForm />}
+            ></Route>
+            <Route
+              path="updateTeacher/:id"
+              element={<UpdateTeacherForm />}
+            ></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>

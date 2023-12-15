@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import {
   Table,
   TableBody,
@@ -24,6 +25,7 @@ import NavBar from "../components/Navbar";
 import { viewAllStudents,deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
+  const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
@@ -56,12 +58,19 @@ const ViewStudents = () => {
         alert("Student could not be deleted");
       }
     });
+    deleteStudent(studentId).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        alert("Student deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Student could not be deleted");
+      }
+    });
   };
-
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
-    navigate("/admin/updateStudent/"+ studentId);
-
+    // Add your navigation logic here
   };
 
   const filteredRows = rows
@@ -143,7 +152,7 @@ const ViewStudents = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", float: "right", marginRight: "10px" }}
+          style={{ width: "95%", marginRight: "10px" }}
         >
           <Table>
             <TableHead>
