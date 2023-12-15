@@ -23,8 +23,6 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import { viewAllStudents, deleteStudent } from "../services/AdminService";
-import { useNavigate } from "react-router-dom";
-
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");

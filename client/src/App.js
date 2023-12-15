@@ -37,7 +37,8 @@ function App() {
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="settings" element={<Settings />}></Route>
+          <Route path="/admin/settings" element={<Settings />}></Route>
+          <Route path="/student/settings" element={<Settings />}></Route>
 
           <Route path="student">
             <Route index element={<UserLandingPage />}></Route>
