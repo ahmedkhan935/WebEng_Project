@@ -15,11 +15,13 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import Pagination from "@mui/material/Pagination";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import { viewAllStudents } from "../services/AdminService";
-import Pagination from "@mui/material/Pagination";
+
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
@@ -128,7 +130,7 @@ const ViewStudents = () => {
 
         <TableContainer
           component={Paper}
-          style={{ width: "95%", marginRight: "10px" }}
+          style={{ width: "95%", float: "right", marginRight: "10px" }}
         >
           <Table>
             <TableHead>

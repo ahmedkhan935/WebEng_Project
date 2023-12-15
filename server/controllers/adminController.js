@@ -113,51 +113,55 @@ const viewAllStudents = async (req, res) => {
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
-const removeStudent = async (req, res) => {
-  try {
-    const student = await Student.findByIdAndDelete(req.params.id);
-    if (!student) {
-      return res.status(404).json({ errorMessage: "Student not found" });
-    }
-    res.status(204).send();
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ errorMessage: "Internal server error" });
-  }
-};
 const viewStudent = async (req, res) => {
-  try {
-    const student = await Student.findById(req.params.id);
-    if (!student) {
-      return res.status(404).json({ errorMessage: "Student not found" });
+    try {
+        const student = await Student.findById(req.params.id);
+        if (!student) {
+            return res.status(404).json({ errorMessage: 'Student not found' });
+        }
+        res.status(200).json(student);
+    }  catch (error) {
+  
+    res.status(500).json({ errorMessage: "Internal server error" });
     }
-    res.status(200).json(student);
-  } catch (error) {
+};
+
+const removeStudent= async (req, res) => {
+    try {
+        const student = await Student.findByIdAndDelete(req.params.id);
+        if (!student) {
+            return res.status(404).json({ errorMessage: 'Student not found' });
+        }
+        res.status(200).send({message:"Student removed successfully"});
+    }  catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
 
-const updateStudent = async (req, res) => {
-  try {
-    const studentToUpdate = await Student.findById(req.params.id);
-    if (!studentToUpdate) {
-      return res.status(404).json({ errorMessage: "Student not found" });
-    }
-    const { email, adress, contactNumber } = req.body;
-    if (!email && !adress && !contactNumber) {
-      throw new Error(
-        "Please provide values for email, adress, or contactNumber."
-      );
-    }
 
-    studentToUpdate.email = email ? email : studentToUpdate.email;
-    studentToUpdate.address = adress ? adress : studentToUpdate.address;
-    studentToUpdate.contactNumber = contactNumber
-      ? contactNumber
-      : studentToUpdate.contactNumber;
-    const student = await studentToUpdate.save();
-    return res.status(200).json(student);
+
+const updateStudent= async (req, res) => {
+
+    try {
+        const studentToUpdate = await Student.findById(req.params.id);  
+        if (!studentToUpdate) {
+            return res.status(404).json({ errorMessage: 'Student not found' });
+        }
+        const {email,adress,contactNumber,name}=req.body;
+        if (!email && !adress && !contactNumber && !name) {
+            throw new Error('Please provide values for email, adress, or contactNumber.');
+        }
+
+        studentToUpdate.email=email?email:studentToUpdate.email;
+        studentToUpdate.address=adress?adress:studentToUpdate.address;
+        studentToUpdate.contactNumber=contactNumber?contactNumber:studentToUpdate.contactNumber;
+        studentToUpdate.name=name?name:studentToUpdate.name;
+        const student = await studentToUpdate.save();
+        return res.status(200).json(student);
+
+            
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
