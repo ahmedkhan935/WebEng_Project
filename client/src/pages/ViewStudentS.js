@@ -61,6 +61,7 @@ const ViewStudents = () => {
   };
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
+    navigate(`/admin/updateStudent/${studentId}`);
     // Add your navigation logic here
   };
 
