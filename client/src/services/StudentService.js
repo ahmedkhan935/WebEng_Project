@@ -160,7 +160,7 @@ import { url } from './url';
 const BASE_URL = url;
 
 const handleResponse = async (response) => {
-    if (response.status === 200) {
+    if (response.status >= 200 && response.status < 300) {
         return response.data;
     } else {
         return { error: response.data.errorMessage };
