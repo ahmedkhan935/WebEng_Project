@@ -23,14 +23,6 @@ const CustomTable = ({ columns, rows, title }) => {
 
   return (
     <div style={{ margin: "20px" }}>
-      <h1
-        style={{
-          fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-          color: "#22717d",
-        }}
-      >
-        {title}
-      </h1>
       <TextField
         label="Search"
         variant="outlined"

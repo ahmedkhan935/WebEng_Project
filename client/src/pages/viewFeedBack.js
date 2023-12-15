@@ -11,10 +11,25 @@ import {
   TextField,
   InputAdornment,
 } from "@mui/material";
+import { InputLabel, MenuItem, Select, Box } from "@mui/material";
 
 import NavBar from "../components/Navbar";
 
 const ViewFeedback = () => {
+  const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
+  const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+
+  const handleBatchChange = (event) => {
+    setSelectedBatch(event.target.value);
+  };
+
+  const handleSemesterChange = (event) => {
+    setSelectedSemester(event.target.value);
+  };
+
+  const batches = ["2020", "2021", "2022"];
+  const semesters = ["Spring", "Fall", "Summer"];
+
   const [searchKeyword, setSearchKeyword] = useState("");
 
   const styles = {
@@ -49,7 +64,50 @@ const ViewFeedback = () => {
     <div>
       <NavBar>
         <h1 style={styles.h2}>Courses Feebacks</h1>
+        <br />
+        <br />
+        <br />
 
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "flex-start",
+            alignItems: "center",
+            marginTop: "20px",
+          }}
+        >
+          <FormControl sx={{ minWidth: "120px", marginRight: "20px" }}>
+            <InputLabel id="batch-label">Batch</InputLabel>
+            <Select
+              labelId="batch-label"
+              id="batch-select"
+              value={selectedBatch}
+              onChange={handleBatchChange}
+            >
+              {batches.map((batch) => (
+                <MenuItem key={batch} value={batch}>
+                  {batch}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl sx={{ minWidth: "120px" }}>
+            <InputLabel id="semester-label">Semester</InputLabel>
+            <Select
+              labelId="semester-label"
+              id="semester-select"
+              value={selectedSemester}
+              onChange={handleSemesterChange}
+            >
+              {semesters.map((semester) => (
+                <MenuItem key={semester} value={semester}>
+                  {semester}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
         <div
           style={{
             display: "flex",
@@ -57,10 +115,7 @@ const ViewFeedback = () => {
             marginTop: "20px",
           }}
         >
-          <FormControl
-            variant="outlined"
-            style={{ marginLeft: "10px", marginRight: "10px" }}
-          >
+          <FormControl variant="outlined" style={{ marginRight: "10px" }}>
             <TextField
               label="Search"
               variant="outlined"
@@ -94,7 +149,7 @@ const ViewFeedback = () => {
                 <TableRow key={index}>
                   <TableCell>{row.StudentId}</TableCell>
                   <TableCell>{row.CourseCode}</TableCell>
-                  <TableCell>{row.teacherSS}</TableCell>
+                  <TableCell>{row.teacher}</TableCell>
                   <TableCell>{row.feedback}</TableCell>
                 </TableRow>
               ))}
