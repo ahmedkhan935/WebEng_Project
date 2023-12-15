@@ -76,6 +76,7 @@ const DebarList = () => {
             id="batch-select"
             value={selectedBatch}
             onChange={handleBatchChange}
+            sx={{ height: "40px" }}
           >
             {batches.map((batch) => (
               <MenuItem key={batch} value={batch}>
@@ -92,6 +93,7 @@ const DebarList = () => {
             id="semester-select"
             value={selectedSemester}
             onChange={handleSemesterChange}
+            sx={{ height: "40px" }}
           >
             {semesters.map((semester) => (
               <MenuItem key={semester} value={semester}>
