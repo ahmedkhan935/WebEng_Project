@@ -15,12 +15,13 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import Pagination from "@mui/material/Pagination";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllStudents } from "../services/AdminService";
+import { viewAllStudents,deleteStudent } from "../services/AdminService";
 
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -29,6 +30,7 @@ const ViewStudents = () => {
   const [rows, setRows] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
+  const navigate = useNavigate();
 
   useEffect(() => {
     viewAllStudents().then((res) => {
@@ -37,6 +39,7 @@ const ViewStudents = () => {
         name: row.name,
         batch: row.batch,
         degree: row.degreeName,
+        _id: row._id,
       }));
       setRows(rows);
     });
@@ -44,11 +47,21 @@ const ViewStudents = () => {
 
   const handleDelete = (studentId) => {
     console.log(`Deleting student with ID: ${studentId}`);
+    deleteStudent(studentId).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        alert("Student deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Student could not be deleted");
+      }
+    });
   };
 
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
-    // Add your navigation logic here
+    navigate("/admin/updateStudent/"+ studentId);
+
   };
 
   const filteredRows = rows
@@ -150,10 +163,10 @@ const ViewStudents = () => {
                   <TableCell>{row.batch}</TableCell>
                   <TableCell>{row.degree}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleUpdate(row.studentId)}>
+                    <IconButton onClick={() => handleUpdate(row._id)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(row.studentId)}>
+                    <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

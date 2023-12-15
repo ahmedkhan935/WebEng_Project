@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -16,20 +16,44 @@ import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
+import { viewAllCourses,deleteCourse } from "../services/AdminService";
 
 const SearchCourses = () => {
   const navigate = useNavigate();
 
   const [searchKeyword, setSearchKeyword] = useState("");
+  const [rows, setRows] = useState([]);
 
-  const handleDelete = (studentId) => {
-    console.log(`Deleting student with ID: ${studentId}`);
+  const handleDelete = (id) => {
+    deleteCourse(id).then((res) => {
+    
+      if (!res.errorMessage) {
+        alert("Course deleted successfully");
+        setRows(rows.filter((row) => row._id !== id));
+      } else {
+        alert("Course could not be deleted");
+      }
+    });
+  
   };
 
-  const handleUpdate = (studentId) => {
-    console.log(`Updating student with ID: ${studentId}`);
-    navigate("/admin/updateCourse");
+  const handleUpdate = (id) => {
+    
+    navigate("/admin/updateCourse/"+ id);
   };
+  useEffect(() => {
+    viewAllCourses().then((res) => {
+      const rows = res.map((row) => ({
+        code: row.courseCode,
+        name: row.courseName,
+        credit: row.courseCredits,
+        type: row.courseType,
+        _id: row._id,
+      }));
+      setRows(rows);
+    });
+  }, []);
+
 
   const styles = {
     h2: {
@@ -38,20 +62,20 @@ const SearchCourses = () => {
     },
   };
 
-  const rows = [
-    {
-      code: "34G3A",
-      name: "Programming Fundamental",
-      credit: "4",
-      type: "Theory",
-    },
-    {
-      code: "23H3A",
-      name: "Data Structure",
-      credit: "3",
-      type: "Lab",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     code: "34G3A",
+  //     name: "Programming Fundamental",
+  //     credit: "4",
+  //     type: "Theory",
+  //   },
+  //   {
+  //     code: "23H3A",
+  //     name: "Data Structure",
+  //     credit: "3",
+  //     type: "Lab",
+  //   },
+  // ];
 
   const filteredRows = rows.filter((row) =>
     Object.values(row).some((value) =>
@@ -112,10 +136,10 @@ const SearchCourses = () => {
                   <TableCell>{row.credit}</TableCell>
                   <TableCell>{row.type}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleUpdate(row.code)}>
+                    <IconButton onClick={() => handleUpdate(row._id)}>
                       <EditIcon />
                     </IconButton>
-                    <IconButton onClick={() => handleDelete(row.code)}>
+                    <IconButton onClick={() => handleDelete(row._id)}>
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>

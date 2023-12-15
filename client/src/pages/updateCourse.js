@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
@@ -10,8 +10,10 @@ import Modal from "@mui/material/Modal";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import { useParams } from "react-router-dom";
+import {viewAllCourses,updateCourse} from "../services/AdminService";
 
-const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
+// const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
 const UpdateCourseForm = () => {
   const [courseCode, setCourseCode] = useState("");
   const [courseName, setCourseName] = useState("");
@@ -20,6 +22,22 @@ const UpdateCourseForm = () => {
   const [selectedPrerequisite, setSelectedPrerequisite] = useState("");
   const [prereqs, setPrereqs] = useState([]);
   const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [prerequisites, setPrerequisites] = useState([]);
+  const { id } = useParams();
+
+
+  useEffect(() => {
+    viewAllCourses().then((res) => {
+      const rows = res.map((row) => ({
+        code: row.courseCode
+      }));
+      setPrerequisites(rows);
+    });
+  }, []);
+
+
+
+
 
   const handleFormSubmit = (e) => {
     e.preventDefault();

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -16,16 +16,39 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import Pagination from "@mui/material/Pagination";
+import {viewAllTeachers,deleteTeacher} from "../services/AdminService";
 
 const ViewTeachers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5; // Set the number of rows per page
   // Add your filter states here if needed
+  const [rows, setRows] = useState([]); // Contains the rows to be displayed on the current page
 
   const handleDelete = (teacherId) => {
     console.log(`Deleting teacher with ID: ${teacherId}`);
+    deleteTeacher(teacherId).then((res) => {
+      console.log(res);
+      if (res.status === 200) {
+        alert("Teacher deleted successfully");
+        window.location.reload();
+      } else {
+        alert("Teacher could not be deleted");
+      }
+    });
   };
+  useEffect(() => {
+    viewAllTeachers().then((res) => {
+      const rows = res.map((row) => ({
+        teacherId: row.CNIC,
+        name: row.name,
+        email: row.email,
+        _id: row._id,
+      }));
+      setRows(rows);
+    });
+  }, []);
+
 
   const handleUpdate = (teacherId) => {
     console.log(`Updating teacher with ID: ${teacherId}`);
@@ -38,19 +61,19 @@ const ViewTeachers = () => {
     },
   };
 
-  const rows = [
-    {
-      teacherId: "123",
-      name: "Ahmed",
-      email: "abc@gmail.com",
-    },
-    {
-      teacherId: "124",
-      name: "Fatima",
-      email: "def@gmail.com",
-    },
-    // Add more rows as needed
-  ];
+  // const rows = [
+  //   {
+  //     teacherId: "123",
+  //     name: "Ahmed",
+  //     email: "abc@gmail.com",
+  //   },
+  //   {
+  //     teacherId: "124",
+  //     name: "Fatima",
+  //     email: "def@gmail.com",
+  //   },
+  //   // Add more rows as needed
+  // ];
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -106,7 +129,7 @@ const ViewTeachers = () => {
         <Table>
           <TableHead>
             <TableRow style={{ background: "#22717d" }}>
-              <TableCell style={{ color: "#FFFFFF" }}>Teacher ID</TableCell>
+              <TableCell style={{ color: "#FFFFFF" }}>Teacher CNIC</TableCell>
               <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
               <TableCell style={{ color: "#FFFFFF" }}>Email</TableCell>
               <TableCell style={{ color: "#FFFFFF" }}>Actions</TableCell>
@@ -119,10 +142,10 @@ const ViewTeachers = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>
-                  <IconButton onClick={() => handleUpdate(row.teacherId)}>
+                  <IconButton onClick={() => handleUpdate(row._id)}>
                     <EditIcon />
                   </IconButton>
-                  <IconButton onClick={() => handleDelete(row.teacherId)}>
+                  <IconButton onClick={() => handleDelete(row._id)}>
                     <DeleteIcon />
                   </IconButton>
                 </TableCell>
