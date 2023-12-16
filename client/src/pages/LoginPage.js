@@ -5,8 +5,8 @@ import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
-import { studentlogin,teacherLogin } from "../services/AuthService.js";
-import { useNavigate,useLocation } from "react-router-dom";
+import { studentlogin, teacherLogin } from "../services/AuthService.js";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -34,17 +34,16 @@ const LoginPage = () => {
 
     event.preventDefault();
     let resp;
-    const student=location.pathname.includes("student");
+    const student = location.pathname.includes("student");
 
-    if(student)
-      resp=await studentlogin(email,password); 
-    else
-      resp=await teacherLogin(email,password);
-
-    if(resp.status===200 && student ){
+    if (student) resp = await studentlogin(email, password);
+    else resp = await teacherLogin(email, password);
+    if (resp.status === 200) {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
       navigate("/student");
+    } else {
+      const data = await resp.json();
     } else if (resp.status === 200 && !student) {
       //navigate to teacher page
     }
@@ -91,7 +90,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 } }>
       <Grid container spacing={0}>
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>

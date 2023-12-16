@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar.js";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
-const columns = ["studentId", "name", "debarCourse", "Batch", "Department"];
+const columns = ["studentId", "name", "debarCourse", "Batch", "Degree"];
 
 const DebarList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
@@ -27,28 +27,28 @@ const DebarList = () => {
       name: "Fatima Bilal",
       debarCourse: "Maths",
       Batch: "2020",
-      Department: "SE",
+      Degree: "SE",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       debarCourse: "Marketing",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "34323",
       name: "Ahmed Raza",
       debarCourse: "English",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "32434",
       name: "Ahmed Raza",
       debarCourse: "CPS",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
   ];
 

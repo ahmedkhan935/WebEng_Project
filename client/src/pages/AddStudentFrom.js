@@ -14,20 +14,16 @@ import { studentRegister } from "../services/AuthService";
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
-  const [password, setStudentPassword] = useState("");
+
   const [rollNo, setRollNo] = useState("");
-  const [section, setSection] = useState("");
   const [degree, setDegree] = useState("");
-  const [campus, setCampus] = useState("");
-  const [dob, setDob] = useState("");
   const [cnic, setCnic] = useState("");
   const [mobileNo, setMobileNo] = useState("");
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
-  const [postalCodePermanent, setPostalCodePermanent] = useState("");
-  const [cityPermanent, setCityPermanent] = useState("");
   const [countryPermanent, setCountryPermanent] = useState("");
   const [countries, setCountries] = useState([]);
+  const [password, setStudentPassword] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
@@ -177,13 +173,7 @@ const AddStudentForm = () => {
                 onChange={(e) => setRollNo(e.target.value)}
                 style={styles.roundedInput}
               />
-              <TextField
-                label="Section"
-                variant="outlined"
-                value={section}
-                onChange={(e) => setSection(e.target.value)}
-                style={styles.roundedInput}
-              />
+
               <TextField
                 select
                 label="Degree"
@@ -201,48 +191,16 @@ const AddStudentForm = () => {
                 </MenuItem>
                 {/* Add other degrees as needed */}
               </TextField>
-              <TextField
-                select
-                label="Campus"
-                variant="outlined"
-                value={campus}
-                onChange={(e) => setCampus(e.target.value)}
-                style={styles.roundedInput}
-              >
-                <MenuItem value="">Select Campus</MenuItem>
-                <MenuItem value="Chiniot-Faisalabad">
-                  Chiniot-Faisalabad
-                </MenuItem>
-                <MenuItem value="Islamabad">Islamabad</MenuItem>
-                <MenuItem value="Karachi">Karachi</MenuItem>
-                <MenuItem value="Lahore">Lahore</MenuItem>
-                <MenuItem value="Peshawar">Peshawar</MenuItem>
-              </TextField>
             </Container>
 
             {/* Personal Information */}
             <h3>Personal Information</h3>
             <Container style={styles.formGroup}>
-              <p>Date of Birth</p>{" "}
-              <TextField
-                type="date"
-                variant="outlined"
-                value={dob}
-                onChange={(e) => setDob(e.target.value)}
-                style={styles.roundedInput}
-              />
               <TextField
                 label="CNIC"
                 variant="outlined"
                 value={cnic}
                 onChange={(e) => setCnic(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Mobile No"
-                variant="outlined"
-                value={mobileNo}
-                onChange={(e) => setMobileNo(e.target.value)}
                 style={styles.roundedInput}
               />
             </Container>
@@ -261,20 +219,6 @@ const AddStudentForm = () => {
                 variant="outlined"
                 value={homePhonePermanent}
                 onChange={(e) => setHomePhonePermanent(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="Postal Code"
-                variant="outlined"
-                value={postalCodePermanent}
-                onChange={(e) => setPostalCodePermanent(e.target.value)}
-                style={styles.roundedInput}
-              />
-              <TextField
-                label="City"
-                variant="outlined"
-                value={cityPermanent}
-                onChange={(e) => setCityPermanent(e.target.value)}
                 style={styles.roundedInput}
               />
               <TextField

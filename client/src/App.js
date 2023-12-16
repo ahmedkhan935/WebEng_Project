@@ -26,7 +26,7 @@ import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
-import UpdateTeacherForm from "./pages/UpdateStudentForm";
+import UpdateTeacherForm from "./pages/updateTeacher";
 import Classes from "./pages/Classes";
 
 function App() {
@@ -38,7 +38,8 @@ function App() {
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="settings" element={<Settings />}></Route>
+          <Route path="/admin/settings" element={<Settings />}></Route>
+          <Route path="/student/settings" element={<Settings />}></Route>
 
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
@@ -51,7 +52,11 @@ function App() {
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
-            <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route
+              path="
+            "
+              element={<AddStudentForm />}
+            ></Route>
             <Route
               path="updateStudent/:id"
               element={<UpdateStudentForm />}
@@ -64,7 +69,12 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route path="updateCourse/:id" element={<UpdateCourseForm />}></Route>
+           
+
+            <Route
+              path="updateCourse/:id"
+              element={<UpdateCourseForm />}
+            ></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
 

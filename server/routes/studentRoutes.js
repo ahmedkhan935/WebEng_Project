@@ -8,6 +8,7 @@ router.get('/profile',              Auth, AuthStudent, studentController.getProf
 router.get('/courses',              Auth, AuthStudent, studentController.getCourses);
 router.get('/allCourses',           Auth, AuthStudent, studentController.getAllCourses);
 router.get('/classes',              Auth, AuthStudent, studentController.getClasses);
+router.get('/classes/:classCode',   Auth, AuthStudent, studentController.getClass);
 router.get('/todos',                Auth, AuthStudent, studentController.getTodos);
 router.get('/notifications',        Auth, AuthStudent, studentController.getNotifications);
 router.get('/threads',              Auth, AuthStudent, studentController.getThreads);
