@@ -1,5 +1,6 @@
 const Thread = require("../models/Thread");
 const Student = require("../models/Student");
+const bucket = require("../firebase_init");
 const addThread = async (req, res) => {
     if(!req.body.title) {
         {
@@ -108,6 +109,7 @@ const addThread = async (req, res) => {
     }
     const deleteAnnouncement = async (req, res) => {
         try {
+
             const thread = await Thread.findById(req.params.threadId);
             if(!thread) {
                 return res.status(404).send({
@@ -169,6 +171,62 @@ const addThread = async (req, res) => {
             res.json({ message: err });
         }
     }
+    const uploadFile= async (req, res) => {
+        try {
+           
+           
+            if(!req.files) {
+                res.status(400).send('No file uploaded.');
+                return;
+            }
+            const file = req.files.file;
+          
+            
+            if (!file) {
+                res.status(400).send('No file uploaded.');
+                return;
+            }
+           
+            const blob = bucket.file(file.name);
+            const blobWriter = blob.createWriteStream({
+                metadata: {
+                    contentType: file.mimetype,
+                },
+                
+            });
+            blobWriter.on('error', (err) => next(err));
+            blobWriter.on('finish', async () => {
+                await blob.makePublic();
+                // Assembling public URL for accessing the file via HTTP
+                const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                // Return the file name and its public URL
+                res.status(200).send({ fileName: file.name, fileLocation: publicUrl });
+            });
+            blobWriter.end(file.data);
+        } catch (err) {
+            console.log(err.message);
+            res.json({ message: err });
+        }
+    }
+    const downloadFile = async (req, res) => {
+        try {
+            
+            const file = bucket.file(req.params.fileName);
+            const blobStream = file.createReadStream();
+            blobStream.on('error', (err) => {
+                console.log(err);
+                res.status(404).send('File not found');
+            });
+            blobStream.pipe(res);
+            // blobStream.on('end', () => {
+            //     console.log('File downloaded.');
+            // }
+            // );
+        } catch (err) {
+            console.log(err.message);
+            res.json({ message: err });
+        }
+    }
     module.exports = {
         addThread,
         getThreads,
@@ -178,7 +236,9 @@ const addThread = async (req, res) => {
         addAnnouncement,
         deleteAnnouncement,
         updateAnnouncement,
-        viewAnnouncements
+        viewAnnouncements,
+        uploadFile,
+        downloadFile
         
     }   
 
