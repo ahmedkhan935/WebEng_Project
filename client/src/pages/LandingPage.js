@@ -29,7 +29,9 @@ const LandingPage = () => {
 
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
+  const [file, setfile] = useState("");
   const [mode, setMode] = useState("");
+
   const [displayedThreads, setDisplayedThreads] = useState([]);
   const [showAllThreads, setShowAllThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
@@ -44,6 +46,8 @@ const LandingPage = () => {
   const [updatePostFormOpen, setUpdatePostFormOpen] = useState(false);
   const [updatePostTitle, setUpdatePostTitle] = useState("");
   const [updatePostContent, setUpdatePostContent] = useState("");
+  const [updatePostFile, setUpdatePostFile] = useState(null);
+
   const [selectedPost, setSelectedPost] = useState(null);
 
   const [threads, setThreads] = useState([
@@ -57,6 +61,7 @@ const LandingPage = () => {
           content: "This is the content of post 1.",
           creator: "Amir Rehman",
           date: "2023-01-01",
+          file: null,
         },
         {
           id: 2,
@@ -64,6 +69,7 @@ const LandingPage = () => {
           content: "This is the content of post 2.",
           creator: "Amir Rehman",
           date: "2023-01-02",
+          file: null,
         },
       ],
     },
@@ -141,6 +147,7 @@ const LandingPage = () => {
       id: selectedThread.posts.length + 1,
       title: title,
       content: content,
+      file: file,
       date: new Date().toLocaleDateString(),
       creator: "Amir Rehman",
     };
@@ -148,6 +155,7 @@ const LandingPage = () => {
     selectedThread.posts.push(newPost);
 
     setTitle("");
+    setfile("");
     setContent("");
 
     setFormOpen(false);
@@ -169,7 +177,14 @@ const LandingPage = () => {
     setSelectedPost(post);
     setUpdatePostTitle(post.title);
     setUpdatePostContent(post.content);
+    setUpdatePostFile(post.file);
     setUpdatePostFormOpen(true);
+  };
+
+  const handleFileChange = (file) => {
+    console.log(file);
+    setfile(file);
+    setUpdatePostFile(file);
   };
 
   const handleUpdatePostFormOpen = () => {
@@ -353,6 +368,7 @@ const LandingPage = () => {
                             content={post.content}
                             date={post.date}
                             creator={post.creator}
+                            file={post.file}
                             handleEdit={() => handleEditpost(post)}
                             handleDelete={() => handleDeletepost(post)}
                           />
@@ -419,6 +435,7 @@ const LandingPage = () => {
           <Button onClick={handleSemesterModalClose}>Close</Button>
         </DialogActions>
       </Dialog>
+
       {/* Dialog for Make Post */}
       <Dialog open={formOpen && mode === "post"} onClose={handleFormClose}>
         <DialogTitle>Make Post</DialogTitle>
@@ -440,6 +457,12 @@ const LandingPage = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
             style={{ marginBottom: "10px" }}
+          />
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={(e) => handleFileChange(e.target.value)}
+            style={{ margin: "10px 0" }}
           />
         </DialogContent>
         <DialogActions>
@@ -512,6 +535,13 @@ const LandingPage = () => {
             value={updatePostContent}
             onChange={(e) => setUpdatePostContent(e.target.value)}
             style={{ marginBottom: "10px" }}
+          />
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            value={updatePostFile}
+            onChange={(e) => setUpdatePostFile(e.target.value)}
+            style={{ margin: "10px 0" }}
           />
         </DialogContent>
         <DialogActions>

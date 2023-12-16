@@ -16,6 +16,7 @@ function MakeAnnouncementCard({
   content,
   date,
   creator,
+  file,
   handleEdit,
   handleDelete,
 }) {
@@ -48,6 +49,11 @@ function MakeAnnouncementCard({
             <Typography variant="body2" color="text.secondary">
               {content}
             </Typography>
+            {file && (
+              <Typography variant="body2" color="text.secondary">
+                File: {file}
+              </Typography>
+            )}
           </Collapse>
         </CardContent>
       </CardActionArea>
