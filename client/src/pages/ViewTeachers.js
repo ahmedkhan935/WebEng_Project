@@ -11,12 +11,14 @@ import {
   InputAdornment,
   FormControl,
   IconButton,
+  Button,
+  Link,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import Pagination from "@mui/material/Pagination";
-import {viewAllTeachers,deleteTeacher} from "../services/AdminService";
+import { viewAllTeachers, deleteTeacher } from "../services/AdminService";
 import { useNavigate } from "react-router-dom";
 
 const ViewTeachers = () => {
@@ -25,7 +27,7 @@ const ViewTeachers = () => {
   const rowsPerPage = 5; // Set the number of rows per page
   // Add your filter states here if needed
   const [rows, setRows] = useState([]); // Contains the rows to be displayed on the current page
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const handleDelete = (teacherId) => {
     console.log(`Deleting teacher with ID: ${teacherId}`);
     deleteTeacher(teacherId).then((res) => {
@@ -50,11 +52,13 @@ const ViewTeachers = () => {
     });
   }, []);
 
-
   const handleUpdate = (teacherId) => {
     console.log(`Updating teacher with ID: ${teacherId}`);
     navigate(`/admin/updateTeacher/${teacherId}`);
-    
+  };
+
+  const handleaddteacher = () => {
+    navigate("/admin/addTeacher");
   };
 
   const styles = {
@@ -106,6 +110,19 @@ const ViewTeachers = () => {
           marginBottom: "20px",
         }}
       >
+        <Button
+          component={Link}
+          onClick={handleaddteacher}
+          variant="outlined"
+          color="primary"
+          style={{
+            zIndex: 2000,
+            width: "150px",
+            height: "40px",
+          }}
+        >
+          Add Teacher
+        </Button>
         <FormControl
           variant="outlined"
           style={{ marginLeft: "10px", marginRight: "10px" }}

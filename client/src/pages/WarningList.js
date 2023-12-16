@@ -6,7 +6,7 @@ import Stack from "@mui/material/Stack";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 //the column names must be in camel case notation
-const columns = ["studentId", "name", "Batch", "Department"];
+const columns = ["studentId", "name", "Batch", "Degree"];
 
 const WarningList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
@@ -33,25 +33,25 @@ const WarningList = () => {
       studentId: "34234",
       name: "Fatima Bilal",
       Batch: "2020",
-      Department: "SE",
+      Degree: "SE",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
   ];
 

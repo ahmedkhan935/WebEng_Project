@@ -11,12 +11,14 @@ import {
   FormControl,
   TextField,
   InputAdornment,
+  Button,
+  Link,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllCourses,deleteCourse } from "../services/AdminService";
+import { viewAllCourses, deleteCourse } from "../services/AdminService";
 
 const SearchCourses = () => {
   const navigate = useNavigate();
@@ -26,7 +28,6 @@ const SearchCourses = () => {
 
   const handleDelete = (id) => {
     deleteCourse(id).then((res) => {
-    
       if (!res.errorMessage) {
         alert("Course deleted successfully");
         setRows(rows.filter((row) => row._id !== id));
@@ -34,12 +35,14 @@ const SearchCourses = () => {
         alert("Course could not be deleted");
       }
     });
-  
   };
 
   const handleUpdate = (id) => {
-    
-    navigate("/admin/updateCourse/"+ id);
+    navigate("/admin/updateCourse/" + id);
+  };
+
+  const handleaddcourse = () => {
+    navigate("/admin/createCourse");
   };
   useEffect(() => {
     viewAllCourses().then((res) => {
@@ -53,7 +56,6 @@ const SearchCourses = () => {
       setRows(rows);
     });
   }, []);
-
 
   const styles = {
     h2: {
@@ -95,6 +97,19 @@ const SearchCourses = () => {
             marginTop: "20px",
           }}
         >
+          <Button
+            component={Link}
+            onClick={handleaddcourse}
+            variant="outlined"
+            color="primary"
+            style={{
+              zIndex: 2000,
+              width: "150px",
+              height: "40px",
+            }}
+          >
+            Add Course
+          </Button>
           <FormControl
             variant="outlined"
             style={{ marginLeft: "10px", marginRight: "10px" }}

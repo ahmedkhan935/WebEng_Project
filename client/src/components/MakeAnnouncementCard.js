@@ -29,7 +29,12 @@ function MakeAnnouncementCard({
     <Card sx={{ marginBottom: "10px" }}>
       <CardActionArea onClick={handleExpandClick}>
         <CardContent>
-          <Typography gutterBottom variant="h6" component="div">
+          <Typography
+            gutterBottom
+            variant="h7"
+            component="div"
+            sx={{ fontWeight: "bold" }}
+          >
             {title}
           </Typography>
           <Typography

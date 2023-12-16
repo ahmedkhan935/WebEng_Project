@@ -15,6 +15,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Button,
+  Link,
 } from "@mui/material";
 
 import Pagination from "@mui/material/Pagination";
@@ -60,9 +62,11 @@ const ViewStudents = () => {
   const handleUpdate = (studentId) => {
     console.log(`Updating student with ID: ${studentId}`);
     navigate(`/admin/updateStudent/${studentId}`);
-    // Add your navigation logic here
   };
 
+  const handleaddstudent = () => {
+    navigate("/admin/addStudent");
+  };
   const filteredRows = rows
     .filter(
       (row) =>
@@ -88,13 +92,29 @@ const ViewStudents = () => {
     <div>
       <NavBar>
         <h1 style={{ color: "#22717d", float: "left" }}>Students</h1>
+
         <div
           style={{
             display: "flex",
             justifyContent: "flex-end",
+            alignItems: "center",
             marginTop: "20px",
           }}
         >
+          <Button
+            component={Link}
+            onClick={handleaddstudent}
+            variant="outlined"
+            color="primary"
+            style={{
+              zIndex: 2000,
+              width: "150px",
+              height: "40px",
+              margin: "10px",
+            }}
+          >
+            Add Student
+          </Button>
           <FormControl variant="outlined" style={{ marginRight: "10px" }}>
             <InputLabel>Batch</InputLabel>
             <Select
@@ -118,12 +138,16 @@ const ViewStudents = () => {
               style={{ zIndex: 2000, width: "200px", height: "40px" }}
             >
               <MenuItem value="">All</MenuItem>
-              {/* Add your degree options here */}
             </Select>
           </FormControl>
+
           <FormControl
             variant="outlined"
-            style={{ marginLeft: "10px", marginRight: "10px" }}
+            style={{
+              marginLeft: "10px",
+              marginRight: "70px",
+              marginTop: "10px",
+            }}
           >
             <TextField
               label="Search"

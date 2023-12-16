@@ -50,7 +50,11 @@ function App() {
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
-            <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route
+              path="
+            "
+              element={<AddStudentForm />}
+            ></Route>
             <Route
               path="updateStudent/:id"
               element={<UpdateStudentForm />}
@@ -63,6 +67,8 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
+           
+
             <Route
               path="updateCourse/:id"
               element={<UpdateCourseForm />}

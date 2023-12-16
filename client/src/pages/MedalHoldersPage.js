@@ -6,7 +6,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
 //the column names must be in camel case notation
-const columns = ["studentId", "name", "medalType", "Batch", "Department"];
+const columns = ["studentId", "name", "medalType", "Batch", "Degree"];
 
 const MedalHoldersPage = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
@@ -35,28 +35,28 @@ const MedalHoldersPage = () => {
       name: "Fatima Bilal",
       medalType: "Gold Medal",
       Batch: "2020",
-      Department: "SE",
+      Degree: "SE",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       medalType: "Golden Medal",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       medalType: "Golden Medal",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
     {
       studentId: "34240",
       name: "Ahmed Raza",
       medalType: "Golden Medal",
       Batch: "2021",
-      Department: "CS",
+      Degree: "CS",
     },
   ];
 
