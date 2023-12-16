@@ -109,20 +109,20 @@ const ClassroomSchema = new mongoose.Schema({
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Teacher',
         required: true
     },
     teachers:{
         type: [
             {
-                teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+                teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
             }
         ]
     },
     students:{
         type: [
             {
-                studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+                studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
             }
         ]
     },
