@@ -207,6 +207,16 @@ export const getClasses = async () => {
     return handleResponse(response);
 };
 
+export const getClass = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/student/classes/${classCode}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+}
+
 export const getTodos = async () => {
     const response = await axios.get(`${BASE_URL}/student/todos`, {
         headers: {
