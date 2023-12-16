@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
-import mainPageImage from "../assets/images/MainPage.png";
+//import mainPageImage from "../assets/images/MainPage.png";
+import mainPageImage from '../assets/images/animatedHomepage.gif'; //trying thiss
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme";
 import { Link } from "react-router-dom";
@@ -22,7 +23,7 @@ const MainPage = () => {
     },
 
     mainPageImage: {
-      marginTop: "50px",
+      marginTop: "0px",
       width: "600px",
       height: "600px",
       objectFit: "contain",

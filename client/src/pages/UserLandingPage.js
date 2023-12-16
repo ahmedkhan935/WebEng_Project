@@ -1,15 +1,25 @@
-import React from 'react';
-import { Button, Container } from '@mui/material';
-import CoursesList from '../components/CoursesList';
+import React, { useEffect } from 'react';
+import { Container, Typography } from '@mui/material';
+import ClassesList from '../components/ClassesList';
 import NavBar from '../components/Navbar';
-import AnnouncementList from '../components/AnnouncementList';
+import { getClasses, getThreads } from '../services/StudentService'
+import AnnouncementList from '../components/AnnouncementList'; 
+import useStore from '../store/store';
 
-function UserLandingPage() {
+
+//Landing page for student/teacher, can be customized accordingly
+function UserLandingPage({role}) {
+    const { userRole, setUserRole } = useStore();
+
+    useEffect(() => {
+        setUserRole(role); //Update zustand store here, now it will be accessible everywhere
+    }, []);
+
     return (
-        <NavBar >
+        <NavBar>
             <Container>
                 <AnnouncementList></AnnouncementList>
-                <CoursesList></CoursesList>
+                <ClassesList></ClassesList>
             </Container>
         </NavBar>
     )

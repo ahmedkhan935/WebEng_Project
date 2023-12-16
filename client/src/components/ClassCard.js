@@ -7,13 +7,15 @@ import { Link } from 'react-router-dom';
 
 
 //Course card represents a small tile containing brief info about the course.
-function CourseCard() {
+function ClassCard({classroom}) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+  let url = "/student/classes/"+classroom.code;
+
   return (
-    <Card sx={{ maxWidth: isSmallScreen ? '100%' : 345, marginTop: '10px'}}>
-      <CardActionArea component={Link} to="/student/classes/1"  onClick={() => { console.log('Card clicked!'); }}>
+    <Card sx={{ maxWidth: isSmallScreen ? '100%' : 345, minWidth: isSmallScreen ? '100%' : 345, marginTop: '10px'}}>
+      <CardActionArea component={Link} to={url} >
         <CardMedia
           sx={{ height: 100 }}
           image={classroomHeader}
@@ -21,12 +23,11 @@ function CourseCard() {
         />
         <CardContent>
           <Typography gutterBottom variant="h4" component="div">
-            Programming Fundamnetals
+          {  classroom.name }
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Course Code <br />
-            Course Teacher <br />
-            Course Description <br />
+           {"Classroom code: " + classroom.code  } <br />
+           { "Welcome to the "+ classroom.courseId.courseType+" Class of "+classroom.courseId.courseName  } <br />
           </Typography>
         </CardContent>
       </CardActionArea>
@@ -38,5 +39,5 @@ function CourseCard() {
   );
 }
 
-export default CourseCard;
+export default ClassCard;
 

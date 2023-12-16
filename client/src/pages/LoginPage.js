@@ -36,15 +36,17 @@ const LoginPage = () => {
     let resp;
     const student=location.pathname.includes("student");
 
-    
     if(student)
       resp=await studentlogin(email,password); 
     else
       resp=await teacherLogin(email,password);
-    if(resp.status===200){
+
+    if(resp.status===200 && student ){
       console.log("Login Successful");
       /*change here when teacher ui is done*/
       navigate("/student");
+    } else if (resp.status === 200 && !student) {
+      //navigate to teacher page
     }
     else{
       const data=await resp.json();
