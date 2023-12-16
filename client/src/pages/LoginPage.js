@@ -42,8 +42,6 @@ const LoginPage = () => {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
       navigate("/student");
-    } else {
-      const data = await resp.json();
     } else if (resp.status === 200 && !student) {
       //navigate to teacher page
     }

@@ -8,7 +8,7 @@ import {
   alpha,
   Grid,
 } from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
 import NavBar from "../components/Navbar";
 import CompletedCourseBadge from "../components/CompletedCourseBadge";
@@ -20,8 +20,9 @@ function Classroom() {
   const { classCode } = useParams();
   const [classroom, setClassroom] = React.useState({});
 
-  React.useEffect(() => {
-    
+  useEffect(() => {
+    // Get classroom details
+  
   }, []);
 
   return (
