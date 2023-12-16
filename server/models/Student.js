@@ -44,7 +44,7 @@ const studentSchema = new mongoose.Schema({
             }
         ], default: [],// add main thread id on creation
     },
-    batch: { type: String, default: "" }
+    batch: { type: String, default: "2022" }
 });
 
 const Student = mongoose.model('Student', studentSchema);
