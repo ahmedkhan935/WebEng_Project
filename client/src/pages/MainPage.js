@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
-import theme from "../temp/theme/theme.js";
+import theme from "../assets/theme/theme.js";
 import { Link } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 

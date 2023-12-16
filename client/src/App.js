@@ -20,7 +20,7 @@ import SearchCourses from "./pages/SearchCourses";
 import Settings from "./pages/Settings";
 //import { ThemeProvider } from "@mui/material";
 //import theme from "./assets/theme/theme";
-import { CSThemeProvider } from "./temp/theme/CSThemeProvider"; //Custom Clean Slate theme provider
+import { CSThemeProvider } from "./assets/theme/CSThemeProvider"; //Custom Clean Slate theme provider
 
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
