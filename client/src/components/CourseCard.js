@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
-import classroomHeader from "../Assets/Images/classroomHeader.jpg"; // import the image
+import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
 import { Link } from "react-router-dom";
 
 //Course card represents a small tile containing brief info about the course.

@@ -9,7 +9,7 @@ import {
   Grid,
 } from "@mui/material";
 import React from "react";
-import classroomHeader from "../Assets/Images/classroomHeader.jpg"; // import the image
+import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
 import NavBar from "../components/Navbar";
 import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
