@@ -20,10 +20,14 @@ const threadSchema = new mongoose.Schema({
           type: Date,
           required: true,
         },
-        createdBy: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-          required: true,
+        attachments: {
+          type: [
+            {
+              type: String,
+              required: true,
+            },
+          ],
+          default: [],
         },
       },
     ],

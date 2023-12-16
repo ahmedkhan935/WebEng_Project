@@ -374,6 +374,8 @@ const deleteTeacher = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   createSemester,
   getAllSemesters,
