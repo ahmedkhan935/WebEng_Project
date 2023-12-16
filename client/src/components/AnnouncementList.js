@@ -4,7 +4,14 @@ import Announcement from './AnnouncementCard';
 import { Link } from 'react-router-dom';
 
 
-function AnnouncementList() {
+function AnnouncementList({isFullList}) {
+    const [announcements, setAnnouncements] = React.useState([]);
+    const [announcementError, setAnnouncementError] = React.useState(null);
+    const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
+
+    //Get all announcements from threads
+    
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', marginBottom: '20px'}}>
             <Container sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
@@ -14,7 +21,8 @@ function AnnouncementList() {
                 <Announcement> </Announcement>
                 <Announcement> </Announcement>
                 <Announcement> </Announcement>
-                <Button variant="contained" sx={{ alignSelf: 'flex-end' }} component={Link} to='/student/threads'>View All</Button>
+                {!isFullList && announcements.length > 3 ?
+                <Button variant="contained" sx={{ alignSelf: 'flex-end', marginRight: '22px', marginTop: '10px' }}  component={Link} to='/student/threads'>View All</Button> : null}
             </Container>
         </Box>
     )

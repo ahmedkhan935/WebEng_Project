@@ -27,6 +27,7 @@ import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
 import UpdateTeacherForm from "./pages/updateTeacher";
+import Classes from "./pages/Classes";
 
 function App() {
   return (
@@ -41,7 +42,8 @@ function App() {
           <Route path="/student/settings" element={<Settings />}></Route>
 
           <Route path="student">
-            <Route index element={<UserLandingPage />}></Route>
+            <Route index element={<UserLandingPage role={"student"} />}></Route>
+            <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:id" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
