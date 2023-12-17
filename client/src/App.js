@@ -54,11 +54,7 @@ function App() {
             <Route index element={<LandingPage />}></Route>
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
-            <Route
-              path="
-            "
-              element={<AddStudentForm />}
-            ></Route>
+            <Route path="addStudent" element={<AddStudentForm />}></Route>
             <Route
               path="updateStudent/:id"
               element={<UpdateStudentForm />}
