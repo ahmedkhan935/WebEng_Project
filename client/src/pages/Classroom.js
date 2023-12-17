@@ -8,14 +8,23 @@ import {
   alpha,
   Grid,
 } from "@mui/material";
-import React from "react";
+import React, {useEffect} from "react";
 import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
 import NavBar from "../components/Navbar";
 import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
 import ClassroomStreamCard from "../components/ClassroomStreamCard";
+import { useParams } from "react-router-dom";
 
 function Classroom() {
+  const { classCode } = useParams();
+  const [classroom, setClassroom] = React.useState({});
+
+  useEffect(() => {
+    // Get classroom details
+  
+  }, []);
+
   return (
     <NavBar>
       <Container>

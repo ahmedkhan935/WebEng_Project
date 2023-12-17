@@ -160,8 +160,8 @@ import { url } from './url';
 const BASE_URL = url;
 
 const handleResponse = async (response) => {
-    if (response.status >= 200 && response.status < 300) {
-        return response.data;
+    if (response.status >= 200 && response.status < 300) { //all possible valid (success) status codes
+        return { data: response.data };
     } else {
         return { error: response.data.errorMessage };
     }
@@ -206,6 +206,16 @@ export const getClasses = async () => {
     });
     return handleResponse(response);
 };
+
+export const getClass = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/student/classes/${classCode}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+}
 
 export const getTodos = async () => {
     const response = await axios.get(`${BASE_URL}/student/todos`, {
