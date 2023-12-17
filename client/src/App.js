@@ -27,6 +27,7 @@ import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
 import UpdateTeacherForm from "./pages/updateTeacher";
+import AdminThread from "./pages/AdminThread";
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
 
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
+            <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route
               path="
@@ -67,7 +69,6 @@ function App() {
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-           
 
             <Route
               path="updateCourse/:id"

@@ -12,13 +12,12 @@ import {
   Box,
   Link,
 } from "@mui/material";
-
 import NavBar from "../components/Navbar";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PostAddIcon from "@mui/icons-material/PostAdd";
-import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
+
 import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
 import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
 import { useNavigate } from "react-router-dom";
@@ -32,6 +31,7 @@ const LandingPage = () => {
   const [file, setfile] = useState("");
   const [mode, setMode] = useState("");
 
+  const [threadtitle, setThreadTitle] = useState("");
   const [displayedThreads, setDisplayedThreads] = useState([]);
   const [showAllThreads, setShowAllThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
@@ -42,13 +42,6 @@ const LandingPage = () => {
 
   const [updateFormOpen, setUpdateFormOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
-
-  const [updatePostFormOpen, setUpdatePostFormOpen] = useState(false);
-  const [updatePostTitle, setUpdatePostTitle] = useState("");
-  const [updatePostContent, setUpdatePostContent] = useState("");
-  const [updatePostFile, setUpdatePostFile] = useState(null);
-
-  const [selectedPost, setSelectedPost] = useState(null);
 
   const [threads, setThreads] = useState([
     {
@@ -116,10 +109,7 @@ const LandingPage = () => {
   };
 
   const handleViewThreadPosts = (thread) => {
-    const updatedThreads = threads.map((t) =>
-      t.id === thread.id ? { ...t, showPosts: !t.showPosts } : t
-    );
-    setThreads(updatedThreads);
+    navigate(`/admin/threads/${thread.id}`);
   };
 
   const handlemodeforaddThread = () => {
@@ -133,7 +123,7 @@ const LandingPage = () => {
   const handleAddThread = () => {
     const newThread = {
       id: threads.length + 1,
-      title: title,
+      title: threadtitle,
     };
 
     setThreads([newThread, ...threads]);
@@ -142,22 +132,9 @@ const LandingPage = () => {
 
   //add post to thread
   const handleAnnounce = () => {
-    console.log("Announcing...");
-    const newPost = {
-      id: selectedThread.posts.length + 1,
-      title: title,
-      content: content,
-      file: file,
-      date: new Date().toLocaleDateString(),
-      creator: "Amir Rehman",
-    };
-
-    selectedThread.posts.push(newPost);
-
     setTitle("");
     setfile("");
     setContent("");
-
     setFormOpen(false);
   };
 
@@ -168,36 +145,6 @@ const LandingPage = () => {
     );
     setThreads(updatedThreads);
     handleUpdateFormClose();
-  };
-
-  //handle delete post of thread
-  const handleDeletepost = () => {};
-
-  const handleEditpost = (post) => {
-    setSelectedPost(post);
-    setUpdatePostTitle(post.title);
-    setUpdatePostContent(post.content);
-    setUpdatePostFile(post.file);
-    setUpdatePostFormOpen(true);
-  };
-
-  const handleFileChange = (file) => {
-    console.log(file);
-    setfile(file);
-    setUpdatePostFile(file);
-  };
-
-  const handleUpdatePostFormOpen = () => {
-    setUpdatePostFormOpen(true);
-  };
-
-  const handleUpdatePostFormClose = () => {
-    setUpdatePostFormOpen(false);
-  };
-
-  // Update the post with new title and content
-  const handleUpdatePost = () => {
-    handleUpdatePostFormClose();
   };
 
   const handleSemesterModalOpen = (message, icon) => {
@@ -353,29 +300,6 @@ const LandingPage = () => {
                     />
                   </Box>
                 </CardContent>
-                {thread.showPosts &&
-                  thread.posts &&
-                  thread.posts.length > 0 && (
-                    <CardContent>
-                      <Typography variant="h6" color="primary">
-                        Posts:
-                      </Typography>
-                      {thread.posts.map((post) => (
-                        <div style={{ marginTop: "20px" }}>
-                          <MakeAnnouncementCard
-                            key={post.id}
-                            title={post.title}
-                            content={post.content}
-                            date={post.date}
-                            creator={post.creator}
-                            file={post.file}
-                            handleEdit={() => handleEditpost(post)}
-                            handleDelete={() => handleDeletepost(post)}
-                          />
-                        </div>
-                      ))}
-                    </CardContent>
-                  )}
               </Card>
             ))}
           </CardContent>
@@ -461,7 +385,7 @@ const LandingPage = () => {
           <input
             type="file"
             accept="image/*,application/pdf"
-            onChange={(e) => handleFileChange(e.target.value)}
+            onChange={(e) => setfile(e.target.value)}
             style={{ margin: "10px 0" }}
           />
         </DialogContent>
@@ -481,8 +405,8 @@ const LandingPage = () => {
             label="Thread Title"
             variant="outlined"
             fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={threadtitle}
+            onChange={(e) => setThreadTitle(e.target.value)}
             style={{ marginBottom: "10px" }}
           />
         </DialogContent>
@@ -509,44 +433,6 @@ const LandingPage = () => {
         <DialogActions>
           <Button onClick={handleUpdateFormClose}>Cancel</Button>
           <Button onClick={handleUpdateThread} variant="contained">
-            Update
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Update Post Form Modal */}
-      <Dialog open={updatePostFormOpen} onClose={handleUpdatePostFormClose}>
-        <DialogTitle>Update Post</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Title"
-            variant="outlined"
-            fullWidth
-            value={updatePostTitle}
-            onChange={(e) => setUpdatePostTitle(e.target.value)}
-            style={{ marginBottom: "10px" }}
-          />
-          <TextField
-            label="Content"
-            variant="outlined"
-            multiline
-            rows={4}
-            fullWidth
-            value={updatePostContent}
-            onChange={(e) => setUpdatePostContent(e.target.value)}
-            style={{ marginBottom: "10px" }}
-          />
-          <input
-            type="file"
-            accept="image/*,application/pdf"
-            value={updatePostFile}
-            onChange={(e) => setUpdatePostFile(e.target.value)}
-            style={{ margin: "10px 0" }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleUpdatePostFormClose}>Cancel</Button>
-          <Button onClick={handleUpdatePost} variant="contained">
             Update
           </Button>
         </DialogActions>
