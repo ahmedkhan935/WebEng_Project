@@ -32,7 +32,7 @@ function Classroom() {
         return;
       } else {
         setClassroom(data.data);
-        console.log(data);
+        setClassFetched(true);
       }
     });
   

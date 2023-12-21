@@ -5,6 +5,10 @@ const threadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  description: {  
+    type: String,
+    required: false,
+  },
   content: {
     type: [
       {

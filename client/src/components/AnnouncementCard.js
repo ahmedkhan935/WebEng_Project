@@ -16,7 +16,7 @@ function AnnouncementCard({announcement}) {
                         {announcement.title}
                     </Typography>
                     <Typography variant="subtitle2" color="text.secondary" sx={{fontSize: 'small', fontStyle: 'italic'}}>
-                       {"Posted on " + new Date(announcement.date).toLocaleDateString() + " by " + announcement.createdBy}
+                       {"Posted on " + new Date(announcement.date).toLocaleDateString() + " by Amir Rehman"}
                     </Typography>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <Typography variant="body2" color="text.secondary">
