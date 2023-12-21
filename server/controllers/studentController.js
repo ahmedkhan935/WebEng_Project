@@ -111,7 +111,12 @@ const studentController = {
 
     getThreads: async (req, res) => {
         try {
-            const student = await Student.findById(req.user).populate('threads.threadId');
+            const student = await Student.findById(req.user)
+            .populate('threads.threadId')
+            .populate({
+              path: 'threads.createdBy',
+              select: 'name'
+            });
             const threads = student.threads;
             console.log(threads);
             res.status(201).json(threads);

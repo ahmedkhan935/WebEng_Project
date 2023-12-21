@@ -15,13 +15,26 @@ import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
 import ClassroomStreamCard from "../components/ClassroomStreamCard";
 import { useParams } from "react-router-dom";
+import { getClass  } from "../services/StudentService";
 
 function Classroom() {
   const { classCode } = useParams();
   const [classroom, setClassroom] = React.useState({});
+  const [classError, setClassError] = React.useState(null);
+  const [classFetched, setClassFetched] = React.useState(false); //To check if classes have been fetched or not
+
 
   useEffect(() => {
-    // Get classroom details
+    alert(classCode);
+    getClass(classCode).then((data) => {
+      if (data.error) {
+        setClassError(data.error);
+        return;
+      } else {
+        setClassroom(data.data);
+        console.log(data);
+      }
+    });
   
   }, []);
 
@@ -45,7 +58,7 @@ function Classroom() {
             />
             <Box position="absolute" bottom={0} left={0} p={1}>
               <Typography variant="h3" color="white" margin="10px">
-                Programming Fundamentals
+                {classroom ? classroom.name : ""}
               </Typography>
             </Box>
           </Box>
