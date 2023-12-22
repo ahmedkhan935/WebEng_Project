@@ -1,6 +1,6 @@
 //page to view all threads
 import React from "react";
-import { Box, Typography, Card, CardContent,Skeleton, Container, alpha, CardActionArea } from "@mui/material";
+import { Box, Typography, Card, CardContent, Skeleton, Container, alpha, CardActionArea } from "@mui/material";
 import NavBar from "../components/Navbar";
 import AnnouncementOutlined from '@mui/icons-material/AnnouncementOutlined';
 import { useTheme } from '@mui/material/styles';
@@ -8,10 +8,10 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Link } from 'react-router-dom';
 import { useEffect } from "react";
 import { getThreads } from "../services/StudentService";
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
 
 
-function ThreadCard({thread}) {
+function ThreadCard({ thread }) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -23,7 +23,7 @@ function ThreadCard({thread}) {
     return (
         <Card sx={{
             width: isSmallScreen ? '100%' : '70%',
-            maxHeight: '115px', ///max height of the card
+            minHeight: '115px', ///max height of the card
             bgcolor: 'primary.main',
             color: 'white',
             marginBottom: '20px',
@@ -32,19 +32,21 @@ function ThreadCard({thread}) {
         }}>
             <CardActionArea component={Link} to={url} >
                 <CardContent sx={{ padding: '20px' }}>
+                    <AnnouncementOutlined sx={{
+                        color: alpha(theme.palette.secondary.main, 0.5),
+                        position: 'absolute',
+                        left: '0', // Adjust this value
+                        transform: 'translateY(19%) translateX(-12%) ', // Adjust this value
+                        fontSize: '120px',
+                    }} />
                     <Box display="flex" alignItems="center" mb={2}>
-                        <AnnouncementOutlined sx={{
-                            color: alpha(theme.palette.secondary.main, 0.5),
-                            position: 'absolute',
-                            left: '0', // Adjust this value
-                            transform: 'translateY(19%) translateX(-12%) ', // Adjust this value
-                            fontSize: '120px',
-                        }} />
                         <Typography variant="h5" component="div" color="white" sx={{ marginLeft: '10px', zIndex: 2 }}>
                             {thread.title}
-                        </Typography> <br></br>
+                        </Typography>
+                    </Box>
+                    <Box display="flex" alignItems="center" mb={2}>
                         <Typography variant="subtitle2" component="div" color="white" sx={{ marginLeft: '10px', zIndex: 2 }}>
-                            {thread.description}    
+                            {thread.description}
                         </Typography>
                     </Box>
                 </CardContent>
@@ -85,24 +87,24 @@ function Threads() {
                     <Typography variant="subtitle2" sx={{ width: '100%', marginBottom: '10px' }}>
                         Click on any thread to view posts.
                     </Typography>
-                   { !threadsFetched ? //If not fetched display skeleton
+                    {!threadsFetched ? //If not fetched display skeleton
                         Array.from(new Array(3)).map((_, index) => (
-                        <Box key={index} sx={{ marginBottom: '10px' }}>
-                            <Skeleton variant="rectangular" height={70} width="70%" />
-                        </Box> )) 
+                            <Box key={index} sx={{ marginBottom: '10px' }}>
+                                <Skeleton variant="rectangular" height={70} width="70%" />
+                            </Box>))
                         :
                         threads.length === 0 ?  //if no threads
                             <Typography variant="subtitle2" sx={{ width: '100%', marginBottom: '10px', color: 'red' }}>
-                            You are not subscribed to any threads. Please contact admin for more information.
-                            </Typography> 
+                                You are not subscribed to any threads. Please contact admin for more information.
+                            </Typography>
                             :
                             threadsError ? //if error
                                 <Typography variant="subtitle2" sx={{ width: '100%', marginBottom: '10px', color: 'red' }}>
-                                Sorry! An error occurred.
-                                </Typography> 
+                                    Sorry! An error occurred.
+                                </Typography>
                                 : //succes case
-                                threads.map(thread=> <ThreadCard thread={thread}/>)
-                   }
+                                threads.map(thread => <ThreadCard thread={thread} />)
+                    }
 
                 </Container>
             </Box>

@@ -18,7 +18,14 @@ const teacherSchema = new mongoose.Schema({
                 },
             }
         ],
-    }
+    },
+    threads: {
+        type: [
+            {
+                threadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Thread' }, //Id of the thread as foreign key
+            }
+        ], default: [],// add main thread id on creation
+    },
 });
 
 const Teacher = mongoose.model('Teacher', teacherSchema);
