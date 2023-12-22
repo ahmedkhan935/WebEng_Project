@@ -162,7 +162,7 @@ const AdminThread = () => {
                   key={post._id}
                   title={post.title}
                   content={post.content}
-                  date={post.date}
+                  date={new Date(post.date).toLocaleDateString()}
                   creator="Amir Rehman"
                   file={post.attachments ? post.attachments.name : null}
                   handleEdit={() => handleEditpost(post)}

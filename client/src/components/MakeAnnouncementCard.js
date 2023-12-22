@@ -59,8 +59,9 @@ function MakeAnnouncementCard({
       >
         <Typography
           gutterBottom
-          variant="h7"
+          variant="h6"
           component="div"
+          color="primary"
           sx={{ fontWeight: "bold", marginLeft: "10px" }}
         >
           {title}
@@ -95,7 +96,6 @@ function MakeAnnouncementCard({
           </Typography>
 
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <br />
             <Typography>{content}</Typography>
             <br />
 
