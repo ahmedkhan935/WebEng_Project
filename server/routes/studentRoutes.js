@@ -14,6 +14,6 @@ router.get('/notifications',        Auth, AuthStudent, studentController.getNoti
 router.get('/threads',              Auth, AuthStudent, studentController.getThreads);
 router.get('/threads/:threadId',    Auth, AuthStudent, studentController.getThread);
 
-//router.post('/classes/:classCode/:announcementId/comment', Auth, AuthStudent, studentController.comment);
+router.post('/classes/:classCode/:announcementId/comment', Auth, AuthStudent, studentController.comment);
 
 module.exports = router;

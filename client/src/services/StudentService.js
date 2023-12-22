@@ -101,3 +101,15 @@ export const getThread = async (threadId) => {
     });
     return handleResponse(response);
 };
+
+export const postComment = async (classCode, announcementId, content) => {
+    const response = await axios.post(`${BASE_URL}/student/classes/${classCode}/${announcementId}/comment`, 
+    { content }, 
+    {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};

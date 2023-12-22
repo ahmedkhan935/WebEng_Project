@@ -9,7 +9,8 @@ import AttachmentIcon from '@mui/icons-material/Attachment';
 import Chip from '@mui/material/Chip';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
-
+import { useParams } from 'react-router-dom';
+import { postComment } from '../services/StudentService';
 
 
 import { useTheme } from '@mui/material/styles';
@@ -17,11 +18,17 @@ import { useTheme } from '@mui/material/styles';
 function ClassroomStreamCard({ card }) {
     const theme = useTheme();
     const [Icon, setIcon] = useState(null);
+    const [cardId, setCardId] = useState(''); 
+    const classCode = useParams().classCode;
+
     //Hooks for dealing with the menu
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+
     //Hook for dealing with comment
     const [newComment, setNewComment] = useState('');
+    const [comments, setComments] = useState(card.comments);
+
     //dealing with collapsing the card
     const [expanded, setExpanded] = useState(false);
 
@@ -33,9 +40,16 @@ function ClassroomStreamCard({ card }) {
         setNewComment(event.target.value);
     };
 
-    const handleCommentSubmit = () => {
-        console.log('New comment:', newComment);
-        alert("MUSA HASN'T MADE THE COMMENT ENDPOINT YET!");
+    const handleCommentSubmit = async () => {
+        if (newComment === '') return;
+        try {
+            const response = await postComment(classCode, cardId, newComment);
+            console.log("RESPONSE " ,response.data);
+            setComments(comments => [...comments, response.data]);
+        } catch (error) {
+            console.error('Error posting comment:', error);
+        }
+
         setNewComment('');
     };
 
@@ -77,6 +91,10 @@ function ClassroomStreamCard({ card }) {
             default:
                 setIcon(null);
         }
+
+        setCardId(card._id);
+        setComments(card.comments);
+
     }, [card]);
 
     return (
@@ -168,15 +186,15 @@ function ClassroomStreamCard({ card }) {
 
                     <hr></hr>
                     <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
-                                Comments
+                        Comments
                     </Typography>
                     <Box sx={{ marginTop: '10px' }}>
-                        {card.comments.length > 0 ? (
-                            card.comments.map((comment, index) => (
+                        {comments.length > 0 ? (
+                            comments.map((comment, index) => (
                                 <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                                     <Avatar src="../assets/images/defaultpfp.jpg" sx={{ marginRight: '10px' }} />
                                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom:'0px' }}>
+                                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom: '0px' }}>
                                             {comment.createdBy}
                                         </Typography>
                                         <Typography variant="body1">{comment.content}</Typography>

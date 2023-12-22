@@ -33,6 +33,8 @@ const studentController = {
     }
   },
 
+ 
+
   getClasses: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
@@ -79,9 +81,9 @@ const studentController = {
         for (let i = 0; i < classroom.announcements.length; i++) {
           for (let j = 0; j < classroom.announcements[i].comments.length; j++) {
             const commenter = await Student.findById(classroom.announcements[i].comments[j].createdBy).select('name');
-            console.log("commenter found " , commenter )
+          //  console.log("commenter found " , commenter )
             classroom.announcements[i].comments[j].createdBy = (commenter ? commenter.name : "Unknown User");
-           console.log( "updated createdby" ,  classroom.announcements[i].comments[j].createdBy );
+        //   console.log( "updated createdby" ,  classroom.announcements[i].comments[j].createdBy );
           }
         }
       }
@@ -148,6 +150,46 @@ const studentController = {
       res.status(500).json({ error: err.message });
     }
   },
+
+  comment: async (req,res) => {
+    try {
+      //:classCode/:announcementId
+      const { classCode, announcementId } = req.params;
+      const { content } = req.body;
+      const commenterId = req.user;
+
+      const classroom = await Classroom.findOne({ code: classCode })
+      if (!classroom) {
+        return res.status(404).json({ error: 'Classroom not found' });
+      }
+  
+      const announcement = classroom.announcements.id(announcementId);
+      if (!announcement) {
+        return res.status(404).json({ error: 'Announcement not found' });
+      }
+  
+      classroom.announcements.id(announcementId).comments.push({
+        content,
+        createdBy: commenterId,
+        date: new Date(),
+      });
+  
+      const lastIndex = classroom.announcements.id(announcementId).comments.length - 1;
+      const comment = classroom.announcements.id(announcementId).comments[lastIndex];
+      const student = await Student.findById(comment.createdBy);
+      
+      // Create a new comment object with the createdBy field replaced by the student's name
+      const commentWithStudentName = {
+        ...comment._doc, 
+        createdBy: student.name, //Replace the createdBy field with thename 
+      };
+      
+      res.status(201).json(commentWithStudentName);
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  }
 
 
 
