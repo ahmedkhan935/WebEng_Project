@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { Container, Typography } from '@mui/material';
 import ClassesList from '../components/ClassesList';
 import NavBar from '../components/Navbar';
-import { getClasses, getThreads } from '../services/StudentService'
 import AnnouncementList from '../components/AnnouncementList'; 
 import useStore from '../store/store';
 
