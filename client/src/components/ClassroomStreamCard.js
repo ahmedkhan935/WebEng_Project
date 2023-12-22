@@ -35,6 +35,7 @@ function ClassroomStreamCard({ card }) {
 
     const handleCommentSubmit = () => {
         console.log('New comment:', newComment);
+        alert("MUSA HASN'T MADE THE COMMENT ENDPOINT YET!");
         setNewComment('');
     };
 
