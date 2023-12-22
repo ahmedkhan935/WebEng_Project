@@ -13,7 +13,6 @@ import {
   Link,
 } from "@mui/material";
 import NavBar from "../components/Navbar";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PostAddIcon from "@mui/icons-material/PostAdd";
@@ -247,25 +246,16 @@ const LandingPage = () => {
 
             {displayedThreads.map((thread) => (
               <Card
+                onClick={() => handleViewThreadPosts(thread)}
                 key={thread.id}
                 sx={{
+                  cursor: "pointer",
                   ...styles.threadCard,
                 }}
               >
                 <CardContent>
                   <Typography variant="h6">{thread.title}</Typography>
                   <Box sx={styles.threadOptions}>
-                    <VisibilityIcon
-                      variant="outlined"
-                      color="primary"
-                      sx={{
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleViewThreadPosts(thread)}
-                    />
-
                     <DriveFileRenameOutlineIcon
                       variant="outlined"
                       color="primary"

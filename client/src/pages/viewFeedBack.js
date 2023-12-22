@@ -19,10 +19,10 @@ import { InputLabel, MenuItem, Select, Box } from "@mui/material";
 import NavBar from "../components/Navbar";
 
 const ViewFeedback = () => {
-  const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
-  const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+  const [selectedBatch, setSelectedBatch] = useState("2021");
+  const [selectedSemester, setSelectedSemester] = useState("1");
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 1;
+  const rowsPerPage = 2;
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -33,8 +33,7 @@ const ViewFeedback = () => {
   };
 
   const batches = ["2020", "2021", "2022"];
-  const semesters = ["Spring", "Fall", "Summer"];
-
+  const semesters = ["1", "2", "3", "4", "5", "6", "7", "8"];
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };

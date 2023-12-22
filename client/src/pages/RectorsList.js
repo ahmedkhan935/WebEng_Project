@@ -10,7 +10,7 @@ const columns = ["studentId", "name", "Batch", "Degree"];
 
 const RectorsList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021"); // Initial selected batch
-  const [selectedSemester, setSelectedSemester] = useState("Spring"); // Initial selected semester
+  const [selectedDegree, setSelectedDegree] = useState("SE");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2;
 
@@ -18,13 +18,12 @@ const RectorsList = () => {
     setSelectedBatch(event.target.value);
   };
 
-  const handleSemesterChange = (event) => {
-    setSelectedSemester(event.target.value);
+  const handleDegreeChange = (event) => {
+    setSelectedDegree(event.target.value);
   };
 
   const batches = ["2020", "2021", "2022"];
-  const semesters = ["Spring", "Fall", "Summer"];
-
+  const degrees = ["SE", "CS"];
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
@@ -100,17 +99,17 @@ const RectorsList = () => {
         </FormControl>
 
         <FormControl sx={{ minWidth: "120px" }}>
-          <InputLabel id="semester-label">Semester</InputLabel>
+          <InputLabel id="degree-label">Degree</InputLabel>
           <Select
-            labelId="semester-label"
-            id="semester-select"
-            value={selectedSemester}
-            onChange={handleSemesterChange}
+            labelId="degree-label"
+            id="degree-select"
+            value={selectedDegree}
+            onChange={handleDegreeChange}
             sx={{ height: "40px" }}
           >
-            {semesters.map((semester) => (
-              <MenuItem key={semester} value={semester}>
-                {semester}
+            {degrees.map((degree) => (
+              <MenuItem key={degree} value={degree}>
+                {degree}
               </MenuItem>
             ))}
           </Select>
