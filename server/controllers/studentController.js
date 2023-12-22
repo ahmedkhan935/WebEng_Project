@@ -160,7 +160,6 @@ const studentController = {
       //   select: 'name'
       // });
       const threads = student.threads;
-      console.log(threads);
       res.status(201).json(threads);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -172,7 +171,6 @@ const studentController = {
       const student = await Student.findById(req.user).populate('threads.threadId');
       const threads = student.threads;
       const thread = threads.find(thread => thread.threadId._id == req.params.threadId);
-      console.log(thread);
       res.status(201).json(thread);
     } catch (err) {
       res.status(500).json({ error: err.message });

@@ -11,8 +11,6 @@ function AnnouncementList({ isFullList, thread }) {
     const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
 
     useEffect(() => {
-        console.log("announcementlist isfulllist", isFullList);
-        console.log("announcementlist thread", thread);
 
         //If thread object is passed, set announcements of that thread.
         if (thread) {
