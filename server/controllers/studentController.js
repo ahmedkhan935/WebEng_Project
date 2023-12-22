@@ -33,8 +33,6 @@ const studentController = {
     }
   },
 
-
-
   getClasses: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
@@ -103,7 +101,7 @@ const studentController = {
       let todos = [];
       classes.forEach(classroom => {
         classroom.announcements.forEach(announcement => {
-          if ((announcement.type === 'assignment' || announcement.type === 'quiz') && new Date(announcement.dueDate) > new Date()) {
+          if ((announcement.type == 'Assignment' || announcement.type == 'Quiz') && new Date(announcement.dueDate) > new Date()) {
             todos.push(announcement);
           }
         });
@@ -117,7 +115,6 @@ const studentController = {
 
   getTodos: async (req, res) => {
     try {
-      const student = await Student.findById(req.user);
       const classCode = req.params.classCode;
       const classroom = await Classroom.findOne({ code: classCode });
       if (!classroom) {
@@ -125,8 +122,11 @@ const studentController = {
       }
 
       let todos = [];
+      const now = new Date();
       classroom.announcements.forEach(announcement => {
-        if ((announcement.type === 'assignment' || announcement.type === 'quiz') && new Date(announcement.dueDate) > new Date()) {
+        if(announcement.dueDate){console.log("due date: ", new Date(announcement.dueDate)); console.log(now)};
+        if ((announcement.type == 'Assignment' || announcement.type == 'Quiz') && new Date(announcement.dueDate) > now) {
+          console.log("announcement found");
           todos.push(announcement);
         }
       }
