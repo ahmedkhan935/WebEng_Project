@@ -15,7 +15,11 @@ import {
 import NavBar from "../components/Navbar";
 
 import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
-import { addAnnouncement, viewAnnouncements,deleteAnnouncement } from "../services/ThreadService";
+import {
+  addAnnouncement,
+  viewAnnouncements,
+  deleteAnnouncement,
+} from "../services/ThreadService";
 
 const AdminThread = () => {
   const [updatePostFormOpen, setUpdatePostFormOpen] = useState(false);
@@ -54,12 +58,10 @@ const AdminThread = () => {
     deleteAnnouncement(id, post._id).then((res) => {
       if (res.status === 200) {
         res.json().then((data) => {
-        setPosts(posts.filter((posts) => post._id !== posts._id));
+          setPosts(posts.filter((posts) => post._id !== posts._id));
         });
       }
-    }
-    );
-
+    });
   };
 
   const handleEditpost = (post) => {
@@ -85,7 +87,6 @@ const AdminThread = () => {
   //posting to thread
 
   const handlePostToThread = () => {
-   
     setFormOpen(true);
   };
 
@@ -98,8 +99,6 @@ const AdminThread = () => {
     setFormOpen(false);
   };
 
-  //add post
-
   //add post to thread
   const handleAnnounce = () => {
     var formData = new FormData();
@@ -107,18 +106,18 @@ const AdminThread = () => {
     formData.append("content", content);
     formData.append("file", file, file.name);
     addAnnouncement(id, formData).then((res) => {
-      if(res.status === 200)
-      {
+      if (res.status === 200) {
         res.json().then((data) => {
-        setPosts([...posts, data]);
-      });
-    }
+          setPosts([...posts, data]);
+        });
+      }
     });
-    sendEmail();
     setTitle("");
     setfile("");
     setContent("");
     setFormOpen(false);
+    //sending email here to all students
+    sendEmail();
   };
 
   const [posts, setPosts] = useState([
@@ -146,8 +145,7 @@ const AdminThread = () => {
         setPosts(data);
       });
     });
-  }
-  , []);
+  }, []);
 
   return (
     <NavBar>
@@ -181,7 +179,7 @@ const AdminThread = () => {
                   content={post.content}
                   date={post.date}
                   creator={post.creator}
-                  file={post.attachments?post.attachments.originalName:null}
+                  file={post.attachments ? post.attachments.originalName : null}
                   handleEdit={() => handleEditpost(post)}
                   handleDelete={() => handleDeletepost(post)}
                 />
