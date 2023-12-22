@@ -45,38 +45,9 @@ app.use('/auth', authRouter);
 app.use('/thread', threadRouter);
 
 app.post('/', async (req, res) => {
-    try {
            
+        console.log(req.body);
         
-        if(!req.files) {
-            res.status(400).send('No file uploaded.');
-            return;
-        }
-        const file = req.files.xyz
-        ;
-        console.log(file);
-        if (!file) {
-            res.status(400).send('No file uploaded.');
-            return;
-        }
-        const blob = bucket.file(file.originalname);
-        const blobWriter = blob.createWriteStream({
-            metadata: {
-                contentType: file.mimetype,
-            },
-        });
-        blobWriter.on('error', (err) => next(err));
-        blobWriter.on('finish', () => {
-            // Assembling public URL for accessing the file via HTTP
-            const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
-            // Return the file name and its public URL
-            res.status(200).send({ fileName: file.originalname, fileLocation: publicUrl });
-        });
-        blobWriter.end(file.buffer);
-    } catch (err) {
-        console.log(err.message);
-        res.json({ message: err });
-    }
 });
 
 const port = 3000;

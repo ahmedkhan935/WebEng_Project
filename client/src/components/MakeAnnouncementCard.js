@@ -20,7 +20,8 @@ function MakeAnnouncementCard({
   handleEdit,
   handleDelete,
 }) {
-  const [expanded, setExpanded] = React.useState(false);
+  
+    const [expanded, setExpanded] = React.useState(false);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);

@@ -20,6 +20,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
 import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
 import { useNavigate } from "react-router-dom";
+import { addThread, deleteThread, getThreads, updateThread } from "../services/ThreadService";
 
 const AdminThreads = () => {
   const navigate = useNavigate();
@@ -28,46 +29,25 @@ const AdminThreads = () => {
   const [mode, setMode] = useState("");
 
   const [threadtitle, setThreadTitle] = useState("");
-  const [displayedThreads, setDisplayedThreads] = useState([]);
-  const [showAllThreads, setShowAllThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
 
   const [updateFormOpen, setUpdateFormOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
 
   const [threads, setThreads] = useState([
-    {
-      id: 1,
-      title: "Thread 1",
-      posts: [
-        {
-          id: 1,
-          title: "Post 1",
-          content: "This is the content of post 1.",
-          creator: "Amir Rehman",
-          date: "2023-01-01",
-          file: null,
-        },
-        {
-          id: 2,
-          title: "Post 2",
-          content: "This is the content of post 2.",
-          creator: "Amir Rehman",
-          date: "2023-01-02",
-          file: null,
-        },
-      ],
-    },
-    {
-      id: 2,
-      title: "Thread 2",
-      posts: [],
-    },
   ]);
 
   useEffect(() => {
-    setDisplayedThreads(threads.slice(0, showAllThreads ? threads.length : 3));
-  }, [threads, showAllThreads]);
+    getThreads().then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+
+          setThreads(data);
+        });
+      }
+    });
+    //setDisplayedThreads(threads.slice(0, showAllThreads ? threads.length : 3));
+  }, []);
 
   const handleFormClose = () => {
     setMode("");
@@ -85,7 +65,7 @@ const AdminThreads = () => {
   };
 
   const handleViewThreadPosts = (thread) => {
-    navigate(`/admin/threads/${thread.id}`);
+    navigate(`/admin/threads/${thread._id}`);
   };
 
   const handlemodeforaddThread = () => {
@@ -94,24 +74,54 @@ const AdminThreads = () => {
   };
 
   //handle delete
-  const handleDelete = (thread) => {};
+  const handleDelete = (thread) => {
+    console.log(thread._id);
+    deleteThread(thread._id).then((res) => {
+      if (res.status === 200) {
+        setThreads(threads.filter((t) => t._id !== thread._id));
+      }
+    }
+    );
+
+  };
   //add thread
   const handleAddThread = () => {
-    const newThread = {
-      id: threads.length + 1,
-      title: threadtitle,
-    };
+    // const newThread = {
+    //   id: threads.length + 1,
+    //   title: threadtitle,
+    // };
 
-    setThreads([newThread, ...threads]);
+    addThread(threadtitle).then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          setThreads([data, ...threads]);
+        });
+      }
+    });
+
+
+
+    //setThreads([newThread, ...threads]);
     setFormOpen(false);
   };
 
   // Update the thread with new title and content
   const handleUpdateThread = () => {
-    const updatedThreads = threads.map((t) =>
-      t.id === selectedThread.id ? { ...t, title: updateTitle } : t
-    );
-    setThreads(updatedThreads);
+    // const updatedThreads = threads.map((t) =>
+    //   t.id === selectedThread.id ? { ...t, title: updateTitle } : t
+    // );
+    //setThreads(updatedThreads);
+    updateThread(selectedThread._id, updateTitle).then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          setThreads(
+            threads.map((t) =>
+              t._id === selectedThread._id ? { ...t, title: updateTitle } : t
+            )
+          );
+        });
+      }
+    }); 
     handleUpdateFormClose();
   };
 
@@ -155,9 +165,9 @@ const AdminThreads = () => {
               Threads
             </Typography>
 
-            {displayedThreads.map((thread) => (
+            {threads.map((thread) => (
               <Card
-                key={thread.id}
+                key={thread._id}
                 sx={{
                   ...styles.threadCard,
                 }}
