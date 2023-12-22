@@ -163,7 +163,7 @@ const AdminThread = () => {
                   title={post.title}
                   content={post.content}
                   date={post.date}
-                  creator={post.creator}
+                  creator="Amir Rehman"
                   file={post.attachments ? post.attachments.name : null}
                   handleEdit={() => handleEditpost(post)}
                   handleDelete={() => handleDeletepost(post)}

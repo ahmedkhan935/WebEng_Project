@@ -9,7 +9,10 @@ import {
   CardActions,
   Menu,
   MenuItem,
+  Box,
 } from "@mui/material";
+import Chip from "@mui/material/Chip";
+import AttachmentIcon from "@mui/icons-material/Attachment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 function MakeAnnouncementCard({
@@ -90,16 +93,44 @@ function MakeAnnouncementCard({
           >
             Posted on {date} by {creator}
           </Typography>
+
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <Typography variant="h7">{content}</Typography>
+            <br />
+            <Typography>{content}</Typography>
+            <br />
+
             {file && (
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ marginTop: "10px" }}
-              >
-                Attachment : {file}
-              </Typography>
+              <div style={{ marginTop: "10px" }}>
+                <Typography
+                  variant="h7"
+                  color="secondary"
+                  sx={{
+                    fontWeight: "bolder",
+                    zIndex: 1,
+                    position: "relative",
+                  }}
+                >
+                  Attachments
+                </Typography>
+                <Box
+                  sx={{ display: "flex", flexWrap: "wrap", marginTop: "10px" }}
+                >
+                  <Chip
+                    icon={<AttachmentIcon />}
+                    label={file}
+                    clickable
+                    component="a"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    variant="outlined"
+                    sx={{
+                      margin: "5px",
+                      backgroundColor: (theme) =>
+                        `${theme.palette.secondary.main}1A`,
+                    }}
+                  />
+                </Box>
+              </div>
             )}
           </Collapse>
         </CardContent>
