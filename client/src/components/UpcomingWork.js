@@ -37,8 +37,8 @@ function UpcomingWork({ classCode }) {
                 No work due soon
                 </Typography>
                 :
-                todos.map((todo) => <Typography variant="body2" color="text.secondary" my={1}>
-                {todo.text}
+                todos.map((todo) => <Typography variant="body2" color="text.secondary" my={2}>
+                {todo.title +" due on: "+  new Date(todo.dueDate).toLocaleDateString()}
                 </Typography>)
                 }
         </Box>

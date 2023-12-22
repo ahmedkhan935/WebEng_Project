@@ -25,13 +25,17 @@ const threadSchema = new mongoose.Schema({
           required: true,
         },
         attachments: {
-          type: [
+          type: 
             {
-              type: String,
-              required: true,
-            },
-          ],
-          default: [],
+             
+                orignalName: String,
+                name: String,
+                
+              
+              },
+            
+            
+          default: {},
         },
       },
     ],

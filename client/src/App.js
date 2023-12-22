@@ -33,6 +33,7 @@ import TeacherFeedback from "./pages/TeacherFeedback";
 import GiveFeedback from "./pages/giveFeedback";
 import AdminThreads from "./pages/AdminThreads";
 import PageNotFound from "./pages/PageNotFound";
+import AdminLists from "./pages/AdminLists";
 import VideoCall from "./pages/MakeVideoCall";
 
 function App() {
@@ -61,6 +62,10 @@ function App() {
           <Route path="teacher">
             <Route index element={<UserLandingPage role={"teacher"} />}></Route>
             <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
+            <Route path="threads" element={<Threads />}></Route>
+            <Route path="threads/:id" element={<Thread />}></Route>
+            <Route path="classes" element={<Classes />}></Route>
+            <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="classes/:id/videoCall" element={<VideoCall />}></Route>
           </Route>
 
@@ -89,6 +94,8 @@ function App() {
             ></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
+
+            <Route path="lists" element = { <AdminLists /> }></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>

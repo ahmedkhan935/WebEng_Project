@@ -11,14 +11,71 @@ const handleResponse = async (response) => {
     }
 };    
 
-// export const createClassroom = async (classroom) => {
-//     try {
-//         const response = await axios.post(`${BASE_URL}/teacher/classroom`,
-//         {
+export const getClasses = async () => {
+    const response = await axios.get(`${BASE_URL}/teacher/classes`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
 
-//         }
-//         return handleResponse(response);
-//     } catch (error) {
-//         return { error: error.message };
-//     }
-// }
+export const createClassroom = async (classroom) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/teacher/classroom`,
+        {
+            name: classroom.name,
+            code: classroom.code,
+            courseId: classroom.courseId,
+            createdBy: classroom.createdBy,
+            teachers: classroom.teachers
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (error) {
+        return { error: error.message };
+    }
+};
+
+export const addAnnouncement = async (classCode, announcement) => {
+    try {
+        const response = await axios.post(`${BASE_URL}/teacher/classroom/${classCode}/announcement`,
+        {
+            type: announcement.type,
+            title: announcement.title,
+            content: announcement.content,
+            dueDate: announcement.dueDate,
+            attachments: announcement.attachments
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (error) {
+        return { error: error.message };
+    }
+};
+
+export const deleteAnnouncement = async (classCode, announcementId) => {
+    try {
+        const response = await axios.delete(`${BASE_URL}/teacher/classroom/${classCode}/announcement/${announcementId}`,
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (error) {
+        return { error: error.message };
+    }
+};

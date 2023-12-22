@@ -107,6 +107,12 @@ const ClassroomSchema = new mongoose.Schema({
         ref: 'Course',
         required: true
     },
+    degreeId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Degree',
+        required: true
+    },
+    
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',

@@ -1,7 +1,12 @@
 import { createTheme } from '@mui/material/styles';
 import useStore from '../../store/store'; //zustand store for darkmode
 
-//THIS FILE IS DEPRECATED. USE CSTHEMEPROVIDER.JS INSTEAD.
+//****************************************************** */
+//THIS FILE IS DEPRECATED. USE CSTHEMEPROVIDER.JS INSTEAD
+//          REMOVE ALL REFERENCES TO THIS FILE
+//****************************************************** */
+
+
 const theme = createTheme({
     palette: {
         primary: {

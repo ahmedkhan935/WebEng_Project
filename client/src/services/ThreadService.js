@@ -47,14 +47,14 @@ export async function updateThread(id, title) {
         body: JSON.stringify({title: title})
     });
 }
-export async function addAnnouncement(id, title, content, attachments) {
+export async function addAnnouncement(id,formData) {
     return await fetch(`${BASE_URL}/thread/${id}/announcement`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
+            
         },
         credentials: 'include',
-        body: JSON.stringify({title: title, content: content, attachments: attachments})
+        body:   formData
     });
 }
 
@@ -68,14 +68,16 @@ export async function deleteAnnouncement(threadId, announcementId) {
     });
 }
 
-export async function updateAnnouncement(threadId, announcementId, title, content, attachments) {
+export async function updateAnnouncement(threadId, announcementId, FormData) {
+
+
     return await fetch(`${BASE_URL}/thread/${threadId}/announcement/${announcementId}`, {
         method: 'PATCH',
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'multipart/form-data',
         },
         credentials: 'include',
-        body: JSON.stringify({title: title, content: content, attachments: attachments})
+        body: FormData
     });
 }
 
