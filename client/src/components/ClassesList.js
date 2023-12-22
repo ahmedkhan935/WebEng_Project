@@ -54,7 +54,7 @@ function ClassesList({ isFullList }) {
                                 })
                 }
             </Container>
-            {!isFullList && classes.length > 3 ?
+            {!isFullList && classes.length > 3  ?
                 <Button variant="contained" sx={{ alignSelf: 'flex-end', marginRight: '22px', marginTop: '10px' }} component={Link} to='/student/classes'>View All</Button> : null}
         </Box>
     )

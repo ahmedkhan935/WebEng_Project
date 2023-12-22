@@ -6,7 +6,6 @@ import { getClasses, getThreads } from '../services/StudentService'
 import AnnouncementList from '../components/AnnouncementList'; 
 import useStore from '../store/store';
 
-
 //Landing page for student/teacher, can be customized accordingly
 function UserLandingPage({role}) {
     const { userRole, setUserRole } = useStore();

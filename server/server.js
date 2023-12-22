@@ -9,7 +9,16 @@ const bucket = require("./firebase_init");
 
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to database'))
+  .catch(err => console.error('Could not connect to MongoDB...', err));
+
+  //error handling in case cannot connect to database
+mongoose.connection.on('error', (err) => {
+  console.error(`MongoDB connection error: ${err}`);
+  process.exit(-1);
+});
+
 mongoose.connection.on('connected', () => {
     console.log('Connected to database');
 });

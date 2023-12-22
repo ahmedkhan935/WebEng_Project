@@ -45,7 +45,7 @@ function App() {
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
-            <Route path="classes/:id" element={<Classroom />}></Route>
+            <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
           </Route>
