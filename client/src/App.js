@@ -30,6 +30,7 @@ import UpdateTeacherForm from "./pages/updateTeacher";
 import Classes from "./pages/Classes";
 import AdminThread from "./pages/AdminThread";
 import TeacherFeedback from "./pages/TeacherFeedback";
+import PageNotFound from "./pages/PageNotFound";
 
 function App() {
   return (
@@ -50,10 +51,11 @@ function App() {
             <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
+            <Route path="todos" element={<Thread />}></Route>
           </Route>
 
           <Route path="teacher">
-            <Route index></Route>
+            <Route index element={<UserLandingPage role={"teacher"} />}></Route>
             <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
           </Route>
 
@@ -92,6 +94,8 @@ function App() {
               <Route path="students" element={<ViewStudents />}></Route>
             </Route>
           </Route>
+
+          <Route path="*" element= {<PageNotFound /> }/>
         </Routes>
       </Router>
     </CSThemeProvider>

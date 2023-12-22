@@ -17,15 +17,12 @@ function Thread() {
     // console.log("use effect")
     // console.log("Thread id", threadId)
     getThread(threadId).then((data) => {
-      console.log("Thread fetchin data", data.data)
       if (data.error) {
         setPostsError(data.error);
         setPostsFetched(true);
         return;
       }
-      console.log("About to set");
       setThread(data.data);
-      console.log("Posts", thread)
       setPostsFetched(true);
     });
   }, []);
