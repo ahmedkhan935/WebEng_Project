@@ -4,6 +4,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import classroomHeader from '../assets/images/classroomHeader.jpg'; // import the image
 import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom'; 
 
 
 //Course card represents a small tile containing brief info about the course.
@@ -11,7 +12,10 @@ function ClassCard({classroom}) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  let url = "/student/classes/"+classroom.code;
+  const location = useLocation();
+  const userRole = location.pathname.split('/')[1]; 
+
+  let url = "/"+userRole+"/classes/"+classroom.code;
 
   return (
     <Card sx={{ maxWidth: isSmallScreen ? '100%' : 345, minWidth: isSmallScreen ? '100%' : 345, marginTop: '10px'}}>

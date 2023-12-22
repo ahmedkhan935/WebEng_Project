@@ -18,15 +18,16 @@ import UpcomingWork from "../components/UpcomingWork";
 import ClassroomStreamCard from "../components/ClassroomStreamCard";
 import { useParams } from "react-router-dom";
 import { getClass } from "../services/StudentService";
-import useStore from '../store/store'; //zustand store
+import { useLocation } from 'react-router-dom'; 
 
 function Classroom() {
   const { classCode } = useParams();
-  const userRole = useStore(state => state.userRole); // get the userRole from the store
   const [classroom, setClassroom] = React.useState({});
   const [classError, setClassError] = React.useState(null);
   const [classFetched, setClassFetched] = React.useState(false); //To check if classes have been fetched or not
 
+  const location = useLocation();
+  const userRole = location.pathname.split('/')[1]; 
 
   useEffect(() => {
     getClass(classCode).then((data) => {

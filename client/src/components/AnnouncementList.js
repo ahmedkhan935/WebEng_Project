@@ -1,14 +1,19 @@
 import React from 'react';
 import { Container, Typography, Button, Box, Skeleton } from '@mui/material';
 import AnnouncementCard from './AnnouncementCard';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react'
 import { getThreads } from '../services/StudentService'
-
 
 function AnnouncementList({ isFullList, thread }) {
     const [announcements, setAnnouncements] = React.useState([]);
     const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
+
+    const location = useLocation();
+    const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+
+    let threadsUrl = "/" + userRole + "/threads";
+
 
     useEffect(() => {
 
@@ -26,6 +31,7 @@ function AnnouncementList({ isFullList, thread }) {
             });
         }
     }, []);
+
 
 
 
@@ -54,7 +60,7 @@ function AnnouncementList({ isFullList, thread }) {
                     )
                 }
                 {!isFullList ?
-                    <Button variant="contained" sx={{ alignSelf: 'flex-end', marginTop: '10px' }} component={Link} to='/student/threads'>View All</Button> : null}
+                    <Button variant="contained" sx={{ alignSelf: 'flex-end', marginTop: '10px' }} component={Link} to={threadsUrl}>View All</Button> : null}
             </Container>
         </Box>
     )

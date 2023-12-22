@@ -8,13 +8,18 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { Link } from 'react-router-dom';
 import { useEffect } from "react";
 import { getThreads } from "../services/StudentService";
+import { useLocation } from 'react-router-dom'; 
 
 
 function ThreadCard({thread}) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-    const url="/student/threads/"+thread._id;
-    
+
+    const location = useLocation();
+    const userRole = location.pathname.split('/')[1];
+
+    const url = "/" + userRole + "/threads/" + thread._id;
+
     return (
         <Card sx={{
             width: isSmallScreen ? '100%' : '70%',
