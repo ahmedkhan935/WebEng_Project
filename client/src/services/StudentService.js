@@ -53,6 +53,7 @@ export const getClasses = async () => {
 
 export const getClass = async (classCode) => {
     console.log(classCode);
+    console.log("GOING TO CLASS ", classCode);
     const response = await axios.get(`${BASE_URL}/student/classes/${classCode}`, {
         headers: {
             'Content-Type': 'application/json',
@@ -62,8 +63,18 @@ export const getClass = async (classCode) => {
     return handleResponse(response);
 }
 
-export const getTodos = async () => {
+export const getAllTodos = async () => {
     const response = await axios.get(`${BASE_URL}/student/todos`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
+export const getTodos = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/student/todos/${classCode}`, {
         headers: {
             'Content-Type': 'application/json',
         },

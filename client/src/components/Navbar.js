@@ -29,10 +29,12 @@ import {
   Announcement as AnnouncementIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
+  School as SchoolIcon
 } from "@mui/icons-material";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 import { Link, useLocation } from "react-router-dom";
+
 
 const drawerWidth = 240;
 const standardOptions = [
@@ -101,9 +103,9 @@ const studentOptions = [
     linkto: "/student/settings",
   },
   { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
-  { title: "Books", Icon: <BookIcon color="primary" /> },
+  { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/student/classes' },
   { title: "Grades", Icon: <GradeIcon color="primary" /> },
-  { title: "Questions", Icon: <QuestionAnswerIcon color="primary" /> },
+  { title: "Feedback", Icon: <QuestionAnswerIcon color="primary" /> },
   { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
@@ -187,6 +189,7 @@ export default function NavBar({ children }) {
   const isAdmin = useLocation().pathname.includes("/admin");
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+ 
 
   const handleDrawerOpen = () => {
     setOpen(true);
