@@ -175,7 +175,7 @@ const AdminThreads = () => {
           </Button>
           <CardContent>
             <Typography variant="h5" style={{ marginBottom: "10px" }}>
-              Threads
+              Admin Threads
             </Typography>
 
             {displayedThreads.map((thread) => (

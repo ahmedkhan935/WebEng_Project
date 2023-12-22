@@ -32,6 +32,7 @@ import AdminThread from "./pages/AdminThreadPosts";
 import TeacherFeedback from "./pages/TeacherFeedback";
 import GiveFeedback from "./pages/giveFeedback";
 import AdminThreads from "./pages/AdminThreads";
+import VideoCall from "./pages/MakeVideoCall";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="teacher">
             <Route index></Route>
             <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
+            <Route path="classes/:id/videoCall" element={<VideoCall />}></Route>
           </Route>
 
           <Route path="/admin">
