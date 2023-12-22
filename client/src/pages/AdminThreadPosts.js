@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   TextField,
@@ -28,6 +29,25 @@ const AdminThread = () => {
 
   const { id } = useParams();
 
+  const sendEmail = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/admin/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "fatimabilal1016@gmail.com",
+          subject: title,
+          text: content,
+        }),
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
   //handle delete post of thread
   const handleDeletepost = () => {};
 
@@ -70,6 +90,7 @@ const AdminThread = () => {
 
   //add post to thread
   const handleAnnounce = () => {
+    sendEmail();
     setTitle("");
     setfile("");
     setContent("");

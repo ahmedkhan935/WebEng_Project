@@ -114,54 +114,51 @@ const viewAllStudents = async (req, res) => {
   }
 };
 const viewStudent = async (req, res) => {
-    try {
-        const student = await Student.findById(req.params.id);
-        if (!student) {
-            return res.status(404).json({ errorMessage: 'Student not found' });
-        }
-        res.status(200).json(student);
-    }  catch (error) {
-  
-    res.status(500).json({ errorMessage: "Internal server error" });
+  try {
+    const student = await Student.findById(req.params.id);
+    if (!student) {
+      return res.status(404).json({ errorMessage: "Student not found" });
     }
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
 };
 
-const removeStudent= async (req, res) => {
-    try {
-        const student = await Student.findByIdAndDelete(req.params.id);
-        if (!student) {
-            return res.status(404).json({ errorMessage: 'Student not found' });
-        }
-        res.status(200).send({message:"Student removed successfully"});
-    }  catch (error) {
+const removeStudent = async (req, res) => {
+  try {
+    const student = await Student.findByIdAndDelete(req.params.id);
+    if (!student) {
+      return res.status(404).json({ errorMessage: "Student not found" });
+    }
+    res.status(200).send({ message: "Student removed successfully" });
+  } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
 
+const updateStudent = async (req, res) => {
+  try {
+    const studentToUpdate = await Student.findById(req.params.id);
+    if (!studentToUpdate) {
+      return res.status(404).json({ errorMessage: "Student not found" });
+    }
+    const { email, adress, contactNumber, name } = req.body;
+    if (!email && !adress && !contactNumber && !name) {
+      throw new Error(
+        "Please provide values for email, adress, or contactNumber."
+      );
+    }
 
-
-const updateStudent= async (req, res) => {
-
-    try {
-        const studentToUpdate = await Student.findById(req.params.id);  
-        if (!studentToUpdate) {
-            return res.status(404).json({ errorMessage: 'Student not found' });
-        }
-        const {email,adress,contactNumber,name}=req.body;
-        if (!email && !adress && !contactNumber && !name) {
-            throw new Error('Please provide values for email, adress, or contactNumber.');
-        }
-
-        studentToUpdate.email=email?email:studentToUpdate.email;
-        studentToUpdate.address=adress?adress:studentToUpdate.address;
-        studentToUpdate.contactNumber=contactNumber?contactNumber:studentToUpdate.contactNumber;
-        studentToUpdate.name=name?name:studentToUpdate.name;
-        const student = await studentToUpdate.save();
-        return res.status(200).json(student);
-
-            
-    
+    studentToUpdate.email = email ? email : studentToUpdate.email;
+    studentToUpdate.address = adress ? adress : studentToUpdate.address;
+    studentToUpdate.contactNumber = contactNumber
+      ? contactNumber
+      : studentToUpdate.contactNumber;
+    studentToUpdate.name = name ? name : studentToUpdate.name;
+    const student = await studentToUpdate.save();
+    return res.status(200).json(student);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
@@ -229,52 +226,51 @@ const viewCourse = async (req, res) => {
   }
 };
 const validateCourseFields = (req) => {
-  const {  courseName, courseCredits, prereq } =
-    req.body;
+  const { courseName, courseCredits, prereq } = req.body;
 
-  if  (!courseName || !courseCredits ) {
-    throw new Error(
-      "Please provide values for  courseName, courseCredits."
-    );
+  if (!courseName || !courseCredits) {
+    throw new Error("Please provide values for  courseName, courseCredits.");
   }
 
   return {
-   
     courseName,
     courseCredits,
-    
+
     prereq,
   };
 };
 const updateCourse = async (req, res) => {
   try {
     const validatedFields = validateCourseFields(req);
-   const course=await Course.findById(req.params.id);
+    const course = await Course.findById(req.params.id);
     if (!course) {
       return res.status(404).json({ errorMessage: "Course not found" });
     }
-    course.courseName=validatedFields.courseName?validatedFields.courseName:course.courseName;
-    course.courseCredits=validatedFields.courseCredits?validatedFields.courseCredits:course.courseCredits;
-    if(validatedFields.prereq) 
-    {
-        for(const prereq of validatedFields.prereq)
-        {
-            
-            const course2 = await Course.findOne({ courseCode: prereq.courseCode });
-            
-            if (course2.prereq) {
-            for (const coursePrereq of course2.prereq) {
-                if (coursePrereq.courseCode === course.courseCode) {
-                    console.log(coursePrereq.courseCode);
-                return res
-                    .status(400)
-                    .json({ errorMessage: "Circular Prerequisite" });
-                }
+    course.courseName = validatedFields.courseName
+      ? validatedFields.courseName
+      : course.courseName;
+    course.courseCredits = validatedFields.courseCredits
+      ? validatedFields.courseCredits
+      : course.courseCredits;
+    if (validatedFields.prereq) {
+      for (const prereq of validatedFields.prereq) {
+        const course2 = await Course.findOne({ courseCode: prereq.courseCode });
+
+        if (course2.prereq) {
+          for (const coursePrereq of course2.prereq) {
+            if (coursePrereq.courseCode === course.courseCode) {
+              console.log(coursePrereq.courseCode);
+              return res
+                .status(400)
+                .json({ errorMessage: "Circular Prerequisite" });
             }
-            }
+          }
         }
+      }
     }
-    course.prereq=validatedFields.prereq?validatedFields.prereq:course.prereq;
+    course.prereq = validatedFields.prereq
+      ? validatedFields.prereq
+      : course.prereq;
 
     const savedCourse = await course.save();
     res.status(200).json(course);
@@ -289,7 +285,7 @@ const deleteCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ errorMessage: "Course not found" });
     }
-    res.status(200).send({ message: "Course deleted successfully"});
+    res.status(200).send({ message: "Course deleted successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
@@ -373,8 +369,6 @@ const deleteTeacher = async (req, res) => {
     res.status(500).json({ errorMessage: error.message || "Invalid input" });
   }
 };
-
-
 
 module.exports = {
   createSemester,
