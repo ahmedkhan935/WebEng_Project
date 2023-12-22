@@ -143,8 +143,9 @@ const studentController = {
   getThread: async (req, res) => {
     try {
       const student = await Student.findById(req.user).populate('threads.threadId');
-      //const thread = student.threads.filter(thread => thread._id == req.params.threadId);
-      const thread = student.threads.filter(thread => { console.log("in filter thread._id", thread._id, "reqparams.threadid", req.params.threadId); return thread._id == req.params.threadId });
+      const threads = student.threads;
+      const thread = threads.find(thread => thread.threadId._id == req.params.threadId);
+      console.log(thread);
       res.status(201).json(thread);
     } catch (err) {
       res.status(500).json({ error: err.message });
@@ -167,20 +168,24 @@ const studentController = {
       if (!announcement) {
         return res.status(404).json({ error: 'Announcement not found' });
       }
+      console.log("announcement found", announcement);
   
-      classroom.announcements.id(announcementId).comments.push({
+      const newComment = {
         content,
-        createdBy: commenterId,
         date: new Date(),
-      });
+        createdBy: commenterId
+      };
+      
+      announcement.comments.push(newComment);
+      await classroom.save();
   
-      const lastIndex = classroom.announcements.id(announcementId).comments.length - 1;
-      const comment = classroom.announcements.id(announcementId).comments[lastIndex];
+      const lastIndex = announcement.comments.length - 1;
+      const comment = announcement.comments[lastIndex];
       const student = await Student.findById(comment.createdBy);
       
       // Create a new comment object with the createdBy field replaced by the student's name
       const commentWithStudentName = {
-        ...comment._doc, 
+        ...comment.toObject(), 
         createdBy: student.name, //Replace the createdBy field with thename 
       };
       
