@@ -9,16 +9,20 @@ import {
   Card,
   CardContent,
   Typography,
+  CardActionArea,
   Box,
   Link,
+  Collapse,
+  IconButton,
+  CardActions,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import NavBar from "../components/Navbar";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
-import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
+import NavBar from "../components/Navbar";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import { useNavigate } from "react-router-dom";
 
 const AdminThreads = () => {
@@ -34,6 +38,21 @@ const AdminThreads = () => {
 
   const [updateFormOpen, setUpdateFormOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
+
+  const [expanded, setExpanded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const [threads, setThreads] = useState([
     {
@@ -129,6 +148,10 @@ const AdminThreads = () => {
       gap: "5px",
       transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
     },
+    h7: {
+      fontSize: "15px",
+      fontWeight: "bold",
+    },
   };
 
   return (
@@ -162,43 +185,56 @@ const AdminThreads = () => {
                   ...styles.threadCard,
                 }}
               >
-                <CardContent>
-                  <Typography variant="h7">{thread.title}</Typography>
-                  <Box sx={styles.threadOptions}>
-                    <VisibilityIcon
-                      variant="outlined"
-                      color="primary"
-                      sx={{
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleViewThreadPosts(thread)}
-                    />
+                <CardActions
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <CardActionArea onClick={() => handleViewThreadPosts(thread)}>
+                    <CardContent>
+                      <Typography
+                        sx={
+                          ({ fontWeight: "bold", marginLeft: "10px" },
+                          styles.h7)
+                        }
+                      >
+                        {thread.title}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
 
-                    <DriveFileRenameOutlineIcon
-                      variant="outlined"
-                      color="primary"
-                      sx={{
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                        cursor: "pointer",
+                  <CardActions
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent card click
+                        handleMenuOpen(event);
                       }}
-                      onClick={() => handleViewThreadModalOpen(thread)}
-                    />
-
-                    <DeleteOutlineIcon
-                      variant="outlined"
-                      color="primary"
-                      sx={{
-                        fontWeight: "bold",
-                        marginRight: "10px",
-                        cursor: "pointer",
-                      }}
-                      onClick={() => handleDelete(thread)}
-                    />
-                  </Box>
-                </CardContent>
+                      size="small"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem
+                        onClick={() => handleViewThreadModalOpen(thread)}
+                      >
+                        Update
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDelete(thread)}>
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </CardActions>
+                </CardActions>
               </Card>
             ))}
           </CardContent>
