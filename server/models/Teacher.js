@@ -8,6 +8,17 @@ const teacherSchema = new mongoose.Schema({
     CNIC: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
     contactNumber: { type: String, unique: true, sparse: true }, //sparse: true means that the field is not required
     address: { type: String, default: "" },
+    classes: {
+        type: [
+            {
+                classId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: 'Classroom',
+                    required: true
+                },
+            }
+        ],
+    }
 });
 
 const Teacher = mongoose.model('Teacher', teacherSchema);
