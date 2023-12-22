@@ -143,8 +143,9 @@ const studentController = {
   getThread: async (req, res) => {
     try {
       const student = await Student.findById(req.user).populate('threads.threadId');
-      //const thread = student.threads.filter(thread => thread._id == req.params.threadId);
-      const thread = student.threads.filter(thread => { console.log("in filter thread._id", thread._id, "reqparams.threadid", req.params.threadId); return thread._id == req.params.threadId });
+      const threads = student.threads;
+      const thread = threads.find(thread => thread.threadId._id == req.params.threadId);
+      console.log(thread);
       res.status(201).json(thread);
     } catch (err) {
       res.status(500).json({ error: err.message });
