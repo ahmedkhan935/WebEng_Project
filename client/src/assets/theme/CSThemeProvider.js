@@ -29,7 +29,7 @@ export function CSThemeProvider({ children }) {
         },
         components: {
             MuiCssBaseline: {
-              styleOverrides: `
+                styleOverrides: `
                 ::-webkit-scrollbar {
                   width: 10px;
                 }
@@ -46,7 +46,7 @@ export function CSThemeProvider({ children }) {
                 }
               `,
             },
-          },
+        },
     });
 
     return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
