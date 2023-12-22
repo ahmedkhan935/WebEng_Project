@@ -43,7 +43,7 @@ const addThread = async (req, res) => {
     }
     const deleteThread = async (req, res) => {
         try {
-            const thread = await Thread.findByIdAndRemove(req.params.threadId);
+            const thread = await Thread.findByIdAndDelete(req.params.id);
 
         
             if(!thread) {
@@ -62,12 +62,12 @@ const addThread = async (req, res) => {
 
             res.status(200).json({ message: "Thread deleted successfully!" });
         } catch (err) {
-            res.json({ message: err });
+            res.json({ message: err.message });
         }
     }
     const updateThread = async (req, res) => {
         try {
-            const thread = await Thread.findByIdAndUpdate(req.params.threadId, {
+            const thread = await Thread.findByIdAndUpdate(req.params.id, {
                 title: req.body.title,
                 
             }, { new: true });
@@ -83,10 +83,10 @@ const addThread = async (req, res) => {
     }
     const addAnnouncement = async (req, res) => {
         try {
-            const thread = await Thread.findById(req.params.threadId);
+            const thread = await Thread.findById(req.params.id);
             if(!thread) {
                 return res.status(404).send({
-                    message: "Thread not found with id " + req.params.threadId
+                    message: "Thread not found with id " + req.params.id
                 });
             }
             const { title, content, attachments } = req.body;
@@ -95,15 +95,59 @@ const addThread = async (req, res) => {
                     message: "Title and content cannot be empty"
                 });
             }
-            thread.content.push({
+            
+            //upload file 
+            const file = req.files?req.files.file:null;
+            var fileName = null;
+            if(file)
+            {
+                fileName = file.name+'-'+Date.now();
+                const blob = bucket.file(fileName);
+                const blobWriter = blob.createWriteStream({
+                        metadata: {
+                            contentType: file.mimetype,
+                        },
+                    });
+                    blobWriter.on('error', ((err) =>{
+                        
+                        res.status(404).send('File couldnot be uploaded');
+                    }) );
+                    blobWriter.on('finish', async () => {
+                        await blob.makePublic();
+                        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                        // Return the file name and its public URL
+                      
+                    });
+                    blobWriter.end(file.data);
+            }
+
+                    
+
+
+
+
+
+            const announcement = {
                 title:title,
                 content:content,
-                attachments:attachments,
+                attachments:{
+                
+                    orignalName:file?file.name:null,
+                    name:file?fileName:null
+                    
+                },
                 date:Date.now()
-            })
+            };
+        
+            thread.content.push(
+                announcement
+               
+            )
             await thread.save();
-            res.status(200).json(thread);
+            res.status(200).json(thread.content[thread.content.length-1]);
         } catch (err) {
+            
+            
             res.json({ message: err });
         }
     }
@@ -122,6 +166,12 @@ const addThread = async (req, res) => {
                     message: "Announcement not found with id " + req.params.announcementId
                 });
             }
+            //remove file from firebase
+            if(announcement.attachments.name)
+            {
+                const file = bucket.file(announcement.attachments.name);
+                await file.delete();
+            }
             thread.content.pull(announcement);
             await thread.save();
             res.status(200).json(thread);
@@ -137,20 +187,73 @@ const addThread = async (req, res) => {
                     message: "Thread not found with id " + req.params.threadId
                 });
             }
+            const deleteFile = req.body.deleteFile;
+           
             const announcement = thread.content.id(req.params.announcementId);
+            console.log(announcement);
             if(!announcement) {
                 return res.status(404).send({
                     message: "Announcement not found with id " + req.params.announcementId
                 });
             }
-            const { title, content, attachments } = req.body;
+            const { title, content } = req.body;
             announcement.title = title?title:announcement.title;
             announcement.content = content?content:announcement.content;
-            announcement.attachments = attachments?attachments:announcement.attachments;
+            //check for new file
+            const file = req.files?req.files.file:null;
+            if(deleteFile)
+            {
+                //remove old file
+                if(announcement.attachments.name)
+                {
+                    const file = bucket.file(announcement.attachments.name);
+                    await file.delete();
+                    announcement.attachments.orignalName = null;
+                    announcement.attachments.name = null;
+                }
+            }
+            if(file)
+            {
+                
+
+                //remove old file
+                if(announcement.attachments.name)
+                {
+                    const file = bucket.file(announcement.attachments.name);
+                    await file.delete();
+                }
+                //upload new file
+                var fileName = file.name+'-'+Date.now();
+                const blob = bucket.file(fileName);
+                const blobWriter = blob.createWriteStream({
+                        metadata: {
+                            contentType: file.mimetype,
+                        },
+                    });
+                    blobWriter.on('error', ((err) =>{
+                        
+                        res.status(404).send('File couldnot be uploaded');
+                    }) );
+                    blobWriter.on('finish', async () => {
+                        await blob.makePublic();
+                        
+                        // Return the file name and its public URL
+                      
+                    });
+                    blobWriter.end(file.data);
+                    announcement.attachments.orignalName = file.name;
+                    announcement.attachments.name = fileName;
+            }
             await thread.save();
             res.status(200).json(thread);
         } catch (err) {
-            res.json({ message: err });
+            //stop uploading file if error occurs
+            if(file)
+            {
+                const file = bucket.file(fileName);
+                await file.delete();
+            }
+            res.json({ message: err.message });
         }
     }
     const viewAnnouncements = async (req, res) => {
@@ -174,7 +277,19 @@ const addThread = async (req, res) => {
     const uploadFile= async (req, res) => {
         try {
            
-           
+            const {threadid, announcementid} = req.body;
+            const thread = await Thread.findById(threadid);
+            if(!thread) {
+                return res.status(404).send({
+                    message: "Thread not found with id " + threadid
+                });
+            }
+            const announcement = thread.content.id(announcementid);
+            if(!announcement) {
+                return res.status(404).send({
+                    message: "Announcement not found with id " + announcementid
+                });
+            }
             if(!req.files) {
                 res.status(400).send('No file uploaded.');
                 return;
@@ -187,7 +302,7 @@ const addThread = async (req, res) => {
                 return;
             }
            
-            const blob = bucket.file(file.name);
+            const blob = bucket.file(file.name+'-'+Date.now());
             const blobWriter = blob.createWriteStream({
                 metadata: {
                     contentType: file.mimetype,
@@ -208,6 +323,7 @@ const addThread = async (req, res) => {
             res.json({ message: err });
         }
     }
+    
     const downloadFile = async (req, res) => {
         try {
             

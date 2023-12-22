@@ -3,11 +3,12 @@ const jwt = require('jsonwebtoken');
 
 const Authmiddleware = (req, res, next) => {
     try {
+       
         const token = req.cookies.token;
         // const token = req.headers.authorization;
         // console.log(token);
         if (!token) {
-            console.log("No token");
+            
             return res.status(401).json({ errorMessage: "Unauthorized" });
         }
         const verified = jwt.verify(token, process.env.JWT_SECRET);
