@@ -4,6 +4,7 @@ const Classroom = require('../models/Classroom');
 const Semester = require('../models/Semester');
 const Degree = require('../models/Degree');
 const Thread = require('../models/Thread');
+const Teacher = require('../models/Teacher');
 
 const studentController = {
   getProfile: async (req, res) => {
@@ -77,6 +78,9 @@ const studentController = {
       if (classroom) {
         classroom = classroom.toObject();
         for (let i = 0; i < classroom.announcements.length; i++) {
+          const announcer = await Teacher.findById(classroom.announcements[i].createdBy).select('name');
+          classroom.announcements[i].createdBy = (announcer ? announcer.name : "Unknown User");
+
           for (let j = 0; j < classroom.announcements[i].comments.length; j++) {
             const commenter = await Student.findById(classroom.announcements[i].comments[j].createdBy).select('name');
             //  console.log("commenter found " , commenter )

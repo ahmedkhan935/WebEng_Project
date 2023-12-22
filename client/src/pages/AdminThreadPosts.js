@@ -20,6 +20,12 @@ const AdminThread = () => {
   const [updatePostTitle, setUpdatePostTitle] = useState("");
   const [updatePostContent, setUpdatePostContent] = useState("");
   const [updatePostFile, setUpdatePostFile] = useState(null);
+  const [selectedThread, setSelectedThread] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [content, setContent] = useState("");
+  const [title, setTitle] = useState("");
+  const [file, setfile] = useState("");
+
   const { id } = useParams();
 
   //handle delete post of thread
@@ -45,6 +51,31 @@ const AdminThread = () => {
     handleUpdatePostFormClose();
   };
 
+  //posting to thread
+
+  const handlePostToThread = () => {
+    setFormOpen(true);
+  };
+
+  //form open and close
+  const handleFormOpen = () => {
+    setFormOpen(true);
+  };
+
+  const handleFormClose = () => {
+    setFormOpen(false);
+  };
+
+  //add post
+
+  //add post to thread
+  const handleAnnounce = () => {
+    setTitle("");
+    setfile("");
+    setContent("");
+    setFormOpen(false);
+  };
+
   const [posts, setPosts] = useState([
     {
       id: 1,
@@ -66,6 +97,13 @@ const AdminThread = () => {
 
   return (
     <NavBar>
+      <Button
+        variant="outlined"
+        onClick={() => handlePostToThread()}
+        style={{ float: "right", marginRight: "20px" }}
+      >
+        Post to thread
+      </Button>
       <div
         style={{
           display: "flex",
@@ -133,6 +171,42 @@ const AdminThread = () => {
           <Button onClick={handleUpdatePostFormClose}>Cancel</Button>
           <Button onClick={handleUpdatePost} variant="contained">
             Update
+          </Button>
+        </DialogActions>
+      </Dialog>
+      {/* Dialog for Make Post */}
+      <Dialog open={formOpen} onClose={handleFormClose}>
+        <DialogTitle>Make Post</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Title"
+            variant="outlined"
+            fullWidth
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            style={{ marginBottom: "10px" }}
+          />
+          <TextField
+            label="Content"
+            variant="outlined"
+            multiline
+            rows={4}
+            fullWidth
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            style={{ marginBottom: "10px" }}
+          />
+          <input
+            type="file"
+            accept="image/*,application/pdf"
+            onChange={(e) => setfile(e.target.value)}
+            style={{ margin: "10px 0" }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleFormClose}>Cancel</Button>
+          <Button onClick={handleAnnounce} variant="contained">
+            Post
           </Button>
         </DialogActions>
       </Dialog>
