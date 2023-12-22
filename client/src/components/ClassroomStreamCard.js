@@ -22,7 +22,7 @@ function ClassroomStreamCard({ card }) {
     const classCode = useParams().classCode;
 
     //Hooks for dealing with the menu
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
 
     //Hook for dealing with comment

@@ -34,7 +34,7 @@ const studentController = {
     }
   },
 
- 
+
 
   getClasses: async (req, res) => {
     try {
@@ -98,7 +98,7 @@ const studentController = {
     }
   },
 
-  getTodos: async (req, res) => {
+  getAllTodos: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
       const classCodes = student.classes.map(classroom => classroom.classCode); // Get the class codes of all classes
@@ -112,6 +112,29 @@ const studentController = {
           }
         });
       }); // Get the todos of all classes
+
+      res.status(201).json(todos);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getTodos: async (req, res) => {
+    try {
+      const student = await Student.findById(req.user);
+      const classCode = req.params.classCode;
+      const classroom = await Classroom.findOne({ code: classCode });
+      if (!classroom) {
+        return res.status(404).json({ error: 'Classroom not found' });
+      }
+
+      let todos = [];
+      classroom.announcements.forEach(announcement => {
+        if ((announcement.type === 'assignment' || announcement.type === 'quiz') && new Date(announcement.dueDate) > new Date()) {
+          todos.push(announcement);
+        }
+      }
+      ); // Get the todos of the class
 
       res.status(201).json(todos);
     } catch (err) {
@@ -147,15 +170,16 @@ const studentController = {
   getThread: async (req, res) => {
     try {
       const student = await Student.findById(req.user).populate('threads.threadId');
-      //const thread = student.threads.filter(thread => thread._id == req.params.threadId);
-      const thread = student.threads.filter(thread => { console.log("in filter thread._id", thread._id, "reqparams.threadid", req.params.threadId); return thread._id == req.params.threadId });
+      const threads = student.threads;
+      const thread = threads.find(thread => thread.threadId._id == req.params.threadId);
+      console.log(thread);
       res.status(201).json(thread);
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
   },
 
-  comment: async (req,res) => {
+  comment: async (req, res) => {
     try {
       //:classCode/:announcementId
       const { classCode, announcementId } = req.params;
@@ -166,28 +190,32 @@ const studentController = {
       if (!classroom) {
         return res.status(404).json({ error: 'Classroom not found' });
       }
-  
+
       const announcement = classroom.announcements.id(announcementId);
       if (!announcement) {
         return res.status(404).json({ error: 'Announcement not found' });
       }
-  
-      classroom.announcements.id(announcementId).comments.push({
+      console.log("announcement found", announcement);
+
+      const newComment = {
         content,
-        createdBy: commenterId,
         date: new Date(),
-      });
-  
-      const lastIndex = classroom.announcements.id(announcementId).comments.length - 1;
-      const comment = classroom.announcements.id(announcementId).comments[lastIndex];
+        createdBy: commenterId
+      };
+
+      announcement.comments.push(newComment);
+      await classroom.save();
+
+      const lastIndex = announcement.comments.length - 1;
+      const comment = announcement.comments[lastIndex];
       const student = await Student.findById(comment.createdBy);
-      
+
       // Create a new comment object with the createdBy field replaced by the student's name
       const commentWithStudentName = {
-        ...comment._doc, 
+        ...comment.toObject(),
         createdBy: student.name, //Replace the createdBy field with thename 
       };
-      
+
       res.status(201).json(commentWithStudentName);
 
     } catch (err) {

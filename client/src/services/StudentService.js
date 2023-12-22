@@ -63,8 +63,18 @@ export const getClass = async (classCode) => {
     return handleResponse(response);
 }
 
-export const getTodos = async () => {
+export const getAllTodos = async () => {
     const response = await axios.get(`${BASE_URL}/student/todos`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
+export const getTodos = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/student/todos/${classCode}`, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -104,13 +114,16 @@ export const getThread = async (threadId) => {
 };
 
 export const postComment = async (classCode, announcementId, content) => {
-    const response = await axios.post(`${BASE_URL}/student/classes/${classCode}/${announcementId}/comment`, 
-    { content }, 
-    {
-        headers: {
-            'Content-Type': 'application/json',
+    const response = await axios.post(`${BASE_URL}/student/classes/${classCode}/${announcementId}/comment`,
+        {
+            content: content
         },
-        withCredentials: true
-    });
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        }
+    );
     return handleResponse(response);
 };

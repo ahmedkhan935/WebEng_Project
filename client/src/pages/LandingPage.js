@@ -253,7 +253,7 @@ const LandingPage = () => {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6">{thread.title}</Typography>
+                  <Typography variant="h7">{thread.title}</Typography>
                   <Box sx={styles.threadOptions}>
                     <VisibilityIcon
                       variant="outlined"

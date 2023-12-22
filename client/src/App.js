@@ -29,6 +29,7 @@ import ViewFeedback from "./pages/viewFeedBack";
 import UpdateTeacherForm from "./pages/updateTeacher";
 import Classes from "./pages/Classes";
 import AdminThread from "./pages/AdminThread";
+import TeacherFeedback from "./pages/TeacherFeedback";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/admin/settings" element={<Settings />}></Route>
           <Route path="/student/settings" element={<Settings />}></Route>
+          <Route path="/teacher/settings" element={<Settings />}></Route>
 
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
@@ -48,6 +50,11 @@ function App() {
             <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
+          </Route>
+
+          <Route path="teacher">
+            <Route index></Route>
+            <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
           </Route>
 
           <Route path="/admin">

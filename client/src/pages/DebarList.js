@@ -9,7 +9,7 @@ const columns = ["studentId", "name", "debarCourse", "Batch", "Degree"];
 
 const DebarList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
-  const [selectedSemester, setSelectedSemester] = useState("Spring");
+  const [selectedDegree, setSelectedDegree] = useState("SE");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2; // Adjust as needed
 
@@ -17,10 +17,9 @@ const DebarList = () => {
     setSelectedBatch(event.target.value);
   };
 
-  const handleSemesterChange = (event) => {
-    setSelectedSemester(event.target.value);
+  const handleDegreeChange = (event) => {
+    setSelectedDegree(event.target.value);
   };
-
   const rows = [
     {
       studentId: "23544",
@@ -53,8 +52,7 @@ const DebarList = () => {
   ];
 
   const batches = ["2020", "2021", "2022"];
-  const semesters = ["Spring", "Fall", "Summer"];
-
+  const degrees = ["SE", "CS"];
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
@@ -102,17 +100,17 @@ const DebarList = () => {
         </FormControl>
 
         <FormControl sx={{ minWidth: "120px" }}>
-          <InputLabel id="semester-label">Semester</InputLabel>
+          <InputLabel id="degree-label">Degree</InputLabel>
           <Select
-            labelId="semester-label"
-            id="semester-select"
-            value={selectedSemester}
-            onChange={handleSemesterChange}
+            labelId="degree-label"
+            id="degree-select"
+            value={selectedDegree}
+            onChange={handleDegreeChange}
             sx={{ height: "40px" }}
           >
-            {semesters.map((semester) => (
-              <MenuItem key={semester} value={semester}>
-                {semester}
+            {degrees.map((degree) => (
+              <MenuItem key={degree} value={degree}>
+                {degree}
               </MenuItem>
             ))}
           </Select>

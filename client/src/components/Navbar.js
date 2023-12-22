@@ -31,6 +31,7 @@ import {
   Settings as SettingsIcon,
   School as SchoolIcon
 } from "@mui/icons-material";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 
 import { Link, useLocation } from "react-router-dom";
 
@@ -108,6 +109,15 @@ const studentOptions = [
   { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
+const teacherOptions = [
+  {
+    title: "Settings",
+    Icon: <SettingsIcon color="primary" />,
+    linkto: "/teacher/settings",
+  },
+  { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
+];
+
 const openedMixin = (theme) => ({
   width: drawerWidth,
   transition: theme.transitions.create("width", {
@@ -175,6 +185,8 @@ const Drawer = styled(MuiDrawer, {
 
 export default function NavBar({ children }) {
   const isStudent = useLocation().pathname.includes("/student");
+  const isTeacher = useLocation().pathname.includes("/teacher");
+  const isAdmin = useLocation().pathname.includes("/admin");
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
  
@@ -289,7 +301,7 @@ export default function NavBar({ children }) {
         </List>
         <Divider />
         <List>
-          {!isStudent &&
+          {isAdmin &&
             adminOptions.map((element, index) => (
               <ListItem
                 key={element.title}
@@ -313,6 +325,41 @@ export default function NavBar({ children }) {
                     }}
                   >
                     {adminOptions[index].Icon}
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={element.title}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
+                </ListItemButton>
+              </ListItem>
+            ))}
+        </List>
+        <Divider />
+        <List>
+          {isTeacher &&
+            teacherOptions.map((element, index) => (
+              <ListItem
+                key={element.title}
+                disablePadding
+                sx={{ display: "block" }}
+              >
+                <ListItemButton
+                  component={element.linkto ? Link : "div"}
+                  to={element.linkto || ""}
+                  sx={{
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                  }}
+                >
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 0,
+                      mr: open ? 3 : "auto",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {teacherOptions[index].Icon}
                   </ListItemIcon>
                   <ListItemText
                     primary={element.title}
