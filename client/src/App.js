@@ -95,7 +95,7 @@ function App() {
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
 
-            <Route path="lists" element = { <AdminLists /> }></Route>
+            <Route path="lists" element={<AdminLists />}></Route>
 
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
