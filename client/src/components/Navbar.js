@@ -356,7 +356,7 @@ export default function NavBar({ children }) {
                       justifyContent: "center",
                     }}
                   >
-                    {adminOptions[index].Icon}
+                    {teacherOptions[index].Icon}
                   </ListItemIcon>
                   <ListItemText
                     primary={element.title}
