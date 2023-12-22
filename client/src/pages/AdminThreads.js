@@ -21,7 +21,7 @@ import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
 import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
 import { useNavigate } from "react-router-dom";
 
-const LandingPage = () => {
+const AdminThreads = () => {
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
 
@@ -31,10 +31,6 @@ const LandingPage = () => {
   const [displayedThreads, setDisplayedThreads] = useState([]);
   const [showAllThreads, setShowAllThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
-
-  const [semesterModalOpen, setSemesterModalOpen] = useState(false);
-  const [semesterModalContent, setSemesterModalContent] = useState("");
-  const [semesterModalIcon, setSemesterModalIcon] = useState(null);
 
   const [updateFormOpen, setUpdateFormOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
@@ -73,12 +69,6 @@ const LandingPage = () => {
     setDisplayedThreads(threads.slice(0, showAllThreads ? threads.length : 3));
   }, [threads, showAllThreads]);
 
-  //form open and close
-  const handleFormOpen = (mode) => {
-    setMode(mode);
-    setFormOpen(true);
-  };
-
   const handleFormClose = () => {
     setMode("");
     setFormOpen(false);
@@ -87,10 +77,6 @@ const LandingPage = () => {
   const handleViewThreadModalOpen = (thread) => {
     setSelectedThread(thread);
     setUpdateTitle(thread.title);
-    setUpdateFormOpen(true);
-  };
-
-  const handleUpdateFormOpen = () => {
     setUpdateFormOpen(true);
   };
 
@@ -129,16 +115,6 @@ const LandingPage = () => {
     handleUpdateFormClose();
   };
 
-  const handleSemesterModalOpen = (message, icon) => {
-    setSemesterModalContent(message);
-    setSemesterModalIcon(icon);
-    setSemesterModalOpen(true);
-  };
-
-  const handleSemesterModalClose = () => {
-    setSemesterModalOpen(false);
-  };
-
   const styles = {
     threadCard: {
       position: "relative",
@@ -164,119 +140,70 @@ const LandingPage = () => {
           alignItems: "flex-end",
         }}
       >
-        <Box
-          display="flex"
-          flexDirection={{ xs: "column", md: "row" }}
-          alignItems="center"
-          justifyContent="flex-end"
-          gap={2}
-          sx={{ marginBottom: "20px" }}
+        <div
+          style={{ marginBottom: "20px", position: "relative", width: "100%" }}
         >
-          {threads.length > 3 && (
-            <Button
-              variant="contained"
-              style={{ margin: "10px" }}
-              onClick={() => setShowAllThreads(!showAllThreads)}
-            >
-              {showAllThreads ? "Show Latest 3 Threads" : "View All Threads"}
-            </Button>
-          )}
           <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/threads");
-            }}
-            variant="outlined"
-            color="primary"
+            variant="contained"
+            onClick={handlemodeforaddThread}
+            style={{ margin: "10px", float: "right" }}
           >
-            View Threads
+            Add Thread
           </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/searchCourses");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Courses
-          </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/viewStudents");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Students
-          </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/viewTeachers");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Teachers
-          </Button>
-        </Box>
-
-        <Card style={{ width: "100%" }}>
           <CardContent>
             <Typography variant="h5" style={{ marginBottom: "10px" }}>
-              Semester Schedule
+              Threads
             </Typography>
-            <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleSemesterModalOpen(
-                    "New semester has started!",
-                    <AlarmOnTwoToneIcon
-                      sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
-                    />
-                  )
-                }
-                style={{ margin: "10px" }}
-              >
-                Start Semester
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleSemesterModalOpen(
-                    "Semester has ended!",
-                    <PendingActionsTwoToneIcon
-                      sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
-                    />
-                  )
-                }
-                style={{ margin: "10px" }}
-              >
-                End Semester
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* semester modal */}
-      <Dialog open={semesterModalOpen} onClose={handleSemesterModalClose}>
-        <DialogTitle style={{ textAlign: "center" }}>
-          {semesterModalIcon}
-          {semesterModalContent}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleSemesterModalClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
+            {displayedThreads.map((thread) => (
+              <Card
+                key={thread.id}
+                sx={{
+                  ...styles.threadCard,
+                }}
+              >
+                <CardContent>
+                  <Typography variant="h6">{thread.title}</Typography>
+                  <Box sx={styles.threadOptions}>
+                    <VisibilityIcon
+                      variant="outlined"
+                      color="primary"
+                      sx={{
+                        fontWeight: "bold",
+                        marginRight: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleViewThreadPosts(thread)}
+                    />
+
+                    <DriveFileRenameOutlineIcon
+                      variant="outlined"
+                      color="primary"
+                      sx={{
+                        fontWeight: "bold",
+                        marginRight: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleViewThreadModalOpen(thread)}
+                    />
+
+                    <DeleteOutlineIcon
+                      variant="outlined"
+                      color="primary"
+                      sx={{
+                        fontWeight: "bold",
+                        marginRight: "10px",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => handleDelete(thread)}
+                    />
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </CardContent>
+        </div>
+      </div>
 
       {/* Dialog for Add Thread */}
       <Dialog open={formOpen && mode === "add"} onClose={handleFormClose}>
@@ -325,4 +252,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default AdminThreads;

@@ -80,41 +80,6 @@ const GiveFeedback = () => {
         }
       >
         <TextField
-          id="courseCode"
-          label="Course Code"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-        />
-
-        {/* Other form fields */}
-
-        <h4 style={{ width: "100%", float: "right" }}>Status</h4>
-        <FormControl component="fieldset">
-          <RadioGroup
-            aria-label="Rating"
-            name="rating"
-            value={rating}
-            onChange={handleRatingChange}
-            row
-          >
-            <FormControlLabel value="worst" control={<Radio />} label="Worst" />
-            <FormControlLabel value="bad" control={<Radio />} label="Bad" />
-            <FormControlLabel
-              value="normal"
-              control={<Radio />}
-              label="Normal"
-            />
-            <FormControlLabel value="good" control={<Radio />} label="Good" />
-            <FormControlLabel
-              value="excellent"
-              control={<Radio />}
-              label="Excellent"
-            />
-          </RadioGroup>
-        </FormControl>
-
-        <TextField
           id="comment"
           label="Comment"
           variant="outlined"
