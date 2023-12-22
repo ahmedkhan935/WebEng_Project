@@ -78,11 +78,14 @@ function Classroom() {
               <Typography variant="h3" color="white" margin="10px">
                 {classroom ? classroom.name : ""}
               </Typography>
+              <Typography variant="body1" color="white" margin="10px" marginBottom='10px'>
+                { "Taught by " + classroom.teachers.map((teacher) => teacher.teacherId.name).join(", ") }
+              </Typography>
             </Box>
           </Box>
           <CardContent>
             {/* <CompletedCourseBadge /> */}
-            {/* This will be displayed only if student is viewing classroom of an old course which he has already completed */}
+            {/* This will be displayed only if student is viewing classroom of an old course which he has already */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
                 <UpcomingWork />

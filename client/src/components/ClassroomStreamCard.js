@@ -115,12 +115,9 @@ function ClassroomStreamCard({ card }) {
                     {card.title}
                 </Typography>
                 <Typography variant="body2" color="text.secondary" margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
-                    {new Date(card.date).toLocaleDateString()}
+                    {"Posted on " + new Date(card.date).toLocaleDateString() + " by " + card.createdBy}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
-                    {"Posted by: " + card.createdBy}
-                </Typography>
-                <Typography variant="body1" color="black" margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
+                <Typography variant="body1"  margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
                     {card.content}
                 </Typography>
                 <IconButton
@@ -177,7 +174,10 @@ function ClassroomStreamCard({ card }) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"
-                                        sx={{ margin: '5px' }}
+                                        sx={{ 
+                                            margin: '5px',
+                                            backgroundColor: theme => `${theme.palette.secondary.main}1A` // 33 is hex for 20% opacity
+                                        }}
                                     />
                                 ))}
                             </Box>
@@ -213,7 +213,13 @@ function ClassroomStreamCard({ card }) {
                                 fullWidth
                                 sx={{ marginRight: '10px', flex: 1, height: '100%' }}
                             />
-                            <Button variant="contained" color="primary" onClick={handleCommentSubmit} sx={{ height: '100%', margin: '0px' }}>
+                            <Button 
+                                variant="contained" 
+                                color="primary" 
+                                onClick={handleCommentSubmit} 
+                                sx={{ height: '100%', margin: '0px' }}
+                                disabled={!newComment.trim()} // Button is disabled when newComment is empty or contains only whitespace
+                            >
                                 Submit
                             </Button>
                         </Box>
