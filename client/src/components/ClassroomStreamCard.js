@@ -11,14 +11,16 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useParams } from 'react-router-dom';
 import { postComment } from '../services/StudentService';
-
-
 import { useTheme } from '@mui/material/styles';
+import useStore from '../store/store';  //zustand store
+
 
 function ClassroomStreamCard({ card }) {
     const theme = useTheme();
+    const userRole = useStore(state => state.userRole); // get the userRole from the store
+
     const [Icon, setIcon] = useState(null);
-    const [cardId, setCardId] = useState(''); 
+    const [cardId, setCardId] = useState('');
     const classCode = useParams().classCode;
 
     //Hooks for dealing with the menu
@@ -44,7 +46,7 @@ function ClassroomStreamCard({ card }) {
         if (newComment === '') return;
         try {
             const response = await postComment(classCode, cardId, newComment);
-            console.log("RESPONSE " ,response.data);
+            console.log("COMMENTED ", response.data);
             setComments(comments => [...comments, response.data]);
         } catch (error) {
             console.error('Error posting comment:', error);
@@ -68,14 +70,6 @@ function ClassroomStreamCard({ card }) {
         console.log('Delete clicked');
         handleClose();
     };
-
-    const cardClicked = () => {
-        if (!open) {
-            //handle here
-            console.log("card clicked")
-        }
-    }
-
 
     useEffect(() => {
         switch (card.type.toLowerCase()) {
@@ -117,32 +111,40 @@ function ClassroomStreamCard({ card }) {
                 <Typography variant="body2" color="text.secondary" margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
                     {"Posted on " + new Date(card.date).toLocaleDateString() + " by " + card.createdBy}
                 </Typography>
-                <Typography variant="body1"  margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
+                <Typography variant="body1" margin="10px" sx={{ zIndex: 1, position: 'relative' }}>
                     {card.content}
                 </Typography>
-                <IconButton
-                    aria-label="more"
-                    aria-controls="long-menu"
-                    aria-haspopup="true"
-                    onClick={handleClick}
-                    sx={{ position: 'absolute', top: '10px', right: '10px' }}
-                >
-                    <MoreVertIcon />
-                </IconButton>
-                <Menu
-                    id="long-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClose={handleClose}
-                    PaperProps={{
-                        style: {
-                            maxHeight: 48 * 4.5,
-                            width: '20ch',
-                        },
-                    }}
-                >
-                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
-                </Menu>
+
+                {userRole == "teacher" ?
+                    (<>
+                        <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                            sx={{ position: 'absolute', top: '10px', right: '10px' }}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="long-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                                style: {
+                                    maxHeight: 48 * 4.5,
+                                    width: '20ch',
+                                },
+                            }}
+                        >
+                            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                        </Menu>
+                    </>)
+                    :
+                    null
+                }
+
                 <IconButton
                     onClick={handleExpandClick}
                     aria-expanded={expanded}
@@ -174,7 +176,7 @@ function ClassroomStreamCard({ card }) {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"
-                                        sx={{ 
+                                        sx={{
                                             margin: '5px',
                                             backgroundColor: theme => `${theme.palette.secondary.main}1A` // 33 is hex for 20% opacity
                                         }}
@@ -189,21 +191,29 @@ function ClassroomStreamCard({ card }) {
                         Comments
                     </Typography>
                     <Box sx={{ marginTop: '10px' }}>
-                        {comments.length > 0 ? (
-                            comments.map((comment, index) => (
-                                <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-                                    <Avatar src="../assets/images/defaultpfp.jpg" sx={{ marginRight: '10px' }} />
-                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                                        <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom: '0px' }}>
-                                            {comment.createdBy}
-                                        </Typography>
-                                        <Typography variant="body1">{comment.content}</Typography>
+                        <Box
+                            sx={{
+                                maxHeight: '200px', // Adjust this value as needed
+                                overflowY: 'auto',
+                                marginBottom: '10px',
+                            }}
+                        >
+                            {comments.length > 0 ? (
+                                comments.map((comment, index) => (
+                                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                        <Avatar src="../assets/images/defaultpfp.jpg" sx={{ marginRight: '10px' }} />
+                                        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                            <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom: '0px' }}>
+                                                {comment.createdBy}
+                                            </Typography>
+                                            <Typography variant="body1">{comment.content}</Typography>
+                                        </Box>
                                     </Box>
-                                </Box>
-                            ))
-                        ) : (
-                            <Typography variant="body1">No comments yet. Why not start the conversation?</Typography>
-                        )}
+                                ))
+                            ) : (
+                                <Typography variant="body1">No comments yet. Why not start the conversation?</Typography>
+                            )}
+                        </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
                             <TextField
                                 value={newComment}
@@ -213,10 +223,10 @@ function ClassroomStreamCard({ card }) {
                                 fullWidth
                                 sx={{ marginRight: '10px', flex: 1, height: '100%' }}
                             />
-                            <Button 
-                                variant="contained" 
-                                color="primary" 
-                                onClick={handleCommentSubmit} 
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleCommentSubmit}
                                 sx={{ height: '100%', margin: '0px' }}
                                 disabled={!newComment.trim()} // Button is disabled when newComment is empty or contains only whitespace
                             >
