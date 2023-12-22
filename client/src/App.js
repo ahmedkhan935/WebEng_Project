@@ -42,6 +42,7 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
           <Route path="/admin/settings" element={<Settings />}></Route>
           <Route path="/student/settings" element={<Settings />}></Route>
+          <Route path="/teacher/settings" element={<Settings />}></Route>
 
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
