@@ -4,6 +4,7 @@ import AnnouncementCard from './AnnouncementCard';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react'
 import { getThreads } from '../services/StudentService'
+//import { getThreadsTeacher } from '../services/TeacherService'
 
 function AnnouncementList({ isFullList, thread }) {
     const [announcements, setAnnouncements] = React.useState([]);

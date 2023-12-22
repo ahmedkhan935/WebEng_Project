@@ -91,6 +91,7 @@ const studentOptions = [
 ];
 
 const teacherOptions = [
+  { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/teacher/classes' },
   { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
@@ -160,12 +161,14 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function NavBar({ children }) {
-  const isStudent = useLocation().pathname.includes("/student");
-  const isTeacher = useLocation().pathname.includes("/teacher");
-  const isAdmin = useLocation().pathname.includes("/admin");
-  
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1]; 
+  let userRole = location.pathname.split('/')[1]; 
+  userRole = userRole.toLowerCase();
+
+  //checking if pathname includes the word was buggy, as it detected isStudent=true for /admin/lists/students, so i changed it
+  const isStudent = userRole === 'student';
+  const isAdmin = userRole === 'admin';
+  const isTeacher = userRole === 'teacher';
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
