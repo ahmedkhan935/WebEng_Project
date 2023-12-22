@@ -104,12 +104,13 @@ const AdminThread = () => {
     var formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("file", file, file.name);
+    formData.append("file", file);
     addAnnouncement(id, formData).then((res) => {
       if (res.status === 200) {
         res.json().then((data) => {
           setPosts([...posts, data]);
         });
+        console.log(posts);
       }
     });
     setTitle("");
@@ -120,24 +121,7 @@ const AdminThread = () => {
     sendEmail();
   };
 
-  const [posts, setPosts] = useState([
-    // {
-    //   id: 1,
-    //   title: "Post 1",
-    //   content: "This is the content of post 1.",
-    //   creator: "Amir Rehman",
-    //   date: "2023-01-01",
-    //   file: null,
-    // },
-    // {
-    //   id: 2,
-    //   title: "Post 2",
-    //   content: "This is the content of post 1.",
-    //   creator: "Amir Rehman",
-    //   date: "2023-01-02",
-    //   file: null,
-    // },
-  ]);
+  const [posts, setPosts] = useState([]);
   useEffect(() => {
     viewAnnouncements(id).then((res) => {
       res.json().then((data) => {
@@ -173,13 +157,14 @@ const AdminThread = () => {
           <CardContent>
             {posts.map((post) => (
               <div style={{ marginTop: "20px" }}>
+                {post.attachments.originalName}
                 <MakeAnnouncementCard
                   key={post._id}
                   title={post.title}
                   content={post.content}
                   date={post.date}
                   creator={post.creator}
-                  file={post.attachments ? post.attachments.originalName : null}
+                  file={post.attachments ? post.attachments.name : null}
                   handleEdit={() => handleEditpost(post)}
                   handleDelete={() => handleDeletepost(post)}
                 />

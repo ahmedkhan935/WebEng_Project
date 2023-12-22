@@ -76,7 +76,7 @@ function MakeAnnouncementCard({
             open={Boolean(anchorEl)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={handleEditClick}>Update</MenuItem>
+            {/* <MenuItem onClick={handleEditClick}>Update</MenuItem> */}
             <MenuItem onClick={handleDeleteClick}>Delete</MenuItem>
           </Menu>
         </CardActions>
@@ -93,8 +93,12 @@ function MakeAnnouncementCard({
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Typography variant="h7">{content}</Typography>
             {file && (
-              <Typography variant="body2" color="text.secondary">
-                File: {file}
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                sx={{ marginTop: "10px" }}
+              >
+                Attachment : {file}
               </Typography>
             )}
           </Collapse>
