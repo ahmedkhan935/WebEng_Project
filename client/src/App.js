@@ -29,6 +29,7 @@ import ViewFeedback from "./pages/viewFeedBack";
 import UpdateTeacherForm from "./pages/updateTeacher";
 import Classes from "./pages/Classes";
 import AdminThread from "./pages/AdminThread";
+import TeacherFeedback from "./pages/TeacherFeedback";
 
 function App() {
   return (
@@ -48,6 +49,11 @@ function App() {
             <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
+          </Route>
+
+          <Route path="teacher">
+            <Route index></Route>
+            <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
           </Route>
 
           <Route path="/admin">
