@@ -9,19 +9,23 @@ import {
   Card,
   CardContent,
   Typography,
+  CardActionArea,
   Box,
   Link,
+  Collapse,
+  IconButton,
+  CardActions,
+  Menu,
+  MenuItem,
 } from "@mui/material";
-import NavBar from "../components/Navbar";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import DriveFileRenameOutlineIcon from "@mui/icons-material/DriveFileRenameOutline";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
-import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
-import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
+import NavBar from "../components/Navbar";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+
 import { useNavigate } from "react-router-dom";
 
-const LandingPage = () => {
+const AdminThreads = () => {
   const navigate = useNavigate();
   const [formOpen, setFormOpen] = useState(false);
 
@@ -32,12 +36,23 @@ const LandingPage = () => {
   const [showAllThreads, setShowAllThreads] = useState(false);
   const [selectedThread, setSelectedThread] = useState(null);
 
-  const [semesterModalOpen, setSemesterModalOpen] = useState(false);
-  const [semesterModalContent, setSemesterModalContent] = useState("");
-  const [semesterModalIcon, setSemesterModalIcon] = useState(null);
-
   const [updateFormOpen, setUpdateFormOpen] = useState(false);
   const [updateTitle, setUpdateTitle] = useState("");
+
+  const [expanded, setExpanded] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
 
   const [threads, setThreads] = useState([
     {
@@ -73,12 +88,6 @@ const LandingPage = () => {
     setDisplayedThreads(threads.slice(0, showAllThreads ? threads.length : 3));
   }, [threads, showAllThreads]);
 
-  //form open and close
-  const handleFormOpen = (mode) => {
-    setMode(mode);
-    setFormOpen(true);
-  };
-
   const handleFormClose = () => {
     setMode("");
     setFormOpen(false);
@@ -87,10 +96,6 @@ const LandingPage = () => {
   const handleViewThreadModalOpen = (thread) => {
     setSelectedThread(thread);
     setUpdateTitle(thread.title);
-    setUpdateFormOpen(true);
-  };
-
-  const handleUpdateFormOpen = () => {
     setUpdateFormOpen(true);
   };
 
@@ -129,16 +134,6 @@ const LandingPage = () => {
     handleUpdateFormClose();
   };
 
-  const handleSemesterModalOpen = (message, icon) => {
-    setSemesterModalContent(message);
-    setSemesterModalIcon(icon);
-    setSemesterModalOpen(true);
-  };
-
-  const handleSemesterModalClose = () => {
-    setSemesterModalOpen(false);
-  };
-
   const styles = {
     threadCard: {
       position: "relative",
@@ -153,6 +148,10 @@ const LandingPage = () => {
       gap: "5px",
       transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
     },
+    h7: {
+      fontSize: "15px",
+      fontWeight: "bold",
+    },
   };
 
   return (
@@ -164,119 +163,83 @@ const LandingPage = () => {
           alignItems: "flex-end",
         }}
       >
-        <Box
-          display="flex"
-          flexDirection={{ xs: "column", md: "row" }}
-          alignItems="center"
-          justifyContent="flex-end"
-          gap={2}
-          sx={{ marginBottom: "20px" }}
+        <div
+          style={{ marginBottom: "20px", position: "relative", width: "100%" }}
         >
-          {threads.length > 3 && (
-            <Button
-              variant="contained"
-              style={{ margin: "10px" }}
-              onClick={() => setShowAllThreads(!showAllThreads)}
-            >
-              {showAllThreads ? "Show Latest 3 Threads" : "View All Threads"}
-            </Button>
-          )}
           <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/threads");
-            }}
-            variant="outlined"
-            color="primary"
+            variant="contained"
+            onClick={handlemodeforaddThread}
+            style={{ margin: "10px", float: "right" }}
           >
-            View Threads
+            Add Thread
           </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/searchCourses");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Courses
-          </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/viewStudents");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Students
-          </Button>
-          <Button
-            component={Link}
-            onClick={() => {
-              navigate("/admin/viewTeachers");
-            }}
-            variant="outlined"
-            color="primary"
-          >
-            View Teachers
-          </Button>
-        </Box>
-
-        <Card style={{ width: "100%" }}>
           <CardContent>
             <Typography variant="h5" style={{ marginBottom: "10px" }}>
-              Semester Schedule
+              Threads
             </Typography>
-            <Box
-              display="flex"
-              flexDirection="column"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleSemesterModalOpen(
-                    "New semester has started!",
-                    <AlarmOnTwoToneIcon
-                      sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
-                    />
-                  )
-                }
-                style={{ margin: "10px" }}
-              >
-                Start Semester
-              </Button>
-              <Button
-                variant="contained"
-                onClick={() =>
-                  handleSemesterModalOpen(
-                    "Semester has ended!",
-                    <PendingActionsTwoToneIcon
-                      sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
-                    />
-                  )
-                }
-                style={{ margin: "10px" }}
-              >
-                End Semester
-              </Button>
-            </Box>
-          </CardContent>
-        </Card>
-      </div>
 
-      {/* semester modal */}
-      <Dialog open={semesterModalOpen} onClose={handleSemesterModalClose}>
-        <DialogTitle style={{ textAlign: "center" }}>
-          {semesterModalIcon}
-          {semesterModalContent}
-        </DialogTitle>
-        <DialogActions>
-          <Button onClick={handleSemesterModalClose}>Close</Button>
-        </DialogActions>
-      </Dialog>
+            {displayedThreads.map((thread) => (
+              <Card
+                key={thread.id}
+                sx={{
+                  ...styles.threadCard,
+                }}
+              >
+                <CardActions
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <CardActionArea onClick={() => handleViewThreadPosts(thread)}>
+                    <CardContent>
+                      <Typography
+                        sx={
+                          ({ fontWeight: "bold", marginLeft: "10px" },
+                          styles.h7)
+                        }
+                      >
+                        {thread.title}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+
+                  <CardActions
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                    }}
+                  >
+                    <IconButton
+                      onClick={(event) => {
+                        event.stopPropagation(); // Prevent card click
+                        handleMenuOpen(event);
+                      }}
+                      size="small"
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                    >
+                      <MenuItem
+                        onClick={() => handleViewThreadModalOpen(thread)}
+                      >
+                        Update
+                      </MenuItem>
+                      <MenuItem onClick={() => handleDelete(thread)}>
+                        Delete
+                      </MenuItem>
+                    </Menu>
+                  </CardActions>
+                </CardActions>
+              </Card>
+            ))}
+          </CardContent>
+        </div>
+      </div>
 
       {/* Dialog for Add Thread */}
       <Dialog open={formOpen && mode === "add"} onClose={handleFormClose}>
@@ -325,4 +288,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default AdminThreads;

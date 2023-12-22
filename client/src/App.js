@@ -28,8 +28,10 @@ import ViewLogs from "./pages/ViewLog";
 import ViewFeedback from "./pages/viewFeedBack";
 import UpdateTeacherForm from "./pages/updateTeacher";
 import Classes from "./pages/Classes";
-import AdminThread from "./pages/AdminThread";
+import AdminThread from "./pages/AdminThreadPosts";
 import TeacherFeedback from "./pages/TeacherFeedback";
+import GiveFeedback from "./pages/giveFeedback";
+import AdminThreads from "./pages/AdminThreads";
 import PageNotFound from "./pages/PageNotFound";
 
 function App() {
@@ -51,6 +53,7 @@ function App() {
             <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
+            <Route path="givefeedback" element={<GiveFeedback />}></Route>
             <Route path="todos" element={<Thread />}></Route>
           </Route>
 
@@ -61,6 +64,7 @@ function App() {
 
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
+            <Route path="threads" element={<AdminThreads />}></Route>
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
