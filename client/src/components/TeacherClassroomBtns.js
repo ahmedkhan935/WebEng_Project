@@ -1,27 +1,99 @@
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
-
+import CampaignIcon from '@mui/icons-material/Campaign';
+import { addAnnouncement } from '../services/TeacherService'
+import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
+import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Link } from 'react-router-dom';
 
-function TeacherClassroomBtns({classCode}) {
+function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
+    const [open, setOpen] = useState(false); //for announcement form
+    const [dialogOpen, setDialogOpen] = useState(false); //for success/failure dialog
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState('');
+    const [attachments, setAttachments] = useState(null);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleAnnouncementPost = async () => {
+        if (title == '' || content == '') {
+            setDialogMessage('Failed to add, please fill all the fields');
+            setDialogOpen(true);
+            return;
+        }
+
+        const announcement = {
+            type: 'Announcement',
+            title: title,
+            content: content,
+            dueDate: null,
+            attachments: attachments
+        };
+
+        const result = await addAnnouncement(classCode, announcement);
+
+        if (result.error) {
+            setDialogMessage('Failed to add announcement: ' + result.error);
+        } else {
+            onNewAnnouncement(announcement);
+            setDialogMessage('Announcement added successfully');
+        }
+
+        setDialogOpen(true);
+        setOpen(false);
+    }
+
     return (
         <Box sx={{ border: '1px solid gray', width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px' }}>
-            <Typography variant="h6" color="text.secondary" bgcolor="white" display="inline-block" sx={{ mt: '-40px' }}>
-                Classroom Options
+            <Typography variant="h6" color="text.secondary" display="inline-block" sx={{ marginTop: '10px' }}>
+                Manage your Class
             </Typography>
-            <Button component={Link} to={`/teacher/classes/${classCode}/attendance`} variant="contained" color="primary" startIcon={<ChecklistIcon color="secondary" sx={{ fontSize: 60 }} />} fullWidth sx={{ mt: '10px' }}>
+            <Button component={Link} to={`/teacher/classes/${classCode}/attendance`} variant="contained" color="primary" startIcon={<ChecklistIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
                 Attendance
             </Button>
-            <Button component={Link} to={`/teacher/classes/${classCode}/evaluations`} variant="contained" color="primary" startIcon={<AssignmentTurnedInIcon color="secondary" sx={{ fontSize: 60 }} />} fullWidth sx={{ mt: '10px' }}>
+            <Button component={Link} to={`/teacher/classes/${classCode}/evaluations`} variant="contained" color="primary" startIcon={<AssignmentTurnedInIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
                 Evaluations
             </Button>
-            <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" sx={{ fontSize: 60 }} />} fullWidth sx={{ mt: '10px' }}>
+            <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
                 Video Call
             </Button>
-            
+            <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
+                Announcement
+            </Button>
+            <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+                <DialogTitle sx={{ color: "primary" }}>Announce something to your class</DialogTitle>
+                <DialogContent>
+                    <TextField autoFocus margin="dense" id="title" label="Title" type="text" fullWidth value={title} onChange={e => setTitle(e.target.value)} />
+                    <TextField margin="dense" id="content" label="Content" type="text" fullWidth multiline rows={4} value={content} onChange={e => setContent(e.target.value)} />
+                    <TextField margin="dense" id="attachments" label="Attachments" type="file" fullWidth InputLabelProps={{ shrink: true }} onChange={e => setAttachments(e.target.files[0])} />
+                </DialogContent>
+                <DialogActions>
+                    <Button variant="outlined" color="secondary" onClick={handleClose} sx={{ marginBottom: '10px', marginRight: '5px' }}>Cancel</Button>
+                    <Button variant="contained" color="primary" onClick={handleAnnouncementPost} sx={{ marginBottom: '10px', marginRight: '15px' }}>Post</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>
+                <DialogTitle>
+                    <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center">
+                        {dialogMessage.includes('Failed') ? <SentimentVeryDissatisfiedIcon color="secondary" fontSize="large" /> : <SentimentVerySatisfiedIcon color="secondary" fontSize="large" />}
+                        {dialogMessage}
+                    </Box>
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={() => setDialogOpen(false)}>OK</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     )
 }

@@ -119,7 +119,7 @@ const teacherController = {
     addAnnouncement: async (req, res) => {
         try {
             const { classCode } = req.params;
-            const { type, title, content, dueDate, attachments } = req.body;
+            let { type, title, content, dueDate, attachments } = req.body;
 
             console.log(req.body);
 
@@ -130,6 +130,8 @@ const teacherController = {
 
             console.log("classroom found");
             console.log(req.user);
+            
+            attachments = attachments ? attachments : [];
 
             const announcement = {
                 type,
@@ -149,6 +151,7 @@ const teacherController = {
 
             res.status(201).json({ message: 'Announcement added successfully', announcement });
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },

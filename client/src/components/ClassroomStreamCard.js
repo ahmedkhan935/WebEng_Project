@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useState } from 'react';
-import { Card, Collapse, CardContent, Box, Typography, alpha, IconButton, Menu, MenuItem, Avatar, TextField, Button } from '@mui/material';
+import { Card, Collapse, CardContent, Box, Typography, alpha, IconButton, Menu, MenuItem, Avatar, TextField } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -12,7 +12,10 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useParams } from 'react-router-dom';
 import { postComment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
+import { deleteAnnouncement } from '../services/TeacherService';
+import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
+
 
 function ClassroomStreamCard({ card }) {
     const theme = useTheme();
@@ -34,6 +37,13 @@ function ClassroomStreamCard({ card }) {
 
     //dealing with collapsing the card
     const [expanded, setExpanded] = useState(false);
+
+    //dealing with delete confirmation
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+    const handleDelete = () => {
+        setDeleteDialogOpen(true);
+    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -67,10 +77,24 @@ function ClassroomStreamCard({ card }) {
         setAnchorEl(null);
     };
 
-    const handleDelete = () => {
-        console.log('Delete clicked');
+    const handleEdit = () => {
+        console.log("Edit clicked");
         handleClose();
+    }
+
+    const confirmDelete = () => {
+        deleteAnnouncement(classCode, cardId)
+            .then((res) => {
+                console.log(res);
+                window.location.reload();
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+        handleClose();
+        setDeleteDialogOpen(false);
     };
+
 
     useEffect(() => {
         switch (card.type.toLowerCase()) {
@@ -118,15 +142,17 @@ function ClassroomStreamCard({ card }) {
 
                 {userRole == "teacher" ?
                     (<>
-                        <IconButton
-                            aria-label="more"
-                            aria-controls="long-menu"
-                            aria-haspopup="true"
-                            onClick={handleClick}
-                            sx={{ position: 'absolute', top: '10px', right: '10px' }}
-                        >
-                            <MoreVertIcon />
-                        </IconButton>
+                        <Box sx={{ padding: '10px' }}>
+                            <IconButton
+                                aria-label="more"
+                                aria-controls="long-menu"
+                                aria-haspopup="true"
+                                onClick={handleClick}
+                                sx={{ position: 'absolute', top: '10px', right: '10px' }}
+                            >
+                                <MoreVertIcon />
+                            </IconButton>
+                        </Box>
                         <Menu
                             id="long-menu"
                             anchorEl={anchorEl}
@@ -138,7 +164,10 @@ function ClassroomStreamCard({ card }) {
                                     width: '20ch',
                                 },
                             }}
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
+                            <MenuItem onClick={handleEdit}>Edit</MenuItem>
                             <MenuItem onClick={handleDelete}>Delete</MenuItem>
                         </Menu>
                     </>)
@@ -159,7 +188,7 @@ function ClassroomStreamCard({ card }) {
                 </IconButton>
 
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    {card.attachments.length > 0 ? (
+                    {card.attachments?.length > 0 ? (
                         <>
                             <hr></hr>
                             <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
@@ -199,7 +228,7 @@ function ClassroomStreamCard({ card }) {
                                 marginBottom: '10px',
                             }}
                         >
-                            {comments.length > 0 ? (
+                            {comments?.length > 0 ? (
                                 comments.map((comment, index) => (
                                     <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '15px', marginLeft: '10px' }}>
                                         <Avatar src="../assets/images/defaultpfp.jpg" sx={{ marginRight: '10px' }} />
@@ -212,7 +241,7 @@ function ClassroomStreamCard({ card }) {
                                     </Box>
                                 ))
                             ) : (
-                                <Typography variant="body1">No comments yet. Why not start the conversation?</Typography>
+                                <Typography variant="body1" sx={{ marginLeft: '10px' }}>No comments yet. Why not start the conversation?</Typography>
                             )}
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
@@ -222,7 +251,7 @@ function ClassroomStreamCard({ card }) {
                                 variant="outlined"
                                 placeholder="Comment your thoughts..."
                                 fullWidth
-                                sx={{ marginRight: '10px', flex: 1, height: '100%' }}
+                                sx={{ marginRight: '10px', marginLeft: '10px', flex: 1, height: '100%' }}
                             />
                             <Button
                                 variant="contained"
@@ -236,6 +265,13 @@ function ClassroomStreamCard({ card }) {
                         </Box>
                     </Box>
                 </Collapse>
+                <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
+                    <DialogTitle>Are you sure you want to delete this announcement?</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={confirmDelete}>Delete</Button>
+                    </DialogActions>
+                </Dialog>
             </CardContent>
         </Card>
     )

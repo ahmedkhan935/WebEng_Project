@@ -33,7 +33,7 @@ const AnnouncementSchema = new mongoose.Schema({
                     required: true
                 }
             }
-        ]
+        ],
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -113,7 +113,7 @@ const ClassroomSchema = new mongoose.Schema({
     degreeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Degree',
-        required: true
+       // required: true
     },
 
     semesterId: {

@@ -37,7 +37,7 @@ function ClassCard({classroom}) {
       </CardActionArea>
       <CardActions>
         <Button size="small">{ userRole == "student" ? "View To-Do" : "Attendance"}</Button>
-        <Button size="small">Unregister</Button>
+        <Button size="small">{ userRole == "student" ? "Unregister" : "View feedback"}</Button>
       </CardActions>
     </Card>
   );

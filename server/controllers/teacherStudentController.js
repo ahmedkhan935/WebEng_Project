@@ -47,6 +47,8 @@ const teacherStudentController = {
                 }
             }
 
+            classroom.announcements = classroom.announcements.reverse();
+
             res.status(201).json(classroom);
         } catch (err) {
             res.status(500).json({ error: err.message });

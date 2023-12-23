@@ -19,17 +19,23 @@ import ClassroomStreamCard from "../components/ClassroomStreamCard";
 import { useParams } from "react-router-dom";
 import { getClass as getStudentClass } from "../services/StudentService";
 import { getClass as getTeacherClass } from "../services/TeacherService";
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from 'react-router-dom';
 import TeacherClassroomBtns from "../components/TeacherClassroomBtns";
+import StudentClassroomBtns from "../components/StudentClassroomBtns";
 
 function Classroom() {
   const { classCode } = useParams();
   const [classroom, setClassroom] = React.useState({});
   const [classError, setClassError] = React.useState(null);
   const [classFetched, setClassFetched] = React.useState(false); //To check if classes have been fetched or not
-
+  const [classroomAnnouncements, setClassroomAnnouncements] = React.useState([]);  //classroom stream
+  
   const location = useLocation();
   const userRole = location.pathname.split('/')[1];
+
+  const addNewAnnouncement = (newAnnouncement) => {
+    setClassroomAnnouncements([newAnnouncement, ...classroomAnnouncements]);
+  }
 
   useEffect(() => {
     if (userRole == "student") {
@@ -52,7 +58,7 @@ function Classroom() {
       return;
     } else {
       setClassroom(data.data);
-      console.log("Classroom", classroom);
+      setClassroomAnnouncements(data.data.announcements);
       setClassFetched(true);
     }
   }
@@ -102,7 +108,7 @@ function Classroom() {
                 marginRight: '10px'
               }}
             >
-             { userRole=="student" ?  "Give Feedback" : "View Feedback" }
+              {userRole == "student" ? "Give Feedback" : "View Feedback"}
             </Button>
             <Box position="absolute" bottom={0} left={0} p={1}>
               <Typography variant="h3" color="white" margin="10px">
@@ -119,13 +125,16 @@ function Classroom() {
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
                 {userRole == "student" ?
-                  <UpcomingWork classCode={classroom.code} />
+                  <>
+                    <UpcomingWork classCode={classroom.code} />
+                    <StudentClassroomBtns classCode={classroom.code} />
+                  </>
                   :
-                  <TeacherClassroomBtns classCode={classroom.code} />
+                  <TeacherClassroomBtns classCode={classroom.code} onNewAnnouncement={addNewAnnouncement} />
                 }
               </Grid>
               <Grid item xs={12} sm={9}>
-                {classroom ? classroom.announcements.map((card) => <ClassroomStreamCard card={card} />) : null}
+                {classroom ? classroomAnnouncements.map((card) => <ClassroomStreamCard card={card} />) : null}
               </Grid>
             </Grid>
           </CardContent>

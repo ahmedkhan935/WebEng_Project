@@ -22,8 +22,8 @@ function UpcomingWork({ classCode }) {
 
 
     return (
-        <Box sx={{ border: '1px solid gray',width: '100%', borderRadius: '5px', mt: '10px',pt: '-20px', pb: '20px', pl: '20px', pr: '20px' }}>
-            <Typography variant="h6" color="text.secondary" bgcolor="white" display="inline-block"  sx= {{ mt: '-40px'}}>
+        <Box sx={{ border: '1px solid gray',width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px' }}>
+            <Typography variant="h6" color="text.secondary" display="inline-block"  sx= {{ marginTop: '15px'}}>
                 Upcoming Work
             </Typography>
             {/* <Typography variant="body2" color="text.secondary" my={1}>

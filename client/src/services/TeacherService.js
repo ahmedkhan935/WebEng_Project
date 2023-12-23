@@ -87,13 +87,13 @@ export const createClassroom = async (classroom) => {
 
 export const addAnnouncement = async (classCode, announcement) => {
     try {
-        const response = await axios.post(`${BASE_URL}/teacher/classroom/${classCode}/announcement`,
+        const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/announcement`,
         {
             type: announcement.type,
             title: announcement.title,
             content: announcement.content,
             dueDate: announcement.dueDate,
-            attachments: announcement.attachments
+            attachments: announcement.attachments ? announcement.attachments : []
         },
         {
             headers: {
