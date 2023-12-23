@@ -4,6 +4,7 @@ const AuthTeacher = require('../middlewares/AuthTeacher');
 const teacherController = require('../controllers/teacherController');
 
 router.get('/classes', Auth, AuthTeacher,teacherController.getClasses);
+router.get('/threads', Auth, AuthTeacher, teacherController.getThreads);
 
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classroom/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);
