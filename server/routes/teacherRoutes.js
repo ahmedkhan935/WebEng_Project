@@ -17,6 +17,8 @@ router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherControl
 router.post('/classes/:classCode/:announcementId/comment', Auth, AuthTeacher, teacherStudentController.comment);
 router.post('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.addAttendance);
 
-router.delete('/classroom/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
+router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.editAnnouncement);
+
+router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
 
 module.exports = router;
