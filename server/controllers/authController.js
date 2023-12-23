@@ -4,11 +4,6 @@ const Student = require('../models/Student');
 const Teacher = require('../models/Teacher');
 const Logs = require('../models/Logs');
 require('dotenv').config();
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const Student = require("../models/Student");
-const Teacher = require("../models/Teacher");
-require("dotenv").config();
 
 const registerStudent = async (req, res) => {
   try {
@@ -137,10 +132,7 @@ const registerTeacher = async (req, res) => {
 };
 
 const loginStudent = async (req, res) => {
-    try {
-        console.log(req.body);
-        
-        const { email, password } = req.body;
+
   try {
     const { email, password } = req.body;
 
@@ -163,34 +155,23 @@ const loginStudent = async (req, res) => {
       return res.status(401).json({ errorMessage: "Wrong email or password." });
     }
 
-        // Sign the token
-        const token = jwt.sign(
-            {
-                user: existingStudent._id,
-                email: existingStudent.email,
-                role: 'student',
-            },
-            process.env.JWT_SECRET
-        );
-        const logs = new Logs({
-            userId: existingStudent._id,
-            email: existingStudent.email,
-            action: 'login',
-            role: 'student',
-            date: new Date(),
-        });
-        const savedLogs = await logs.save();
-
-
     // Sign the token
     const token = jwt.sign(
       {
         user: existingStudent._id,
         email: existingStudent.email,
-        role: "student",
+        role: 'student',
       },
       process.env.JWT_SECRET
     );
+    const logs = new Logs({
+      userId: existingStudent._id,
+      email: existingStudent.email,
+      action: 'login',
+      role: 'student',
+      date: new Date(),
+    });
+    const savedLogs = await logs.save();
 
     // Send the token in an HTTP-only cookie
     res
@@ -231,32 +212,23 @@ const loginTeacher = async (req, res) => {
       return res.status(401).json({ errorMessage: "Wrong email or password." });
     }
 
-        // Sign the token
-        const token = jwt.sign(
-            {
-                user: existingTeacher._id,
-                email: existingTeacher.email,
-                role: 'teacher',
-            },
-            process.env.JWT_SECRET
-        );
-        const logs = new Logs({
-            user: existingTeacher._id,
-            email: existingTeacher.email,
-            action: 'login',
-            role: 'teacher',
-            date: new Date(),
-        });
-        const savedLogs = await logs.save();
     // Sign the token
     const token = jwt.sign(
       {
         user: existingTeacher._id,
         email: existingTeacher.email,
-        role: "teacher",
+        role: 'teacher',
       },
       process.env.JWT_SECRET
     );
+    const logs = new Logs({
+      user: existingTeacher._id,
+      email: existingTeacher.email,
+      action: 'login',
+      role: 'teacher',
+      date: new Date(),
+    });
+    const savedLogs = await logs.save();
 
     res
       .status(200)
@@ -273,29 +245,28 @@ const loginTeacher = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    //store in logs
+  //store in logs
+  console.log(req.user);
+  if (req.user) {
     console.log(req.user);
-    if(req.user)
-    {
-        console.log(req.user);
-        const logs = new Logs({
-            user: req.user,
-            email: req.email,
-            action: 'logout',
-            role: req.role,
-            date: new Date(),
-        });
-        const savedLogs = await logs.save();
-    }
+    const logs = new Logs({
+      user: req.user,
+      email: req.email,
+      action: 'logout',
+      role: req.role,
+      date: new Date(),
+    });
+    const savedLogs = await logs.save();
+  }
 
-    res
-        .cookie('token', '', {
-            httpOnly: true,
-            expires: new Date(0),
-            sameSite: 'None',
-            secure: true,
-        })
-        .send();
+  res
+    .cookie('token', '', {
+      httpOnly: true,
+      expires: new Date(0),
+      sameSite: 'None',
+      secure: true,
+    })
+    .send();
 };
 module.exports = { registerStudent, registerTeacher, loginStudent, loginTeacher, logout };
 module.exports = {
