@@ -20,7 +20,7 @@ import SearchCourses from "./pages/SearchCourses";
 import Settings from "./pages/Settings";
 //import { ThemeProvider } from "@mui/material";
 //import theme from "./assets/theme/theme";
-import { CSThemeProvider } from "./assets/theme/CSThemeProvider"; //Custom Clean Slate theme provider
+import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
 
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
@@ -35,11 +35,13 @@ import AdminThreads from "./pages/AdminThreads";
 import PageNotFound from "./pages/PageNotFound";
 import AdminLists from "./pages/AdminLists";
 import VideoCall from "./pages/MakeVideoCall";
+import Attendance from "./pages/Attendance";
+import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
 
 function App() {
   return (
-    <CSThemeProvider>
+    <CSThemesProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
@@ -70,7 +72,9 @@ function App() {
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode" element={<Classroom />}></Route>
-            <Route path="classes/:id/videoCall" element={<VideoCall />}></Route>
+            <Route path="classes/:classCode/videoCall" element={<VideoCall />}></Route>
+            <Route path="classes/:classCode/attendance" element={<Attendance />}></Route>
+            <Route path="classes/:classCode/evaluations" element={<Evaluations />}></Route>
           </Route>
 
           <Route path="/admin">
@@ -79,19 +83,14 @@ function App() {
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route
-              path="updateStudent/:id"
-              element={<UpdateStudentForm />}
-            ></Route>
-            <Route
-              path="updateTeacher/:id"
-              element={<UpdateTeacherForm />}
-            ></Route>
+            <Route  path="updateStudent/:id" element={<UpdateStudentForm />} ></Route>
+            <Route path="updateTeacher/:id"  element={<UpdateTeacherForm />} ></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
 
+            <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
             <Route
               path="updateCourse/:id"
               element={<UpdateCourseForm />}
@@ -115,7 +114,7 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
-    </CSThemeProvider>
+    </CSThemesProvider>
   );
 }
 

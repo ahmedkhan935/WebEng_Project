@@ -49,7 +49,6 @@ const AdminThread = () => {
         }),
       });
 
-      console.log(response.data);
     } catch (error) {
       console.error("Error sending email:", error);
     }
@@ -111,7 +110,7 @@ const AdminThread = () => {
         res.json().then((data) => {
           setPosts([...posts, data]);
         });
-        console.log(posts);
+        
       }
     });
     setTitle("");
@@ -141,7 +140,7 @@ const AdminThread = () => {
 
     viewAnnouncements(id).then((res) => {
       res.json().then((data) => {
-        console.log(data);
+        
         setPosts(data);
       });
     });
@@ -180,7 +179,8 @@ const AdminThread = () => {
                   content={post.content}
                   date={new Date(post.date).toLocaleDateString()}
                   creator="Amir Rehman"
-                  file={post.attachments ? post.attachments.name : null}
+                  file={post.attachments ? post.attachments.orignalName : null}
+                  downloadname={post.attachments ? post.attachments.name : null}
                   handleEdit={() => handleEditpost(post)}
                   handleDelete={() => handleDeletepost(post)}
                 />

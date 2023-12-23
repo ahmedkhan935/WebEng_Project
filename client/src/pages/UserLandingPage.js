@@ -6,7 +6,6 @@ import AnnouncementList from '../components/AnnouncementList';
 
 //Landing page for student/teacher, can be customized accordingly
 function UserLandingPage({role}) {
-
     return (
         <NavBar>
             <Container>

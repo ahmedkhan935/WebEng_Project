@@ -6,6 +6,8 @@ import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { Link } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { logout } from "../services/AuthService.js";
+import { useEffect } from "react";
 
 const MainPage = () => {
   const isScreenSmall = useMediaQuery((theme) => theme.breakpoints.down("sm"));
@@ -31,6 +33,7 @@ const MainPage = () => {
       display: isScreenSmall ? "none" : "block", // Hide on smaller screens
     },
   };
+ 
 
   return (
     <Box sx={{ flexGrow: 1 }}>

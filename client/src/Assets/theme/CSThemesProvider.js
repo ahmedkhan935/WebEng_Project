@@ -1,7 +1,7 @@
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import useStore from '../../store/store'; //zustand store for darkmode
 
-export function CSThemeProvider({ children }) {
+export function CSThemesProvider({ children }) {
     const { darkMode } = useStore();
 
     const theme = createTheme({

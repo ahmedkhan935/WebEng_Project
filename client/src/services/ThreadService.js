@@ -90,3 +90,12 @@ export async function viewAnnouncements(id) {
         credentials: 'include',
     });
 }
+export async function downloadFile(fileId) {
+    return await fetch(`${BASE_URL}/thread/download/${fileId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+}
