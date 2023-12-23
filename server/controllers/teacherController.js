@@ -10,6 +10,15 @@ const teacherController = {
         }
     },
 
+    getProfile: async (req, res) => {
+        try {
+          const teacher = await Teacher.findById(req.user);
+          res.status(200).json(teacher);
+        } catch (err) {
+          res.status(500).json({ error: err.message });
+        }
+      },
+
     createClassroom: async (req, res) => {
         const { name, code } = req.body;
         teachers.push(req.user); // add the teacher who created the classroom to the list of teachers
@@ -99,7 +108,9 @@ const teacherController = {
         } catch (error) {
             res.status(500).json({ message: 'Server error', error });
         }
-    }
+    },
+
+
 };
 
 module.exports = teacherController;

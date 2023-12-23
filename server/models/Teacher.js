@@ -19,7 +19,7 @@ const teacherSchema = new mongoose.Schema({
             }
         ],
     },
-    threads: {
+    threads: { //threads that user is subsribed to
         type: [
             {
                 threadId: { type: mongoose.Schema.Types.ObjectId, ref: 'Thread' }, //Id of the thread as foreign key

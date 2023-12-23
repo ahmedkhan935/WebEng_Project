@@ -3,13 +3,14 @@ import { Container, Typography, Button, Box, Skeleton } from '@mui/material';
 import AnnouncementCard from './AnnouncementCard';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react'
-import { getThreads } from '../services/StudentService'
+import { getThreads as getStudentThreads } from '../services/StudentService';
+import { getThreads as getTeacherThreads } from '../services/TeacherService';
 //import { getThreadsTeacher } from '../services/TeacherService'
 
 function AnnouncementList({ isFullList, thread }) {
     const [announcements, setAnnouncements] = React.useState([]);
     const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
-
+    const [announcementsError, setAnnouncementsError] = React.useState(null); //To check if classes have been fetched or not
     const location = useLocation();
     const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
 
@@ -17,24 +18,44 @@ function AnnouncementList({ isFullList, thread }) {
 
 
     useEffect(() => {
-
         //If thread object is passed, set announcements of that thread.
         if (thread) {
             setAnnouncements(thread)
             setAnnouncementFetched(true)
         } else {
-            //Else, it means it's the home page, set top 3 announcements of the main thread.
-            getThreads().then((data) => {
-                if (data.data.length == 0) return;
-                const content = data.data[0].threadId.content; //every user is subscribed to this thread when user is created
-                setAnnouncements(isFullList ? content : content.slice(0, 3)); //first 3 elements
-                setAnnouncementFetched(true);
-            });
+            if (userRole == "student") {
+                //Else, it means it's the home page, set top 3 announcements of the main thread.
+                getStudentThreads().then((data) => {
+                    handleData(data);
+                });
+            } else if (userRole == "teacher") {
+                getTeacherThreads().then((data) => {
+                  handleData(data);  
+                });
+            }
         }
     }, []);
 
+    const handleData = (data) => {
+        if (data.data.length == 0) {
+            return;
+        }
+        if (data.error) { //data contains an erorr property
+            setAnnouncementsError(data.error);
+            setAnnouncementFetched(true);
+            return;
+        } else {
+            const content = data.data[0].threadId.content; //every user is subscribed to this thread when user is created
+            setAnnouncements(isFullList ? content : content.slice(0, 3)); //first 3 elements
+            setAnnouncementFetched(true);
+        }
+    }
 
 
+
+    if(announcementsError) {
+        return <Typography variant="subtitle" color="warning">Sorry! An error occurred.</Typography>
+    }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', marginBottom: '20px' }}>

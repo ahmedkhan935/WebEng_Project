@@ -2,7 +2,8 @@ import { Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ClassCard from "./ClassCard";
 import { Typography, Button, Box } from "@mui/material";
-import { getClasses } from '../services/StudentService';
+import { getClasses as getStudentClasses } from '../services/StudentService';
+import { getClasses as getTeacherClasses } from '../services/TeacherService';
 import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Grid';
@@ -19,19 +20,32 @@ function ClassesList({ isFullList }) {
     let classesUrl = "/" + userRole + "/classes";
 
     useEffect(() => {
-        getClasses().then((data) => {
-            if (data.error) { //data contains an erorr property
-                setClassesError(data.error);
-                setClassesFetched(true);
-                return;
-            } else {
-                setClasses(data.data);
-                setClassesFetched(true);
-                console.log(data.data);
-            }
-        });
+        if (userRole == "student") {
+            getStudentClasses().then((data) => {
+               handleData(data)
+            });
+        } else if (userRole == "teacher") {
+            getTeacherClasses().then((data) => {
+                handleData(data)
+            })
+        }
     }, []);
 
+    const handleData = (data) => {
+        if (data.error) { //data contains an erorr property
+            setClassesError(data.error);
+            setClassesFetched(true);
+            return;
+        } else {
+            setClasses(data.data);
+            setClassesFetched(true);
+            console.log(data.data);
+        }
+    }
+
+    if (classesError) {
+        return <Typography variant="subtitle" color="warning">Sorry! An error occurred.</Typography>
+    }
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', marginBottom: '20px' }}>
@@ -63,6 +77,5 @@ function ClassesList({ isFullList }) {
         </Box>
     )
 }
-
 
 export default ClassesList;
