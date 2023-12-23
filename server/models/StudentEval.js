@@ -13,13 +13,9 @@ const StudentEvalSchema = new mongoose.Schema({
     evaluations: {
         type: [
             {
-                type: { // assignment, quiz, midsem, endsem
+                title: {
                     type: String,
-                    required: true
-                },
-                number: {
-                    type: Number,
-                    required: true
+                    required: true,
                 },
                 obtainedMarks: {
                     type: Number,

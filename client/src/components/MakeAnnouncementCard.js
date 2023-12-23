@@ -14,6 +14,7 @@ import {
 import Chip from "@mui/material/Chip";
 import AttachmentIcon from "@mui/icons-material/Attachment";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { downloadFile } from "../services/ThreadService";
 
 function MakeAnnouncementCard({
   title,
@@ -21,9 +22,11 @@ function MakeAnnouncementCard({
   date,
   creator,
   file,
+  downloadname,
   handleEdit,
   handleDelete,
 }) {
+  
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -48,6 +51,28 @@ function MakeAnnouncementCard({
     handleMenuClose();
     handleDelete();
   };
+  const handleDownload = async () => {
+    try {
+     
+      const response = await downloadFile(downloadname);
+      if (!response.ok) {
+          throw new Error("HTTP error " + response.status);
+      }
+      
+      const blob = await response.blob();
+      console.log(blob);
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = file;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+  } catch (error) {
+      console.error("Fetch error: ", error);
+  }
+  }
+
 
   return (
     <Card sx={{ marginBottom: "10px" }}>
@@ -128,7 +153,10 @@ function MakeAnnouncementCard({
                       backgroundColor: (theme) =>
                         `${theme.palette.secondary.main}1A`,
                     }}
+                    onClick={() => handleDownload(file)}
+
                   />
+
                 </Box>
               </div>
             )}

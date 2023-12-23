@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import {
   Table,
@@ -26,6 +26,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
 import { viewAllStudents, deleteStudent } from "../services/AdminService";
+import theme from "../assets/theme/theme";
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
@@ -171,7 +172,7 @@ const ViewStudents = () => {
         >
           <Table>
             <TableHead>
-              <TableRow style={{ background: "#22717d" }}>
+              <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
                 <TableCell style={{ color: "#FFFFFF" }}>Student ID</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Batch</TableCell>

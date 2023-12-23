@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -16,11 +17,24 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NavBar from "../components/Navbar";
+import { getLogs } from "../services/AdminService";
 
 const ViewLogs = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2;
+  const [rows, setRows] = useState([]);
+  useEffect(() => {
+    getLogs().then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setRows(data);
+      });
+    });
+  }, []
+
+  );
+  
 
   const handleDelete = (id) => {
     console.log(`Deleting Log with ID: ${id}`);
@@ -33,23 +47,23 @@ const ViewLogs = () => {
     },
   };
 
-  const rows = [
-    {
-      name: "Fatima Bilal",
-      userType: "Student",
-      sessionType: "Login",
-      date: "15/12/2023",
-      time: "09:30:00",
-    },
-    {
-      name: "Ahmed Raza",
-      userType: "Teacher",
-      sessionType: "Logout",
-      date: "20/12/2023",
-      time: "09:30:30",
-    },
-    // Add more rows as needed
-  ];
+  // const rows = [
+  //   {
+  //     name: "Fatima Bilal",
+  //     userType: "Student",
+  //     sessionType: "Login",
+  //     date: "15/12/2023",
+  //     time: "09:30:00",
+  //   },
+  //   {
+  //     name: "Ahmed Raza",
+  //     userType: "Teacher",
+  //     sessionType: "Logout",
+  //     date: "20/12/2023",
+  //     time: "09:30:30",
+  //   },
+  //   Add more rows as needed
+  // ];
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -112,22 +126,19 @@ const ViewLogs = () => {
                 <TableCell style={{ color: "#FFFFFF" }}>Session Type</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Date</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Time</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Actions</TableCell>
+                
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.userType}</TableCell>
-                  <TableCell>{row.sessionType}</TableCell>
-                  <TableCell>{row.date}</TableCell>
-                  <TableCell>{row.time}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleDelete(row.code)}>
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
+                  <TableCell>{row.email}</TableCell>
+                  <TableCell>{row.role}</TableCell>
+                  <TableCell>{row.action}</TableCell>
+                  <TableCell>{new Date(row.timestamp).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(row.timestamp).toLocaleTimeString()}</TableCell>
+                  
+                  
                 </TableRow>
               ))}
             </TableBody>

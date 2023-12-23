@@ -41,13 +41,10 @@ const CourseEvalSchema = new mongoose.Schema({
     evaluations: {
         type: [
             {
-                type: { // assignment, quiz, midsem, endsem
+                //Instead of type amd number, make a "name" which woll be unique for each eval
+                title: {
                     type: String,
-                    required: true
-                },
-                number: {
-                    type: Number,
-                    required: true
+                    required: true,
                 },
                 weightage: {
                     type: Number,

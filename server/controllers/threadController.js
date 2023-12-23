@@ -1,6 +1,7 @@
 const Thread = require("../models/Thread");
 const Student = require("../models/Student");
 const bucket = require("../firebase_init");
+const path = require('path');
 const addThread = async (req, res) => {
     if (!req.body.title) {
         {
@@ -100,7 +101,11 @@ const addAnnouncement = async (req, res) => {
         const file = req.files ? req.files.file : null;
         var fileName = null;
         if (file) {
-            fileName = file.name + '-' + Date.now();
+            //add timestamp to file name only excluding path
+            const fileExtension = path.extname(file.name);
+            const fileNameWithoutExtension = path.basename(file.name, fileExtension);
+            fileName = `${fileNameWithoutExtension}-${Date.now()}${fileExtension}`;
+            
             const blob = bucket.file(fileName);
             const blobWriter = blob.createWriteStream({
                 metadata: {
@@ -319,23 +324,29 @@ const uploadFile = async (req, res) => {
 
 const downloadFile = async (req, res) => {
     try {
-
         const file = bucket.file(req.params.fileName);
         const blobStream = file.createReadStream();
+
         blobStream.on('error', (err) => {
-            console.log(err);
-            res.status(404).send('File not found');
+            console.error(err);
+            return res.status(404).send('File not found');
         });
+
+      
+        res.setHeader('Content-Type', 'application/octet-stream;,charset=utf-8');
+        res.setHeader('Content-Disposition', `attachment; filename="${req.params.fileName}; filename*=${req.params.fileName}"`);
+
         blobStream.pipe(res);
-        // blobStream.on('end', () => {
-        //     console.log('File downloaded.');
-        // }
-        // );
+
+        blobStream.on('end', () => {
+            return res.status(200).end();
+        });
     } catch (err) {
-        console.log(err.message);
-        res.json({ message: err });
+        console.error(err.message);
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+
 module.exports = {
     addThread,
     getThreads,

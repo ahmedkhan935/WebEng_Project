@@ -84,7 +84,11 @@ const AnnouncementSchema = new mongoose.Schema({
                             }
                         }
                     ]
-                }
+                },
+                isMarked: {
+                    type: Boolean,
+                    required: true
+                },
             }
         ]
     
@@ -92,7 +96,6 @@ const AnnouncementSchema = new mongoose.Schema({
 });
 
 const ClassroomSchema = new mongoose.Schema({
-
     name: {// course name
         type: String,
         required: true
@@ -112,6 +115,14 @@ const ClassroomSchema = new mongoose.Schema({
         ref: 'Degree',
         required: true
     },
+
+    semesterId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Semester',
+    },
+
+    //ADD SEMESTER ID 
+    //(course+degree+semester = unique identifier)
     
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -134,6 +145,11 @@ const ClassroomSchema = new mongoose.Schema({
     },
     announcements:{
         type: [AnnouncementSchema]
+    },
+    status: { //status of the classroom
+        type: String,
+        enum: ['Pending', 'Ongoing', 'Completed'],
+        required: true
     }
 });
 
