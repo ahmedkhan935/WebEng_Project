@@ -12,6 +12,7 @@ const Authmiddleware = (req, res, next) => {
             return res.status(401).json({ errorMessage: "Unauthorized" });
         }
         const verified = jwt.verify(token, process.env.JWT_SECRET);
+     
         req.user = verified.user;
         req.email = verified.email;
         req.role = verified.role;

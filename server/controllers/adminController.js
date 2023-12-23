@@ -2,6 +2,7 @@ const Semester = require("../models/Semester");
 const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Course = require("../models/Course");
+const Logs = require("../models/Logs");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -370,6 +371,15 @@ const deleteTeacher = async (req, res) => {
   }
 };
 
+const viewLogs = async (req, res) => {
+  try {
+    const logs = await Logs.find();
+    res.status(200).json(logs);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -391,4 +401,5 @@ module.exports = {
   viewTeacher,
   updateTeacher,
   deleteTeacher,
+  viewLogs,
 };

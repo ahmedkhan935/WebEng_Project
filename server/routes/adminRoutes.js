@@ -2,6 +2,7 @@ const adminRouter = require("express").Router();
 const authMiddleware = require("../middlewares/Auth");
 const adminController = require("../controllers/adminController");
 const authController = require("../controllers/authController");
+const Auth = require("../middlewares/Auth");
 adminRouter.post("/semesters", adminController.createSemester);
 adminRouter.get("/semesters", adminController.getAllSemesters);
 adminRouter.get("/semesters/:id", adminController.getSemesterById);
@@ -23,5 +24,6 @@ adminRouter.get("/course", adminController.viewAllCourses);
 adminRouter.get("/course/:id", adminController.viewCourse);
 adminRouter.patch("/course/:id", adminController.updateCourse);
 adminRouter.delete("/course/:id", adminController.deleteCourse);
+adminRouter.get("/logs", adminController.viewLogs);
 
 module.exports = adminRouter;

@@ -125,3 +125,10 @@ export const deleteCourse = async (courseId) => {
   });
   return handleResponse(response);
 };
+
+export async function getLogs(){
+  return await fetch(`${BASE_URL}/admin/logs`, {
+    method: 'GET',
+    credentials: 'include',
+  });
+}
