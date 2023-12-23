@@ -2,17 +2,9 @@ const mongoose = require('mongoose');
 
 const CourseEvalSchema = new mongoose.Schema({
 
-    courseCode: {
+    classCode: {
         type: String,
-        ref: 'Course',
-    },
-    degreeId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Degree',
-    },
-    semesterId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Semester',
+        required: true
     },
     lectures: {
         type: [
@@ -25,6 +17,24 @@ const CourseEvalSchema = new mongoose.Schema({
                     type: Number,
                     required: true
                 },
+                attendance: {
+                    type: [
+                        {
+                            rollNumber: {
+                                type: String,
+                                required: true
+                            },
+                            name: {
+                                type: String,
+                                required: true
+                            },
+                            status: {
+                                type: String,
+                                required: true
+                            }
+                        }
+                    ]
+                }
             }
         ]
     },
