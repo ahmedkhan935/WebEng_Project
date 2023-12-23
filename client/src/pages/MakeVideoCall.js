@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import NavBar from "../components/Navbar";
 import VideoCallImg from "../assets/images/vid.gif";
 import { Button, Typography, Box, CircularProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
 
 const VideoCall = () => {
   const [loading, setLoading] = useState(false);
+  const classCode= useParams();
 
   useEffect(() => {}, []);
 
