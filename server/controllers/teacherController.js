@@ -17,7 +17,7 @@ const teacherController = {
         // } catch (error) {
         //     console.log("getclasses erorr")
         //     console.log(error);
-            
+
         //     res.status(500).json({ message: 'Server error', error });
         // }
         try {
@@ -25,20 +25,41 @@ const teacherController = {
             const classCodes = teacher.classes.map(classroom => classroom.classCode);// Get the class codes of all classes
             // fetch the classes from the database
             const classes = await Classroom.find({ code: { $in: classCodes } })
-              .populate({
-                path: 'createdBy',
-                select: 'name'
-              })
-              .populate({
-                path: 'teachers.teacherId',
-                select: 'name'
-              })
-              .populate('courseId');
+                .populate({
+                    path: 'createdBy',
+                    select: 'name'
+                })
+                .populate({
+                    path: 'teachers.teacherId',
+                    select: 'name'
+                })
+                .populate('courseId');
             res.status(201).json(classes);
-      
-          } catch (err) {
+
+        } catch (err) {
             res.status(500).json({ error: err.message });
-          }
+        }
+    },
+
+    getStudents: async (req, res) => {
+        try {
+            const { classCode } = req.params;
+            const classroom = await Classroom.findOne({ code: classCode })
+            .populate({
+                path: 'students.studentId',
+                select: 'name rollNumber'
+            });
+
+            let students = classroom.students;
+            students = students.map(student => {
+                return { rollNumber: student.studentId.rollNumber, name: student.studentId.name };
+            });
+
+            res.status(201).json({ students });
+
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error });
+        }
     },
 
     getThreads: async (req, res) => {
@@ -59,12 +80,12 @@ const teacherController = {
 
     getProfile: async (req, res) => {
         try {
-          const teacher = await Teacher.findById(req.user);
-          res.status(200).json(teacher);
+            const teacher = await Teacher.findById(req.user);
+            res.status(200).json(teacher);
         } catch (err) {
-          res.status(500).json({ error: err.message });
+            res.status(500).json({ error: err.message });
         }
-      },
+    },
 
     createClassroom: async (req, res) => {
         const { name, code } = req.body;
@@ -77,8 +98,8 @@ const teacherController = {
                 courseId,
                 createdBy: req.user,
                 teachers,
-                students : [],
-                announcements : []
+                students: [],
+                announcements: []
             });
 
             await classroom.save();
@@ -157,7 +178,35 @@ const teacherController = {
         }
     },
 
+    // markAssignment: async (req, res) => {
+    //     try{
+    //         const {classCode, assignmentId} = req.params;
+    //         const {rollNum, grade} = req.body;
 
+    //         const classroom = await Classroom.findOne({code: classCode});
+    //         if(!classroom){
+    //             return res.status(404).json({message: 'Classroom not found'});
+    //         }
+
+    //         const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
+    //         if(!assignment){
+    //             return res.status(404).json({message: 'Assignment not found'});
+    //         }
+
+    //         const submission = assignment.submissions.find(submission => submission.studentId == studentId);
+    //         if(!submission){
+    //             return res.status(404).json({message: 'Submission not found'});
+    //         }
+
+    //         submission.grade = grade;
+
+    //         await classroom.save();
+
+    //         res.status(200).json({message: 'Assignment marked successfully'});
+    //     }catch(error){
+    //         res.status(500).json({ message: 'Server error', error });
+    //     }
+    // }
 };
 
 module.exports = teacherController;
