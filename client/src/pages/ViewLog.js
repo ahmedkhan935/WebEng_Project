@@ -31,10 +31,7 @@ const ViewLogs = () => {
         setRows(data);
       });
     });
-  }, []
-
-  );
-  
+  }, []);
 
   const handleDelete = (id) => {
     console.log(`Deleting Log with ID: ${id}`);
@@ -126,7 +123,6 @@ const ViewLogs = () => {
                 <TableCell style={{ color: "#FFFFFF" }}>Session Type</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Date</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Time</TableCell>
-                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -135,10 +131,12 @@ const ViewLogs = () => {
                   <TableCell>{row.email}</TableCell>
                   <TableCell>{row.role}</TableCell>
                   <TableCell>{row.action}</TableCell>
-                  <TableCell>{new Date(row.timestamp).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(row.timestamp).toLocaleTimeString()}</TableCell>
-                  
-                  
+                  <TableCell>
+                    {new Date(row.timestamp).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(row.timestamp).toLocaleTimeString()}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

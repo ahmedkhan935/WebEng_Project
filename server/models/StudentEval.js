@@ -67,5 +67,5 @@ const StudentEvalSchema = new mongoose.Schema({
     }
 });
 
-const StudentEval = mongoose.model('StudentEval', StudentEvalSchema);
+const StudentEval = mongoose.model("StudentEval", StudentEvalSchema);
 module.exports = StudentEval;

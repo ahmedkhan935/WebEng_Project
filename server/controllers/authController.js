@@ -1,9 +1,9 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const Student = require('../models/Student');
-const Teacher = require('../models/Teacher');
-const Logs = require('../models/Logs');
-require('dotenv').config();
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const Student = require("../models/Student");
+const Teacher = require("../models/Teacher");
+const Logs = require("../models/Logs");
+require("dotenv").config();
 
 const registerStudent = async (req, res) => {
   try {
@@ -132,7 +132,6 @@ const registerTeacher = async (req, res) => {
 };
 
 const loginStudent = async (req, res) => {
-
   try {
     const { email, password } = req.body;
 
@@ -160,15 +159,15 @@ const loginStudent = async (req, res) => {
       {
         user: existingStudent._id,
         email: existingStudent.email,
-        role: 'student',
+        role: "student",
       },
       process.env.JWT_SECRET
     );
     const logs = new Logs({
       userId: existingStudent._id,
       email: existingStudent.email,
-      action: 'login',
-      role: 'student',
+      action: "login",
+      role: "student",
       date: new Date(),
     });
     const savedLogs = await logs.save();
@@ -217,15 +216,15 @@ const loginTeacher = async (req, res) => {
       {
         user: existingTeacher._id,
         email: existingTeacher.email,
-        role: 'teacher',
+        role: "teacher",
       },
       process.env.JWT_SECRET
     );
     const logs = new Logs({
       user: existingTeacher._id,
       email: existingTeacher.email,
-      action: 'login',
-      role: 'teacher',
+      action: "login",
+      role: "teacher",
       date: new Date(),
     });
     const savedLogs = await logs.save();
@@ -252,7 +251,7 @@ const logout = async (req, res) => {
     const logs = new Logs({
       user: req.user,
       email: req.email,
-      action: 'logout',
+      action: "logout",
       role: req.role,
       date: new Date(),
     });
@@ -260,10 +259,10 @@ const logout = async (req, res) => {
   }
 
   res
-    .cookie('token', '', {
+    .cookie("token", "", {
       httpOnly: true,
       expires: new Date(0),
-      sameSite: 'None',
+      sameSite: "None",
       secure: true,
     })
     .send();
