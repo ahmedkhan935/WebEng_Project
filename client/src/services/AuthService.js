@@ -45,3 +45,12 @@ export async function teacherRegister(email, password, name, CNIC, address, cont
         body: JSON.stringify({ email: email, password: password, name: name, CNIC: CNIC, address: address, contactNumber: contactNumber })
     });
 }
+export async function logout() {
+    return await fetch(`${BASE_URL}/auth/logout`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+    });
+}

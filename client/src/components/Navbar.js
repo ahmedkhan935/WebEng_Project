@@ -35,7 +35,7 @@ import {
   FormatListNumbered as FormatListNumberedIcon,
 } from "@mui/icons-material";
 import { Link, useLocation } from "react-router-dom";
-
+import {logout} from '../services/AuthService';
 const drawerWidth = 240;
 
 const adminOptions = [
@@ -172,6 +172,12 @@ export default function NavBar({ children }) {
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const logouts = () => {
+    logout();
+  }
+
+
+    
  
   const standardOptions = [
     { title: "Home", Icon: <HomeIcon color="primary" />, linkto: "/"+userRole },
@@ -185,7 +191,7 @@ export default function NavBar({ children }) {
       Icon: <SettingsIcon color="primary" />,
       linkto: "/"+userRole+"/settings",
     },
-    { title: "Logout", Icon: <LogoutIcon color="primary" /> },
+    { title: "Logout", Icon: <LogoutIcon color="primary" />, linkto: "/",onClick: logout },
   ];
 
   const handleDrawerOpen = () => {
@@ -242,6 +248,7 @@ export default function NavBar({ children }) {
               key={element.title}
               disablePadding
               sx={{ display: "block" }}
+              onClick={element.onClick}
             >
               <ListItemButton
                 component={element.linkto ? Link : "div"}
