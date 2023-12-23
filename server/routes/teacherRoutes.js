@@ -15,6 +15,7 @@ router.get('/profile',              Auth, AuthTeacher, teacherController.getProf
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);
 router.post('/classes/:classCode/:announcementId/comment', Auth, AuthTeacher, teacherStudentController.comment);
+router.post('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.addAttendance);
 
 router.delete('/classroom/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
 

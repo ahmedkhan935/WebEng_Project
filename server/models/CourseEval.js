@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 
 const CourseEvalSchema = new mongoose.Schema({
-    classCode: { //reference to classroom code
+
+    classCode: {
         type: String,
-        required: true,
+        required: true
     },
     lectures: {
         type: [
@@ -16,6 +17,24 @@ const CourseEvalSchema = new mongoose.Schema({
                     type: Number,
                     required: true
                 },
+                attendance: {
+                    type: [
+                        {
+                            rollNumber: {
+                                type: String,
+                                required: true
+                            },
+                            name: {
+                                type: String,
+                                required: true
+                            },
+                            status: {
+                                type: String,
+                                required: true
+                            }
+                        }
+                    ]
+                }
             }
         ]
     },
