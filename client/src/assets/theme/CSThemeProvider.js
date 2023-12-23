@@ -27,26 +27,6 @@ export function CSThemeProvider({ children }) {
                 fontSize: '1.5rem',
             }
         },
-        components: {
-            MuiCssBaseline: {
-              styleOverrides: `
-                ::-webkit-scrollbar {
-                  width: 10px;
-                }
-                ::-webkit-scrollbar-track {
-                  background: #f1f1f1;
-                  padding: 2px; // Add padding to the track
-                }
-                ::-webkit-scrollbar-thumb {
-                    background: #edb18c;
-                  border-radius: 20px;
-                }
-                ::-webkit-scrollbar-thumb:hover {
-                  background: #de8a57;
-                }
-              `,
-            },
-          },
     });
 
     return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
