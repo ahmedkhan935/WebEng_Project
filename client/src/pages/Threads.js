@@ -7,7 +7,8 @@ import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { Link } from 'react-router-dom';
 import { useEffect } from "react";
-import { getThreads } from "../services/StudentService";
+import { getThreads as getStudentThreads } from "../services/StudentService";
+import { getThreads as getTeacherThreads } from "../services/TeacherService";
 import { useLocation } from 'react-router-dom';
 
 
@@ -58,23 +59,37 @@ function Threads() {
     const [threads, setThreads] = React.useState([]);
     const [threadsError, setThreadsError] = React.useState("");
     const [threadsFetched, setThreadsFetched] = React.useState(false); //To check if classes have been fetched or not
+    const location = useLocation();
+
+    const userRole = location.pathname.split('/')[1];
+
 
     useEffect(() => {
-        getThreads().then((data) => {
-            if (data.error) {
-                setThreadsError(data.error);
-                setThreadsFetched(true);
-                return;
-            }
-            else {
-                setThreads(data.data.map((thread) => {
-                    return thread.threadId; //will return object with content (array of posts),description,title,id of the htread
-                }));
-                setThreadsFetched(true);
-            }
+        if (userRole === "student") {
+            getStudentThreads().then((data) => {
+                handleData(data);
 
-        });
+            });
+        } else if (userRole === "teacher") {
+            getTeacherThreads().then((data) => {
+                handleData(data);
+            });
+        }
     }, []);
+
+    const handleData = (data) => {
+        if (data.error) {
+            setThreadsError(data.error);
+            setThreadsFetched(true);
+            return;
+        }
+        else {
+            setThreads(data.data.map((thread) => {
+                return thread.threadId; //will return object with content (array of posts),description,title,id of the htread
+            }));
+            setThreadsFetched(true);
+        }
+    }
 
 
     return (

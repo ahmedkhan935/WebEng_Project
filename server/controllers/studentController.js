@@ -56,46 +56,6 @@ const studentController = {
     }
   },
 
-  getClass: async (req, res) => {
-    try {
-      let classroom = await Classroom.findOne({ code: req.params.classCode })
-        .populate({
-          path: 'createdBy',
-          select: 'name'
-        })
-        .populate('announcements')
-        .populate({
-          path: 'students.studentId',
-          select: '-password'
-        })
-        .populate({
-          path: 'teachers.teacherId',
-          select: '-password'
-        })
-        .populate('courseId');
-
-      // Manually populate comments
-      if (classroom) {
-        classroom = classroom.toObject();
-        for (let i = 0; i < classroom.announcements.length; i++) {
-          const announcer = await Teacher.findById(classroom.announcements[i].createdBy).select('name');
-          classroom.announcements[i].createdBy = (announcer ? announcer.name : "Unknown User");
-
-          for (let j = 0; j < classroom.announcements[i].comments.length; j++) {
-            const commenter = await Student.findById(classroom.announcements[i].comments[j].createdBy).select('name');
-            //  console.log("commenter found " , commenter )
-            classroom.announcements[i].comments[j].createdBy = (commenter ? commenter.name : "Unknown User");
-            //   console.log( "updated createdby" ,  classroom.announcements[i].comments[j].createdBy );
-          }
-        }
-      }
-
-      res.status(201).json(classroom);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  },
-
   getAllTodos: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
@@ -151,75 +111,8 @@ const studentController = {
     }
   },
 
-  getThreads: async (req, res) => {
-    try {
-      const student = await Student.findById(req.user)
-        .populate('threads.threadId');
-      // .populate({
-      //   path: 'threads.createdBy',
-      //   select: 'name'
-      // });
-      const threads = student.threads;
-      res.status(201).json(threads);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  },
 
-  getThread: async (req, res) => {
-    try {
-      const student = await Student.findById(req.user).populate('threads.threadId');
-      const threads = student.threads;
-      const thread = threads.find(thread => thread.threadId._id == req.params.threadId);
-      res.status(201).json(thread);
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  },
 
-  comment: async (req, res) => {
-    try {
-      //:classCode/:announcementId
-      const { classCode, announcementId } = req.params;
-      const { content } = req.body;
-      const commenterId = req.user;
-
-      const classroom = await Classroom.findOne({ code: classCode })
-      if (!classroom) {
-        return res.status(404).json({ error: 'Classroom not found' });
-      }
-
-      const announcement = classroom.announcements.id(announcementId);
-      if (!announcement) {
-        return res.status(404).json({ error: 'Announcement not found' });
-      }
-      console.log("announcement found", announcement);
-
-      const newComment = {
-        content,
-        date: new Date(),
-        createdBy: commenterId
-      };
-
-      announcement.comments.push(newComment);
-      await classroom.save();
-
-      const lastIndex = announcement.comments.length - 1;
-      const comment = announcement.comments[lastIndex];
-      const student = await Student.findById(comment.createdBy);
-
-      // Create a new comment object with the createdBy field replaced by the student's name
-      const commentWithStudentName = {
-        ...comment.toObject(),
-        createdBy: student.name, //Replace the createdBy field with thename 
-      };
-
-      res.status(201).json(commentWithStudentName);
-
-    } catch (err) {
-      res.status(500).json({ error: err.message });
-    }
-  }
 
 
 
