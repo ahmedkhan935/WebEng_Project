@@ -21,15 +21,6 @@ export const getClasses = async () => {
     return handleResponse(response);
 };
 
-export const getThreads = async () => {
-    const response = await axios.get(`${BASE_URL}/teacher/threads`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        withCredentials: true
-    });
-    return handleResponse(response);
-}
 
 export const createClassroom = async (classroom) => {
     try {
@@ -121,6 +112,7 @@ export const getThreads = async () => {
     });
     return handleResponse(response);
 };
+
 
 export const getThread = async (threadId) => {
     const response = await axios.get(`${BASE_URL}/teacher/threads/${threadId}`, {

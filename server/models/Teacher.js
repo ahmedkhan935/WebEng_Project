@@ -11,13 +11,9 @@ const teacherSchema = new mongoose.Schema({
     classes: {
         type: [
             {
-                classId: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Classroom',
-                    required: true
-                },
+                classCode: { type: String, default: "" }, //Class code of the class
             }
-        ],
+        ], sparse: true,
     },
     threads: { //threads that user is subsribed to
         type: [

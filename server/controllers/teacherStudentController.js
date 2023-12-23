@@ -115,6 +115,7 @@ const teacherStudentController = {
             }
 
             const threads = user.threads;
+            console.log("threads " , threads)
             res.status(201).json(threads);
 
         } catch (err) {

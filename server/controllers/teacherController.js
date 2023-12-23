@@ -4,12 +4,41 @@ const Teacher = require('../models/Teacher');
 
 const teacherController = {
     getClasses: async (req, res) => {
+        // try {
+        //     console.log("entered getClasses")
+        //    const teacher = await Teacher.findById(req.user);
+        //     if (!teacher) {
+        //         return res.status(404).json({ message: 'Teacher not found' });
+        //     }
+        //     const classroomIds = teacher.classes.map(classroom => classroom.classroomId);
+        //     const classes = await Classroom.find({ _id: { $in: classroomIds } });
+
+        //     res.status(200).json({ classes });
+        // } catch (error) {
+        //     console.log("getclasses erorr")
+        //     console.log(error);
+            
+        //     res.status(500).json({ message: 'Server error', error });
+        // }
         try {
-            const classrooms = await Classroom.find({ teachers: req.user });
-            res.status(200).json({ classrooms });
-        } catch (error) {
-            res.status(500).json({ message: 'Server error', error });
-        }
+            const teacher = await Teacher.findById(req.user);
+            const classCodes = teacher.classes.map(classroom => classroom.classCode);// Get the class codes of all classes
+            // fetch the classes from the database
+            const classes = await Classroom.find({ code: { $in: classCodes } })
+              .populate({
+                path: 'createdBy',
+                select: 'name'
+              })
+              .populate({
+                path: 'teachers.teacherId',
+                select: 'name'
+              })
+              .populate('courseId');
+            res.status(201).json(classes);
+      
+          } catch (err) {
+            res.status(500).json({ error: err.message });
+          }
     },
 
     getThreads: async (req, res) => {

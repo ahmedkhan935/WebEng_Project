@@ -17,7 +17,8 @@ import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
 import ClassroomStreamCard from "../components/ClassroomStreamCard";
 import { useParams } from "react-router-dom";
-import { getClass } from "../services/StudentService";
+import { getClass as getStudentClass } from "../services/StudentService";
+import { getClass as getTeacherClass } from "../services/TeacherService";
 import { useLocation } from 'react-router-dom'; 
 
 function Classroom() {
@@ -27,22 +28,33 @@ function Classroom() {
   const [classFetched, setClassFetched] = React.useState(false); //To check if classes have been fetched or not
 
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1]; 
+  const userRole = location.pathname.split('/')[1];
 
   useEffect(() => {
-    getClass(classCode).then((data) => {
-      if (data.error) {
-        setClassError(data.error);
-        setClassFetched(true);
-        return;
-      } else {
-        setClassroom(data.data);
-        console.log("Classroom", classroom);
-        setClassFetched(true);
-      }
-    });
+    if (userRole == "student") {
+      getStudentClass(classCode).then((data) => {
+        handleData(data);
+      });
+    }
+    else if (userRole == "teacher") {
+      getTeacherClass(classCode).then((data) => {
+        handleData(data);
+      });
+    }
 
   }, []);
+
+  const handleData = (data) => {
+    if (data.error) {
+      setClassError(data.error);
+      setClassFetched(true);
+      return;
+    } else {
+      setClassroom(data.data);
+      console.log("Classroom", classroom);
+      setClassFetched(true);
+    }
+  }
 
   if (!classFetched) {
     return (
@@ -105,7 +117,11 @@ function Classroom() {
             {/* This will be displayed only if student is viewing classroom of an old course which he has already */}
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
-                <UpcomingWork classCode={classroom.code} />
+                {userRole == "student" ?
+                  <UpcomingWork classCode={classroom.code} />
+                  :
+                  null
+                }
               </Grid>
               <Grid item xs={12} sm={9}>
                 {classroom ? classroom.announcements.map((card) => <ClassroomStreamCard card={card} />) : null}
