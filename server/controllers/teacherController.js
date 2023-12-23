@@ -46,12 +46,16 @@ const teacherController = {
     getStudents: async (req, res) => {
         try {
             const { classCode } = req.params;
+            console.log(classCode);
             const classroom = await Classroom.findOne({ code: classCode })
                 .populate({
                     path: 'students.studentId',
                     select: 'name rollNumber'
                 });
 
+                if(!classroom){
+                 console.log("sad")
+                }
             let students = classroom.students;
             students = students.map(student => {
                 return { rollNumber: student.studentId.rollNumber, name: student.studentId.name };
@@ -60,6 +64,7 @@ const teacherController = {
             res.status(201).json({ students });
 
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },

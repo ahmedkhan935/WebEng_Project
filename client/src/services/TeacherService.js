@@ -9,7 +9,7 @@ const handleResponse = async (response) => {
     } else {
         return { error: response.data.errorMessage };
     }
-};    
+};
 
 export const getClasses = async () => {
     const response = await axios.get(`${BASE_URL}/teacher/classes`, {
@@ -54,7 +54,7 @@ export const getThread = async (threadId) => {
 };
 
 export const getStudents = async (classCode) => {
-    const response = await axios.get(`${BASE_URL}/teacher/classroom/${classCode}/students`, {
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/students`, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -66,19 +66,19 @@ export const getStudents = async (classCode) => {
 export const createClassroom = async (classroom) => {
     try {
         const response = await axios.post(`${BASE_URL}/teacher/classroom`,
-        {
-            name: classroom.name,
-            code: classroom.code,
-            courseId: classroom.courseId,
-            createdBy: classroom.createdBy,
-            teachers: classroom.teachers
-        },
-        {
-            headers: {
-                'Content-Type': 'application/json',
+            {
+                name: classroom.name,
+                code: classroom.code,
+                courseId: classroom.courseId,
+                createdBy: classroom.createdBy,
+                teachers: classroom.teachers
             },
-            withCredentials: true
-        });
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            });
         return handleResponse(response);
     } catch (error) {
         return { error: error.message };
@@ -98,19 +98,19 @@ export const getProfile = async () => {
 export const addAnnouncement = async (classCode, announcement) => {
     try {
         const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/announcement`,
-        {
-            type: announcement.type,
-            title: announcement.title,
-            content: announcement.content,
-            dueDate: announcement.dueDate,
-            attachments: announcement.attachments ? announcement.attachments : []
-        },
-        {
-            headers: {
-                'Content-Type': 'application/json',
+            {
+                type: announcement.type,
+                title: announcement.title,
+                content: announcement.content,
+                dueDate: announcement.dueDate,
+                attachments: announcement.attachments ? announcement.attachments : []
             },
-            withCredentials: true
-        });
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            });
         return handleResponse(response);
     } catch (error) {
         return { error: error.message };
@@ -120,19 +120,19 @@ export const addAnnouncement = async (classCode, announcement) => {
 export const editAnnouncement = async (classCode, announcementId, announcement) => {
     try {
         const response = await axios.put(`${BASE_URL}/teacher/classes/${classCode}/announcement/${announcementId}`,
-        {
-            type: announcement.type,
-            title: announcement.title,
-            content: announcement.content,
-            dueDate: announcement.dueDate,
-            attachments: announcement.attachments
-        },
-        {
-            headers: {
-                'Content-Type': 'application/json',
+            {
+                type: announcement.type,
+                title: announcement.title,
+                content: announcement.content,
+                dueDate: announcement.dueDate,
+                attachments: announcement.attachments
             },
-            withCredentials: true
-        });
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            });
         return handleResponse(response);
     } catch (error) {
         return { error: error.message };
@@ -142,12 +142,12 @@ export const editAnnouncement = async (classCode, announcementId, announcement) 
 export const deleteAnnouncement = async (classCode, announcementId) => {
     try {
         const response = await axios.delete(`${BASE_URL}/teacher/classes/${classCode}/announcement/${announcementId}`,
-        {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            withCredentials: true
-        });
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true
+            });
         return handleResponse(response);
     } catch (error) {
         return { error: error.message };

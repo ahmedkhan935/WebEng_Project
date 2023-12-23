@@ -4,17 +4,31 @@ import { Container, Table, Typography, TableBody, TableCell, TableContainer, Tab
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
+import { useEffect } from 'react';
+import { getStudents, addAttendance } from '../services/TeacherService';
 
 
 function Attendance() {
-    const classCode = useParams();
+    const { classCode } = useParams();
     const [open, setOpen] = useState(false);
-    const [students, setStudents] = useState([
-        { rollNumber: '1', name: 'John Doe', status: 'P' },
-        { rollNumber: '2', name: 'Jane Doe', status: 'P' },
-    ]);
+    const [students, setStudents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [duration, setDuration] = useState(3);
+
+    useEffect(() => {
+        // console.log("helo");
+        // getStudents(classCode).then((data) => {
+        //     if (data.error) {
+        //         console.log(data.error);
+        //     } else {
+        //         setStudents(data.data);
+        //         console.log(students);
+        //     }
+        // }).catch((err) => {
+        //     console.log("ERRR",err);
+        // })
+
+    }, [])
 
     const handleClickOpen = () => {
         setOpen(!open);
