@@ -22,6 +22,7 @@ import { getClass as getTeacherClass } from "../services/TeacherService";
 import { useLocation } from 'react-router-dom';
 import TeacherClassroomBtns from "../components/TeacherClassroomBtns";
 import StudentClassroomBtns from "../components/StudentClassroomBtns";
+import { useNavigate } from "react-router-dom";
 
 function Classroom() {
   const navigate = useNavigate();
