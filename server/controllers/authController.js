@@ -269,9 +269,3 @@ const logout = async (req, res) => {
     .send();
 };
 module.exports = { registerStudent, registerTeacher, loginStudent, loginTeacher, logout };
-module.exports = {
-  registerStudent,
-  registerTeacher,
-  loginStudent,
-  loginTeacher,
-};
