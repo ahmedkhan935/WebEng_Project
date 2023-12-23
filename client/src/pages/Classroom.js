@@ -8,7 +8,7 @@ import {
   alpha,
   Grid,
   Button,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
@@ -24,6 +24,7 @@ import TeacherClassroomBtns from "../components/TeacherClassroomBtns";
 import StudentClassroomBtns from "../components/StudentClassroomBtns";
 
 function Classroom() {
+  const navigate = useNavigate();
   const { classCode } = useParams();
   const [classroom, setClassroom] = React.useState({});
   const [classError, setClassError] = React.useState(null);
@@ -67,16 +68,20 @@ function Classroom() {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       >
         <CircularProgress />
       </Box>
     );
   }
+
+  const handlefeedbackbutton = () => {
+    navigate(`/student/givefeedback/${classCode}`);
+  };
 
   return (
     <NavBar>
@@ -97,15 +102,16 @@ function Classroom() {
               bgcolor={(theme) => alpha(theme.palette.primary.main, 0.7)}
             />
             <Button
+              onClick={handlefeedbackbutton}
               variant="contained"
               color="secondary"
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 2,
                 right: 2,
-                color: '#ffffff',
-                marginTop: '10px',
-                marginRight: '10px'
+                color: "#ffffff",
+                marginTop: "10px",
+                marginRight: "10px",
               }}
             >
               {userRole == "student" ? "Give Feedback" : "View Feedback"}
@@ -114,8 +120,16 @@ function Classroom() {
               <Typography variant="h3" color="white" margin="10px">
                 {classroom ? classroom.name : ""}
               </Typography>
-              <Typography variant="body1" color="white" margin="10px" marginBottom='10px'>
-                {"Taught by " + classroom.teachers.map((teacher) => teacher.teacherId.name).join(", ")}
+              <Typography
+                variant="body1"
+                color="white"
+                margin="10px"
+                marginBottom="10px"
+              >
+                {"Taught by " +
+                  classroom.teachers
+                    .map((teacher) => teacher.teacherId.name)
+                    .join(", ")}
               </Typography>
             </Box>
           </Box>

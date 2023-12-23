@@ -20,6 +20,7 @@ import NavBar from "../components/Navbar";
 import Pagination from "@mui/material/Pagination";
 import { viewAllTeachers, deleteTeacher } from "../services/AdminService";
 import { useNavigate } from "react-router-dom";
+import theme from "../assets/theme/theme";
 
 const ViewTeachers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
@@ -148,7 +149,7 @@ const ViewTeachers = () => {
       >
         <Table>
           <TableHead>
-            <TableRow style={{ background: "#22717d" }}>
+            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
               <TableCell style={{ color: "#FFFFFF" }}>Teacher CNIC</TableCell>
               <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
               <TableCell style={{ color: "#FFFFFF" }}>Email</TableCell>

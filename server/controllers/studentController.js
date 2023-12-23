@@ -1,10 +1,10 @@
-const Student = require('../models/Student');
-const Course = require('../models/Course');
-const Classroom = require('../models/Classroom');
-const Semester = require('../models/Semester');
-const Degree = require('../models/Degree');
-const Thread = require('../models/Thread');
-const Teacher = require('../models/Teacher');
+const Student = require("../models/Student");
+const Course = require("../models/Course");
+const Classroom = require("../models/Classroom");
+const Semester = require("../models/Semester");
+const Degree = require("../models/Degree");
+const Thread = require("../models/Thread");
+const Teacher = require("../models/Teacher");
 
 const studentController = {
   getProfile: async (req, res) => {
@@ -19,7 +19,9 @@ const studentController = {
   getCourses: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const courseCodes = student.semesters[student.semesters.length - 1].courses.map(course => course.courseCode);// Get the course codes of the last semester
+      const courseCodes = student.semesters[
+        student.semesters.length - 1
+      ].courses.map((course) => course.courseCode); // Get the course codes of the last semester
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -28,7 +30,9 @@ const studentController = {
   getAllCourses: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const courseCodes = student.semesters.map(semester => semester.courses.map(course => course.courseCode));// Get the course codes of all semesters
+      const courseCodes = student.semesters.map((semester) =>
+        semester.courses.map((course) => course.courseCode)
+      ); // Get the course codes of all semesters
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -37,20 +41,21 @@ const studentController = {
   getClasses: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const classCodes = student.classes.map(classroom => classroom.classCode);// Get the class codes of all classes
+      const classCodes = student.classes.map(
+        (classroom) => classroom.classCode
+      ); // Get the class codes of all classes
       // fetch the classes from the database
       const classes = await Classroom.find({ code: { $in: classCodes } })
         .populate({
-          path: 'createdBy',
-          select: 'name'
+          path: "createdBy",
+          select: "name",
         })
         .populate({
-          path: 'teachers.teacherId',
-          select: 'name'
+          path: "teachers.teacherId",
+          select: "name",
         })
-        .populate('courseId');
+        .populate("courseId");
       res.status(201).json(classes);
-
     } catch (err) {
       res.status(500).json({ error: err.message });
     }
@@ -59,13 +64,19 @@ const studentController = {
   getAllTodos: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const classCodes = student.classes.map(classroom => classroom.classCode); // Get the class codes of all classes
+      const classCodes = student.classes.map(
+        (classroom) => classroom.classCode
+      ); // Get the class codes of all classes
       const classes = await Classroom.find({ code: { $in: classCodes } });
 
       let todos = [];
-      classes.forEach(classroom => {
-        classroom.announcements.forEach(announcement => {
-          if ((announcement.type == 'Assignment' || announcement.type == 'Quiz') && new Date(announcement.dueDate) > new Date()) {
+      classes.forEach((classroom) => {
+        classroom.announcements.forEach((announcement) => {
+          if (
+            (announcement.type == "Assignment" ||
+              announcement.type == "Quiz") &&
+            new Date(announcement.dueDate) > new Date()
+          ) {
             todos.push(announcement);
           }
         });
@@ -82,19 +93,24 @@ const studentController = {
       const classCode = req.params.classCode;
       const classroom = await Classroom.findOne({ code: classCode });
       if (!classroom) {
-        return res.status(404).json({ error: 'Classroom not found' });
+        return res.status(404).json({ error: "Classroom not found" });
       }
 
       let todos = [];
       const now = new Date();
-      classroom.announcements.forEach(announcement => {
-        if(announcement.dueDate){console.log("due date: ", new Date(announcement.dueDate)); console.log(now)};
-        if ((announcement.type == 'Assignment' || announcement.type == 'Quiz') && new Date(announcement.dueDate) > now) {
+      classroom.announcements.forEach((announcement) => {
+        if (announcement.dueDate) {
+          console.log("due date: ", new Date(announcement.dueDate));
+          console.log(now);
+        }
+        if (
+          (announcement.type == "Assignment" || announcement.type == "Quiz") &&
+          new Date(announcement.dueDate) > now
+        ) {
           console.log("announcement found");
           todos.push(announcement);
         }
-      }
-      ); // Get the todos of the class
+      }); // Get the todos of the class
 
       res.status(201).json(todos);
     } catch (err) {
@@ -110,12 +126,6 @@ const studentController = {
       res.status(500).json({ error: err.message });
     }
   },
-
-
-
-
-
-
 };
 
 module.exports = studentController;

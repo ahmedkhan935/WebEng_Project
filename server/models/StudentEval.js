@@ -6,9 +6,9 @@ const StudentEvalSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student',
     },
-    classCode: { //reference to classroom code
+    classCode: {
         type: String,
-        required: true,
+        required: true
     },
     evaluations: {
         type: [
@@ -48,7 +48,8 @@ const StudentEvalSchema = new mongoose.Schema({
     },
     totalObtainedAbs: {
         type: Number,
-        required: true
+        required: true,
+        default: 0
     },
     grade: {
         type: String,
@@ -57,13 +58,14 @@ const StudentEvalSchema = new mongoose.Schema({
     },
     attendance: {
         type: Number,
-        required: true
+        required: true,
+        default: 100
     },
     feedback: {
         type: String,
-        required: true
+        default: ""
     }
 });
 
-const StudentEval = mongoose.model('StudentEval', StudentEvalSchema);
+const StudentEval = mongoose.model("StudentEval", StudentEvalSchema);
 module.exports = StudentEval;

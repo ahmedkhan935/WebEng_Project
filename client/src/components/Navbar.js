@@ -22,7 +22,6 @@ import {
   ChevronRight as ChevronRightIcon,
   Home as HomeIcon,
   Grade as GradeIcon,
-  Book as BookIcon,
   Assignment as AssignmentIcon,
   Schedule as ScheduleIcon,
   QuestionAnswer as QuestionAnswerIcon,
@@ -33,7 +32,9 @@ import {
   RemoveRedEye as RemoveRedEyeIcon,
   EventAvailable as EventAvailableIcon,
   FormatListNumbered as FormatListNumberedIcon,
+  AssignmentTurnedIn as AssignmentTurnedInIcon,
 } from "@mui/icons-material";
+
 import { Link, useLocation } from "react-router-dom";
 import {logout} from '../services/AuthService';
 const drawerWidth = 240;
@@ -65,10 +66,15 @@ const adminOptions = [
   //   linkto: "/admin/list/warning",
   // },
   {
-      title: "Admin Lists",
-      Icon: <FormatListNumberedIcon color="primary" />,
-      linkto: "/admin/lists",
-    },
+    title: "Assign Courses",
+    Icon: <AssignmentTurnedInIcon color="primary" />,
+    linkto: "/admin/assignCourses",
+  },
+  {
+    title: "Admin Lists",
+    Icon: <FormatListNumberedIcon color="primary" />,
+    linkto: "/admin/lists",
+  },
   {
     title: "View Session Logs",
     Icon: <SettingsIcon color="primary" />,
@@ -83,15 +89,23 @@ const adminOptions = [
 
 const studentOptions = [
   { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
-  { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/student/classes' },
+  {
+    title: "Classes",
+    Icon: <SchoolIcon color="primary" />,
+    linkto: "/student/classes",
+  },
   { title: "Grades", Icon: <GradeIcon color="primary" /> },
-  { title: "Feedback", Icon: <QuestionAnswerIcon color="primary" /> },
+
   { title: "Attendance", Icon: <EventAvailableIcon color="primary" /> },
   { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const teacherOptions = [
-  { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/teacher/classes' },
+  {
+    title: "Classes",
+    Icon: <SchoolIcon color="primary" />,
+    linkto: "/teacher/classes",
+  },
   { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
@@ -162,13 +176,13 @@ const Drawer = styled(MuiDrawer, {
 
 export default function NavBar({ children }) {
   const location = useLocation();
-  let userRole = location.pathname.split('/')[1]; 
+  let userRole = location.pathname.split("/")[1];
   userRole = userRole.toLowerCase();
 
   //checking if pathname includes the word was buggy, as it detected isStudent=true for /admin/lists/students, so i changed it
-  const isStudent = userRole === 'student';
-  const isAdmin = userRole === 'admin';
-  const isTeacher = userRole === 'teacher';
+  const isStudent = userRole === "student";
+  const isAdmin = userRole === "admin";
+  const isTeacher = userRole === "teacher";
 
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
@@ -179,17 +193,22 @@ export default function NavBar({ children }) {
 
     
  
+
   const standardOptions = [
-    { title: "Home", Icon: <HomeIcon color="primary" />, linkto: "/"+userRole },
+    {
+      title: "Home",
+      Icon: <HomeIcon color="primary" />,
+      linkto: "/" + userRole,
+    },
     {
       title: "Threads",
       Icon: <AnnouncementIcon color="primary" />,
-      linkto: "/"+userRole+"/threads",
+      linkto: "/" + userRole + "/threads",
     },
     {
-      title:"Settings",
+      title: "Settings",
       Icon: <SettingsIcon color="primary" />,
-      linkto: "/"+userRole+"/settings",
+      linkto: "/" + userRole + "/settings",
     },
     { title: "Logout", Icon: <LogoutIcon color="primary" />, linkto: "/",onClick: logout },
   ];
@@ -205,7 +224,7 @@ export default function NavBar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      
+
       {/* Navbar (Top bar) with button to open drawer */}
       <AppBar position="fixed" open={open}>
         <Toolbar>
@@ -226,7 +245,6 @@ export default function NavBar({ children }) {
           </Typography>
         </Toolbar>
       </AppBar>
-
 
       {/* Sidebar (Drawer) */}
       <Drawer variant="permanent" open={open}>
@@ -276,124 +294,119 @@ export default function NavBar({ children }) {
             </ListItem>
           ))}
         </List>
-        { isStudent ?
+        {isStudent ? (
           <>
             <Divider />
             <List>
-          
-            {studentOptions.map((element, index) => (
-              <ListItem
-                key={element.title}
-                disablePadding
-                sx={{ display: "block" }}
-              >
-                <ListItemButton
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
-                  to={element.linkto || ""}
+              {studentOptions.map((element, index) => (
+                <ListItem
+                  key={element.title}
+                  disablePadding
+                  sx={{ display: "block" }}
                 >
-                  <ListItemIcon
+                  <ListItemButton
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
+                    to={element.linkto || ""}
                   >
-                    {studentOptions[index].Icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={element.title}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-              )) }
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {studentOptions[index].Icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={element.title}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
             </List>
-          </> 
-          : 
-          null
-        }
-        {isAdmin ? <>
-          <Divider />
-          <List>
-            {adminOptions.map((element, index) => (
-              <ListItem
-                key={element.title}
-                disablePadding
-                sx={{ display: "block" }}
-              >
-                <ListItemButton
-                  component={element.linkto ? Link : "div"}
-                  to={element.linkto || ""}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
+          </>
+        ) : null}
+        {isAdmin ? (
+          <>
+            <Divider />
+            <List>
+              {adminOptions.map((element, index) => (
+                <ListItem
+                  key={element.title}
+                  disablePadding
+                  sx={{ display: "block" }}
                 >
-                  <ListItemIcon
+                  <ListItemButton
+                    component={element.linkto ? Link : "div"}
+                    to={element.linkto || ""}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {adminOptions[index].Icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={element.title}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </>
-          :
-          null
-        }
-        {isTeacher ? <>
-          <Divider />
-          <List>
-            {teacherOptions.map((element, index) => (
-              <ListItem
-                key={element.title}
-                disablePadding
-                sx={{ display: "block" }}
-              >
-                <ListItemButton
-                  component={element.linkto ? Link : "div"}
-                  to={element.linkto || ""}
-                  sx={{
-                    minHeight: 48,
-                    justifyContent: open ? "initial" : "center",
-                    px: 2.5,
-                  }}
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {adminOptions[index].Icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={element.title}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        ) : null}
+        {isTeacher ? (
+          <>
+            <Divider />
+            <List>
+              {teacherOptions.map((element, index) => (
+                <ListItem
+                  key={element.title}
+                  disablePadding
+                  sx={{ display: "block" }}
                 >
-                  <ListItemIcon
+                  <ListItemButton
+                    component={element.linkto ? Link : "div"}
+                    to={element.linkto || ""}
                     sx={{
-                      minWidth: 0,
-                      mr: open ? 3 : "auto",
-                      justifyContent: "center",
+                      minHeight: 48,
+                      justifyContent: open ? "initial" : "center",
+                      px: 2.5,
                     }}
                   >
-                    {teacherOptions[index].Icon}
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={element.title}
-                    sx={{ opacity: open ? 1 : 0 }}
-                  />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        </>
-          :
-          null
-        }
+                    <ListItemIcon
+                      sx={{
+                        minWidth: 0,
+                        mr: open ? 3 : "auto",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {teacherOptions[index].Icon}
+                    </ListItemIcon>
+                    <ListItemText
+                      primary={element.title}
+                      sx={{ opacity: open ? 1 : 0 }}
+                    />
+                  </ListItemButton>
+                </ListItem>
+              ))}
+            </List>
+          </>
+        ) : null}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
