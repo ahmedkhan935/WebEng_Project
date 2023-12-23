@@ -20,21 +20,22 @@ import {
   viewAnnouncements,
   deleteAnnouncement,
 } from "../services/ThreadService";
+import { viewAllStudents } from "../services/AdminService";
 
 const AdminThread = () => {
   const [updatePostFormOpen, setUpdatePostFormOpen] = useState(false);
   const [updatePostTitle, setUpdatePostTitle] = useState("");
   const [updatePostContent, setUpdatePostContent] = useState("");
   const [updatePostFile, setUpdatePostFile] = useState(null);
-  const [selectedThread, setSelectedThread] = useState(null);
   const [formOpen, setFormOpen] = useState(false);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
   const [file, setfile] = useState();
+  const [rows, setRows] = useState([]);
 
   const { id } = useParams();
 
-  const sendEmail = async () => {
+  const sendEmail = async (email) => {
     try {
       const response = await fetch("http://127.0.0.1:3000/admin/send-email", {
         method: "POST",
@@ -42,7 +43,7 @@ const AdminThread = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          to: "fatimabilal1016@gmail.com",
+          to: email,
           subject: title,
           text: content,
         }),
@@ -118,11 +119,26 @@ const AdminThread = () => {
     setContent("");
     setFormOpen(false);
     //sending email here to all students
-    sendEmail();
+    rows.forEach((row) => {
+      sendEmail(row.email);
+    });
   };
 
   const [posts, setPosts] = useState([]);
   useEffect(() => {
+    viewAllStudents().then((res) => {
+      const rows = res.map((row) => ({
+        studentId: row.rollNumber,
+        name: row.name,
+        batch: row.batch,
+        degree: row.degreeName,
+        email: row.email,
+        _id: row._id,
+      }));
+      console.log(rows);
+      setRows(rows);
+    });
+
     viewAnnouncements(id).then((res) => {
       res.json().then((data) => {
         console.log(data);
