@@ -1,18 +1,9 @@
 const mongoose = require('mongoose');
 
 const CourseEvalSchema = new mongoose.Schema({
-
-    courseCode: {
+    classCode: { //reference to classroom code
         type: String,
-        ref: 'Course',
-    },
-    degreeId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Degree',
-    },
-    semesterId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Semester',
+        required: true,
     },
     lectures: {
         type: [
@@ -31,13 +22,10 @@ const CourseEvalSchema = new mongoose.Schema({
     evaluations: {
         type: [
             {
-                type: { // assignment, quiz, midsem, endsem
+                //Instead of type amd number, make a "name" which woll be unique for each eval
+                title: {
                     type: String,
-                    required: true
-                },
-                number: {
-                    type: Number,
-                    required: true
+                    required: true,
                 },
                 weightage: {
                     type: Number,

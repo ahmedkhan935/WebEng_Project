@@ -20,6 +20,7 @@ import { useParams } from "react-router-dom";
 import { getClass as getStudentClass } from "../services/StudentService";
 import { getClass as getTeacherClass } from "../services/TeacherService";
 import { useLocation } from 'react-router-dom'; 
+import TeacherClassroomBtns from "../components/TeacherClassroomBtns";
 
 function Classroom() {
   const { classCode } = useParams();
@@ -120,7 +121,7 @@ function Classroom() {
                 {userRole == "student" ?
                   <UpcomingWork classCode={classroom.code} />
                   :
-                  null
+                  <TeacherClassroomBtns classCode={classroom.code} />
                 }
               </Grid>
               <Grid item xs={12} sm={9}>

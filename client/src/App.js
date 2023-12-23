@@ -35,6 +35,8 @@ import AdminThreads from "./pages/AdminThreads";
 import PageNotFound from "./pages/PageNotFound";
 import AdminLists from "./pages/AdminLists";
 import VideoCall from "./pages/MakeVideoCall";
+import Attendance from "./pages/Attendance";
+import Evaluations from "./pages/Evaluations";
 
 function App() {
   return (
@@ -66,7 +68,9 @@ function App() {
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode" element={<Classroom />}></Route>
-            <Route path="classes/:id/videoCall" element={<VideoCall />}></Route>
+            <Route path="classes/:classCode/videoCall" element={<VideoCall />}></Route>
+            <Route path="classes/:classCode/attendance" element={<Attendance />}></Route>
+            <Route path="classes/:classCode/evaluations" element={<Evaluations />}></Route>
           </Route>
 
           <Route path="/admin">
@@ -75,26 +79,16 @@ function App() {
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route
-              path="updateStudent/:id"
-              element={<UpdateStudentForm />}
-            ></Route>
-            <Route
-              path="updateTeacher/:id"
-              element={<UpdateTeacherForm />}
-            ></Route>
+            <Route  path="updateStudent/:id" element={<UpdateStudentForm />} ></Route>
+            <Route path="updateTeacher/:id"  element={<UpdateTeacherForm />} ></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
 
-            <Route
-              path="updateCourse/:id"
-              element={<UpdateCourseForm />}
-            ></Route>
+            <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
-
             <Route path="lists" element={<AdminLists />}></Route>
 
             <Route path="list">

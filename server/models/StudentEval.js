@@ -6,24 +6,16 @@ const StudentEvalSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Student',
     },
-    courseCode: {
+    classCode: { //reference to classroom code
         type: String,
-        ref: 'Course',
-    },
-    semesterId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Semester',
+        required: true,
     },
     evaluations: {
         type: [
             {
-                type: { // assignment, quiz, midsem, endsem
+                title: {
                     type: String,
-                    required: true
-                },
-                number: {
-                    type: Number,
-                    required: true
+                    required: true,
                 },
                 obtainedMarks: {
                     type: Number,
