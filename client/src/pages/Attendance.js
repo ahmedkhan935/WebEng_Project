@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useParams } from "react-router-dom";
-import { Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button,Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
+import { Container, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
 import NavBar from '../components/Navbar'
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 function Attendance() {
     const classCode = useParams();
@@ -10,9 +13,8 @@ function Attendance() {
         { rollNumber: '1', name: 'John Doe', status: 'P' },
         { rollNumber: '2', name: 'Jane Doe', status: 'P' },
     ]);
-    const [selectedDate, setSelectedDate] = useState(new Date());
-
-
+    const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+    const [duration, setDuration] = useState(3);
 
     const handleClickOpen = () => {
         setOpen(!open);
@@ -56,20 +58,37 @@ function Attendance() {
                         </TableBody>
                     </Table>
                 </TableContainer>
+
                 <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ marginTop: '20px' }}>
+                    {open ? <CloseIcon /> : <AddIcon />}
                     Add Attendance
                 </Button>
-
                 <Collapse in={open}>
                     <Box sx={{ border: '1px solid gray', padding: '20px', marginTop: '20px' }}>
-                        {/* <DatePicker
-                            label="Attendance Date"
-                            value={selectedDate}
-                            onChange={(newValue) => {
-                                setSelectedDate(newValue);
-                            }}
-                            renderInput={(params) => <TextField {...params} />}
-                        /> */}
+                        <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
+                            Add new attendance
+                        </Typography>
+                        <Box display="flex" alignItems="baseline" >
+                            <TextField
+                                id="date"
+                                label="Date"
+                                type="date"
+                                value={selectedDate}
+                                onChange={(event) => setSelectedDate(event.target.value)}
+                                inputProps={{ max: new Date().toISOString().split('T')[0] }}
+                                sx={{ marginBottom: '10px', marginTop: '15px' }}
+                            />
+                            <TextField
+                                id="duration"
+                                label="Class Duration (hrs)"
+                                type="number"
+                                value={duration}
+                                inputProps={{ min: 1 }}
+                                sx={{ marginBottom: '10px', marginLeft: '10px' }}
+                                onChange={(event) => setDuration(event.target.value)}
+                                maxWidth='120px'
+                            />
+                        </Box>
                         <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
                             <Table>
                                 <TableHead>

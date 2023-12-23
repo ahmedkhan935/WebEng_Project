@@ -21,6 +21,7 @@ function TeacherClassroomBtns({classCode}) {
             <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" sx={{ fontSize: 60 }} />} fullWidth sx={{ mt: '10px' }}>
                 Video Call
             </Button>
+            
         </Box>
     )
 }
