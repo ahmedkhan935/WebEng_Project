@@ -5,6 +5,7 @@ const teacherController = require('../controllers/teacherController');
 
 router.get('/classes', Auth, AuthTeacher,teacherController.getClasses);
 router.get('/threads', Auth, AuthTeacher, teacherController.getThreads);
+router.get('/classroom/:classCode/students', Auth, AuthTeacher, teacherController.getStudents);
 
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classroom/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);

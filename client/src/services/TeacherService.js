@@ -29,6 +29,16 @@ export const getThreads = async () => {
         withCredentials: true
     });
     return handleResponse(response);
+};
+
+export const getStudents = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/teacher/classroom/${classCode}/students`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
 }
 
 export const createClassroom = async (classroom) => {

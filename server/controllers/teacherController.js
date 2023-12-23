@@ -28,6 +28,23 @@ const teacherController = {
         }
     },
 
+    getStudents: async (req, res) => {
+        try {
+            const { classCode } = req.params;
+            const classroom = await Classroom.findOne({ code: classCode });
+
+            let students = classroom.students;
+            students = students.map(student => {
+                return { rollNum: student.rollNum, name: student.name };
+            });
+
+            res.status(201).json({ students });
+
+        }catch(error){
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
     createClassroom: async (req, res) => {
         const { name, code } = req.body;
         teachers.push(req.user); // add the teacher who created the classroom to the list of teachers
@@ -117,7 +134,37 @@ const teacherController = {
         } catch (error) {
             res.status(500).json({ message: 'Server error', error });
         }
-    }
+    },
+
+    // markAssignment: async (req, res) => {
+    //     try{
+    //         const {classCode, assignmentId} = req.params;
+    //         const {rollNum, grade} = req.body;
+
+    //         const classroom = await Classroom.findOne({code: classCode});
+    //         if(!classroom){
+    //             return res.status(404).json({message: 'Classroom not found'});
+    //         }
+
+    //         const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
+    //         if(!assignment){
+    //             return res.status(404).json({message: 'Assignment not found'});
+    //         }
+
+    //         const submission = assignment.submissions.find(submission => submission.studentId == studentId);
+    //         if(!submission){
+    //             return res.status(404).json({message: 'Submission not found'});
+    //         }
+
+    //         submission.grade = grade;
+
+    //         await classroom.save();
+
+    //         res.status(200).json({message: 'Assignment marked successfully'});
+    //     }catch(error){
+    //         res.status(500).json({ message: 'Server error', error });
+    //     }
+    // }
 };
 
 module.exports = teacherController;
