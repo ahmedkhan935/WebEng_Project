@@ -155,6 +155,35 @@ const teacherController = {
         }
     },
 
+    editAnnouncement: async (req, res) => {
+        try {
+            const { classCode, announcementId } = req.params;
+            const { title, content, dueDate } = req.body;
+
+            const classroom = await Classroom.findOne({ code: classCode });
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
+
+            const announcement = classroom.announcements.find(announcement => announcement._id == announcementId);
+            if (!announcement) {
+                return res.status(404).json({ message: 'Announcement not found' });
+            }
+
+            announcement.title = title;
+            announcement.content = content;
+            announcement.dueDate = dueDate;
+
+            await classroom.save();
+
+            res.status(201).json({ message: 'Announcement edited successfully', announcement });
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
     deleteAnnouncement: async (req, res) => {
         try {
             const { classCode, announcementId } = req.params;
@@ -174,7 +203,7 @@ const teacherController = {
 
             await classroom.save();
 
-            res.status(200).json({ message: 'Announcement deleted successfully' });
+            res.status(201).json({ message: 'Announcement deleted successfully' });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error });
         }

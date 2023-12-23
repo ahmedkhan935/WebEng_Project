@@ -117,9 +117,31 @@ export const addAnnouncement = async (classCode, announcement) => {
     }
 };
 
+export const editAnnouncement = async (classCode, announcementId, announcement) => {
+    try {
+        const response = await axios.put(`${BASE_URL}/teacher/classes/${classCode}/announcement/${announcementId}`,
+        {
+            type: announcement.type,
+            title: announcement.title,
+            content: announcement.content,
+            dueDate: announcement.dueDate,
+            attachments: announcement.attachments
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        });
+        return handleResponse(response);
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
 export const deleteAnnouncement = async (classCode, announcementId) => {
     try {
-        const response = await axios.delete(`${BASE_URL}/teacher/classroom/${classCode}/announcement/${announcementId}`,
+        const response = await axios.delete(`${BASE_URL}/teacher/classes/${classCode}/announcement/${announcementId}`,
         {
             headers: {
                 'Content-Type': 'application/json',

@@ -113,7 +113,6 @@ const ClassroomSchema = new mongoose.Schema({
     degreeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Degree',
-        required: true
     },
 
     semesterId: {
