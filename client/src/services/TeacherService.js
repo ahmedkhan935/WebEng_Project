@@ -85,6 +85,16 @@ export const createClassroom = async (classroom) => {
     }
 };
 
+export const getProfile = async () => {
+    const response = await axios.get(`${BASE_URL}/teacher/profile`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
 export const addAnnouncement = async (classCode, announcement) => {
     try {
         const response = await axios.post(`${BASE_URL}/teacher/classroom/${classCode}/announcement`,
@@ -122,20 +132,27 @@ export const deleteAnnouncement = async (classCode, announcementId) => {
     }
 };
 
-export const getProfile = async () => {
-    const response = await axios.get(`${BASE_URL}/teacher/profile`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        withCredentials: true
-    });
-    return handleResponse(response);
-};
-
 export const postComment = async (classCode, announcementId, content) => {
     const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/${announcementId}/comment`,
         {
             content: content
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        }
+    );
+    return handleResponse(response);
+};
+
+export const addAttendance = async (classCode, date, duration, attendance) => {
+    const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/attendance`,
+        {
+            date: date,
+            duration: duration,
+            attendance: attendance
         },
         {
             headers: {
