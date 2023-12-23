@@ -8,7 +8,7 @@ import {
   alpha,
   Grid,
   Button,
-  CircularProgress
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import classroomHeader from "../assets/images/classroomHeader.jpg"; // import the image
@@ -16,18 +16,19 @@ import NavBar from "../components/Navbar";
 import CompletedCourseBadge from "../components/CompletedCourseBadge";
 import UpcomingWork from "../components/UpcomingWork";
 import ClassroomStreamCard from "../components/ClassroomStreamCard";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getClass } from "../services/StudentService";
-import { useLocation } from 'react-router-dom'; 
+import { useLocation } from "react-router-dom";
 
 function Classroom() {
+  const navigate = useNavigate();
   const { classCode } = useParams();
   const [classroom, setClassroom] = React.useState({});
   const [classError, setClassError] = React.useState(null);
   const [classFetched, setClassFetched] = React.useState(false); //To check if classes have been fetched or not
 
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1]; 
+  const userRole = location.pathname.split("/")[1];
 
   useEffect(() => {
     getClass(classCode).then((data) => {
@@ -41,23 +42,28 @@ function Classroom() {
         setClassFetched(true);
       }
     });
-
   }, []);
 
   if (!classFetched) {
     return (
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          height: '100vh',
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
         }}
       >
         <CircularProgress />
       </Box>
     );
   }
+
+  const handlefeedbackbutton = () => {
+    if (userRole == "student") {
+      navigate(`/student/givefeedback/${classCode}`);
+    }
+  };
 
   return (
     <NavBar>
@@ -78,25 +84,34 @@ function Classroom() {
               bgcolor={(theme) => alpha(theme.palette.primary.main, 0.7)}
             />
             <Button
+              onClick={handlefeedbackbutton}
               variant="contained"
               color="secondary"
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 2,
                 right: 2,
-                color: '#ffffff',
-                marginTop: '10px',
-                marginRight: '10px'
+                color: "#ffffff",
+                marginTop: "10px",
+                marginRight: "10px",
               }}
             >
-             { userRole=="student" ?  "Give Feedback" : "View Feedback" }
+              {userRole == "student" ? "Give Feedback" : "View Feedback"}
             </Button>
             <Box position="absolute" bottom={0} left={0} p={1}>
               <Typography variant="h3" color="white" margin="10px">
                 {classroom ? classroom.name : ""}
               </Typography>
-              <Typography variant="body1" color="white" margin="10px" marginBottom='10px'>
-                {"Taught by " + classroom.teachers.map((teacher) => teacher.teacherId.name).join(", ")}
+              <Typography
+                variant="body1"
+                color="white"
+                margin="10px"
+                marginBottom="10px"
+              >
+                {"Taught by " +
+                  classroom.teachers
+                    .map((teacher) => teacher.teacherId.name)
+                    .join(", ")}
               </Typography>
             </Box>
           </Box>
@@ -108,7 +123,11 @@ function Classroom() {
                 <UpcomingWork classCode={classroom.code} />
               </Grid>
               <Grid item xs={12} sm={9}>
-                {classroom ? classroom.announcements.map((card) => <ClassroomStreamCard card={card} />) : null}
+                {classroom
+                  ? classroom.announcements.map((card) => (
+                      <ClassroomStreamCard card={card} />
+                    ))
+                  : null}
               </Grid>
             </Grid>
           </CardContent>

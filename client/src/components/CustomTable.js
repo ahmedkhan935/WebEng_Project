@@ -47,15 +47,7 @@ const CustomTable = ({ columns, rows, title }) => {
           </TableHead>
           <TableBody>
             {filteredRows.map((row, index) => (
-              <TableRow
-                key={index}
-                sx={{
-                  backgroundColor:
-                    index % 2 === 0
-                      ? "linear-gradient(to right, #adbbde, #B6BCCA)"
-                      : "#fff",
-                }}
-              >
+              <TableRow key={index}>
                 {columns.map((column, columnIndex) => (
                   <TableCell key={columnIndex}>{row[column]} </TableCell>
                 ))}

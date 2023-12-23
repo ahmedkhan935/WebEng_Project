@@ -35,6 +35,7 @@ import AdminThreads from "./pages/AdminThreads";
 import PageNotFound from "./pages/PageNotFound";
 import AdminLists from "./pages/AdminLists";
 import VideoCall from "./pages/MakeVideoCall";
+import AssignCourses from "./pages/AssignCourses";
 
 function App() {
   return (
@@ -55,7 +56,10 @@ function App() {
             <Route path="classes/:classCode" element={<Classroom />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
-            <Route path="givefeedback" element={<GiveFeedback />}></Route>
+            <Route
+              path="givefeedback/:classCode"
+              element={<GiveFeedback />}
+            ></Route>
             <Route path="todos" element={<Thread />}></Route>
           </Route>
 
@@ -92,11 +96,11 @@ function App() {
               path="updateCourse/:id"
               element={<UpdateCourseForm />}
             ></Route>
+
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
-
+            <Route path="assignCourses" element={<AssignCourses />}></Route>
             <Route path="lists" element={<AdminLists />}></Route>
-
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
               <Route path="warning" element={<WarningList />}></Route>
