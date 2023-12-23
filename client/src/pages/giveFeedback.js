@@ -14,8 +14,10 @@ import {
 } from "@mui/material";
 import NavBar from "../components/Navbar";
 import { Label } from "@mui/icons-material";
+import { useParams } from "react-router";
 
 const GiveFeedback = () => {
+  const { id } = useParams();
   const styles = {
     form: {
       width: "50%",
@@ -52,7 +54,10 @@ const GiveFeedback = () => {
     event.preventDefault();
     console.log("Submitted Rating:", rating);
     console.log("Submitted Comment:", comment);
+    
 
+
+    
     // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
     setFormSubmitted(true);
     //depending on error or succes change it to true or false

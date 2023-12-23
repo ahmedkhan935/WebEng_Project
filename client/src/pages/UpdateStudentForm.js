@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import TextField from "@mui/material/TextField";
@@ -6,68 +5,68 @@ import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import { useParams } from "react-router";
-import { updateStudent,viewStudent } from "../services/AdminService";
+import { updateStudent, viewStudent } from "../services/AdminService";
 
-  const styles = {
-    addForm: {
-      fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
-      width: "60%",
-      padding: "20px",
-      background: "#ffffff",
-      borderRadius: "8px",
-      margin: "auto",
-      boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      marginBottom: "20px",
-    },
-    formGroup: {
-      background: "#f2f7f7",
-      padding: "20px",
-      borderRadius: "10px",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      flexWrap: "wrap",
-      marginBottom: "20px",
-      width: "90%",
-      boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
-      marginLeft: "40px",
-    },
-    label: {
-      fontSize: "15px",
-      width: "30%",
-      marginRight: "10px",
-      textAlign: "left",
-    },
-    roundedInput: {
-      width: "400px",
-      height: "40px",
-      marginBottom: "15px",
-    },
-    gradientButton: {
-      background: "linear-gradient(to right, #6ABDC9, #22717d)",
-      color: "white",
-      padding: "10px 15px",
-      border: "none",
-      borderRadius: "10px",
-      cursor: "pointer",
-      width: "150px",
-      height: "50px",
-      marginTop: "10px",
-      marginLeft: "300px",
-    },
-    gradientButtonHover: {
-      filter: "brightness(1.2)",
-    },
-    h2: {
-      color: "#22717d",
-      width: "80%",
-      float: "right",
-    },
-  };
+const styles = {
+  addForm: {
+    fontFamily: "Franklin Gothic Medium, Arial Narrow, Arial, sans-serif",
+    width: "60%",
+    padding: "20px",
+    background: "#ffffff",
+    borderRadius: "8px",
+    margin: "auto",
+    boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "20px",
+  },
+  formGroup: {
+    background: "#f2f7f7",
+    padding: "20px",
+    borderRadius: "10px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    marginBottom: "20px",
+    width: "90%",
+    boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
+    marginLeft: "40px",
+  },
+  label: {
+    fontSize: "15px",
+    width: "30%",
+    marginRight: "10px",
+    textAlign: "left",
+  },
+  roundedInput: {
+    width: "400px",
+    height: "40px",
+    marginBottom: "15px",
+  },
+  gradientButton: {
+    background: "linear-gradient(to right, #6ABDC9, #22717d)",
+    color: "white",
+    padding: "10px 15px",
+    border: "none",
+    borderRadius: "10px",
+    cursor: "pointer",
+    width: "150px",
+    height: "50px",
+    marginTop: "10px",
+    marginLeft: "300px",
+  },
+  gradientButtonHover: {
+    filter: "brightness(1.2)",
+  },
+  h2: {
+    color: "#22717d",
+    width: "80%",
+    float: "right",
+  },
+};
 const UpdateStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
@@ -77,7 +76,7 @@ const UpdateStudentForm = () => {
   const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
   const [countries, setCountries] = useState([]);
-  const {id}= useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     const fetchCountries = async () => {
@@ -100,7 +99,7 @@ const UpdateStudentForm = () => {
         setCnic(response.CNIC);
         setPermanentAddress(response.address);
         setHomePhonePermanent(response.contactNumber);
-      } catch(error){
+      } catch (error) {
         alert("Student could not be fetched");
       }
     };
@@ -118,7 +117,6 @@ const UpdateStudentForm = () => {
       contactNumber: homePhonePermanent,
     };
     updateStudent(id, updatedData).then((res) => {
-    
       if (res.errorMessage) {
         alert("Student could not be updated");
       } else {
