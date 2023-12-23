@@ -20,7 +20,7 @@ import SearchCourses from "./pages/SearchCourses";
 import Settings from "./pages/Settings";
 //import { ThemeProvider } from "@mui/material";
 //import theme from "./assets/theme/theme";
-import { CSThemeProvider } from "./assets/theme/CSThemeProvider"; //Custom Clean Slate theme provider
+import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
 
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
@@ -38,7 +38,7 @@ import VideoCall from "./pages/MakeVideoCall";
 
 function App() {
   return (
-    <CSThemeProvider>
+    <CSThemesProvider>
       <Router>
         <Routes>
           <Route path="/" element={<MainPage />}></Route>
@@ -111,7 +111,7 @@ function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
-    </CSThemeProvider>
+    </CSThemesProvider>
   );
 }
 

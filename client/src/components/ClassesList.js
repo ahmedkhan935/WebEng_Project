@@ -34,6 +34,8 @@ function ClassesList({ isFullList }) {
     const handleData = (data) => {
         if (data.error) { //data contains an erorr property
             setClassesError(data.error);
+            alert(data.error)
+
             setClassesFetched(true);
             return;
         } else {

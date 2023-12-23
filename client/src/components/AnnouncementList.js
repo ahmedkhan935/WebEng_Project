@@ -42,6 +42,7 @@ function AnnouncementList({ isFullList, thread }) {
         }
         if (data.error) { //data contains an erorr property
             setAnnouncementsError(data.error);
+            alert(data.error)
             setAnnouncementFetched(true);
             return;
         } else {

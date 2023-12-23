@@ -110,7 +110,6 @@ const teacherStudentController = {
                 user = await Teacher.findById(req.user)
                     .populate('threads.threadId');
 
-
             if (!user) {
                 return res.status(404).json({ error: 'User not found' });
             }
