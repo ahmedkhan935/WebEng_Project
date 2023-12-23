@@ -1,5 +1,6 @@
 import { useParams } from "react-router";
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Button,
   TextField,
@@ -14,6 +15,11 @@ import {
 import NavBar from "../components/Navbar";
 
 import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
+import {
+  addAnnouncement,
+  viewAnnouncements,
+  deleteAnnouncement,
+} from "../services/ThreadService";
 
 const AdminThread = () => {
   const [updatePostFormOpen, setUpdatePostFormOpen] = useState(false);
@@ -24,12 +30,39 @@ const AdminThread = () => {
   const [formOpen, setFormOpen] = useState(false);
   const [content, setContent] = useState("");
   const [title, setTitle] = useState("");
-  const [file, setfile] = useState("");
+  const [file, setfile] = useState();
 
   const { id } = useParams();
 
+  const sendEmail = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:3000/admin/send-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          to: "fatimabilal1016@gmail.com",
+          subject: title,
+          text: content,
+        }),
+      });
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error sending email:", error);
+    }
+  };
   //handle delete post of thread
-  const handleDeletepost = () => {};
+  const handleDeletepost = (post) => {
+    deleteAnnouncement(id, post._id).then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          setPosts(posts.filter((posts) => post._id !== posts._id));
+        });
+      }
+    });
+  };
 
   const handleEditpost = (post) => {
     setUpdatePostTitle(post.title);
@@ -66,34 +99,37 @@ const AdminThread = () => {
     setFormOpen(false);
   };
 
-  //add post
-
   //add post to thread
   const handleAnnounce = () => {
+    var formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("file", file);
+    addAnnouncement(id, formData).then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          setPosts([...posts, data]);
+        });
+        console.log(posts);
+      }
+    });
     setTitle("");
     setfile("");
     setContent("");
     setFormOpen(false);
+    //sending email here to all students
+    sendEmail();
   };
 
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      title: "Post 1",
-      content: "This is the content of post 1.",
-      creator: "Amir Rehman",
-      date: "2023-01-01",
-      file: null,
-    },
-    {
-      id: 2,
-      title: "Post 2",
-      content: "This is the content of post 1.",
-      creator: "Amir Rehman",
-      date: "2023-01-02",
-      file: null,
-    },
-  ]);
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    viewAnnouncements(id).then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setPosts(data);
+      });
+    });
+  }, []);
 
   return (
     <NavBar>
@@ -121,13 +157,14 @@ const AdminThread = () => {
           <CardContent>
             {posts.map((post) => (
               <div style={{ marginTop: "20px" }}>
+                {post.attachments.originalName}
                 <MakeAnnouncementCard
-                  key={post.id}
+                  key={post._id}
                   title={post.title}
                   content={post.content}
-                  date={post.date}
-                  creator={post.creator}
-                  file={post.file}
+                  date={new Date(post.date).toLocaleDateString()}
+                  creator="Amir Rehman"
+                  file={post.attachments ? post.attachments.name : null}
                   handleEdit={() => handleEditpost(post)}
                   handleDelete={() => handleDeletepost(post)}
                 />
@@ -198,8 +235,7 @@ const AdminThread = () => {
           />
           <input
             type="file"
-            accept="image/*,application/pdf"
-            onChange={(e) => setfile(e.target.value)}
+            onChange={(e) => setfile(e.target.files[0])}
             style={{ margin: "10px 0" }}
           />
         </DialogContent>

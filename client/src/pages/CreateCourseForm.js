@@ -11,6 +11,7 @@ import Modal from "@mui/material/Modal";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
+import Checkbox from "@mui/material/Checkbox";
 import { addCourse, viewAllCourses } from "../services/AdminService";
 
 // const prerequisites = ["Prerequisite 1", "Prerequisite 2", "Prerequisite 3"];
@@ -26,6 +27,9 @@ const CreateCourseForm = () => {
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
+  const [selectedDegrees, setSelectedDegrees] = useState([]);
+
+  const degrees = ["SE", "CS"];
 
   useEffect(() => {
     const fetchPrerequisites = async () => {
@@ -170,6 +174,29 @@ const CreateCourseForm = () => {
           <MenuItem value="Lab">Lab</MenuItem>
           <MenuItem value="Theory">Theory</MenuItem>
         </TextField>
+
+        <FormControl style={styles.formControl} sx={{ marginTop: "10px" }}>
+          <InputLabel id="select-degrees-label">
+            Select Degree/Degrees
+          </InputLabel>
+          <Select
+            margin="normal"
+            labelId="select-degrees-label"
+            id="select-degrees"
+            multiple
+            value={selectedDegrees}
+            onChange={(e) => setSelectedDegrees(e.target.value)}
+            label="Select Degree/Degrees"
+            renderValue={(selected) => selected.join(", ")}
+          >
+            {degrees.map((degree) => (
+              <MenuItem key={degree} value={degree}>
+                <Checkbox checked={selectedDegrees.indexOf(degree) > -1} />
+                {degree}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
         <FormControl style={styles.formControl}>
           <InputLabel id="prerequisite-label">Select Prerequisite</InputLabel>

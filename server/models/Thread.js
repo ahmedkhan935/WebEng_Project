@@ -5,7 +5,7 @@ const threadSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {  
+  description: {
     type: String,
     required: false,
   },
@@ -25,13 +25,12 @@ const threadSchema = new mongoose.Schema({
           required: true,
         },
         attachments: {
-          type: [
-            {
-              type: String,
-              required: true,
-            },
-          ],
-          default: [],
+          type: {
+            orignalName: String,
+            name: String,
+          },
+
+          default: {},
         },
       },
     ],

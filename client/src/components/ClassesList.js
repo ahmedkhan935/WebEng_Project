@@ -6,13 +6,17 @@ import { getClasses } from '../services/StudentService';
 import { Link } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import Grid from '@mui/material/Grid';
+import { useLocation } from 'react-router-dom'; 
 
 function ClassesList({ isFullList }) {
     const [classes, setClasses] = React.useState([]);
     const [classesError, setClassesError] = React.useState(null);
-    const [classesFetched, setClassesFetched] = React.useState(false); //To check if classes have been fetched or not
+    const [classesFetched, setClassesFetched] = React.useState(false); //To check if classes have been fetched or no
 
-    //Get all courses
+    const location = useLocation();
+    const userRole = location.pathname.split('/')[1];
+
+    let classesUrl = "/" + userRole + "/classes";
 
     useEffect(() => {
         getClasses().then((data) => {
@@ -55,7 +59,7 @@ function ClassesList({ isFullList }) {
                 }
             </Container>
             {!isFullList && classes.length > 3  ?
-                <Button variant="contained" sx={{ alignSelf: 'flex-end', marginRight: '22px', marginTop: '10px' }} component={Link} to='/student/classes'>View All</Button> : null}
+                <Button variant="contained" sx={{ alignSelf: 'flex-end', marginRight: '22px', marginTop: '10px' }} component={Link} to={classesUrl}>View All</Button> : null}
         </Box>
     )
 }

@@ -12,12 +12,13 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useParams } from 'react-router-dom';
 import { postComment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
-import useStore from '../store/store';  //zustand store
-
+import { useLocation } from 'react-router-dom'; 
 
 function ClassroomStreamCard({ card }) {
     const theme = useTheme();
-    const userRole = useStore(state => state.userRole); // get the userRole from the store
+
+    const location = useLocation();
+    const userRole = location.pathname.split('/')[1];
 
     const [Icon, setIcon] = useState(null);
     const [cardId, setCardId] = useState('');
@@ -200,7 +201,7 @@ function ClassroomStreamCard({ card }) {
                         >
                             {comments.length > 0 ? (
                                 comments.map((comment, index) => (
-                                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
+                                    <Box key={index} sx={{ display: 'flex', alignItems: 'center', marginBottom: '15px', marginLeft: '10px' }}>
                                         <Avatar src="../assets/images/defaultpfp.jpg" sx={{ marginRight: '10px' }} />
                                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                                             <Typography variant="subtitle2" sx={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom: '0px' }}>

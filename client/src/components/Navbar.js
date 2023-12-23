@@ -29,61 +29,46 @@ import {
   Announcement as AnnouncementIcon,
   Logout as LogoutIcon,
   Settings as SettingsIcon,
-  School as SchoolIcon
+  School as SchoolIcon,
+  RemoveRedEye as RemoveRedEyeIcon,
+  EventAvailable as EventAvailableIcon,
+  FormatListNumbered as FormatListNumberedIcon,
 } from "@mui/icons-material";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
-
 import { Link, useLocation } from "react-router-dom";
 
-
 const drawerWidth = 240;
-const standardOptions = [
-  { title: "Home", Icon: <HomeIcon color="primary" />, linkto: "/student" },
-  {
-    title: "Threads",
-    Icon: <AnnouncementIcon color="primary" />,
-    linkto: "/student/threads",
-  },
-  { title: "Logout", Icon: <LogoutIcon color="primary" /> },
-];
 
 const adminOptions = [
+  // {
+  //   title: "Deans List",
+  //   Icon: <FormatListNumberedIcon color="primary" />,
+  //   linkto: "/admin/list/deans",
+  // },
+  // {
+  //   title: "Debar List",
+  //   Icon: <SettingsIcon color="primary" />,
+  //   linkto: "/admin/list/debar",
+  // },
+  // {
+  //   title: "Medal Holders",
+  //   Icon: <SettingsIcon color="primary" />,
+  //   linkto: "/admin/list/medalHolders",
+  // },
+  // {
+  //   title: "Rectors List",
+  //   Icon: <SettingsIcon color="primary" />,
+  //   linkto: "/admin/list/rectors",
+  // },
+  // {
+  //   title: "Warning List",
+  //   Icon: <SettingsIcon color="primary" />,
+  //   linkto: "/admin/list/warning",
+  // },
   {
-    title: "Settings",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/settings",
-  },
-  {
-    title: "Landing Page",
-    Icon: <HomeIcon color="primary" />,
-    linkto: "/admin",
-  },
-
-  {
-    title: "Deans List",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/list/deans",
-  },
-  {
-    title: "Debar List",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/list/debar",
-  },
-  {
-    title: "Medal Holders",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/list/medalHolders",
-  },
-  {
-    title: "Rectors List",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/list/rectors",
-  },
-  {
-    title: "Warning List",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/admin/list/warning",
-  },
+      title: "Admin Lists",
+      Icon: <FormatListNumberedIcon color="primary" />,
+      linkto: "/admin/lists",
+    },
   {
     title: "View Session Logs",
     Icon: <SettingsIcon color="primary" />,
@@ -97,24 +82,16 @@ const adminOptions = [
 ];
 
 const studentOptions = [
-  {
-    title: "Settings",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/student/settings",
-  },
   { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
   { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/student/classes' },
   { title: "Grades", Icon: <GradeIcon color="primary" /> },
   { title: "Feedback", Icon: <QuestionAnswerIcon color="primary" /> },
+  { title: "Attendance", Icon: <EventAvailableIcon color="primary" /> },
   { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const teacherOptions = [
-  {
-    title: "Settings",
-    Icon: <SettingsIcon color="primary" />,
-    linkto: "/teacher/settings",
-  },
+  { title: "Classes", Icon: <SchoolIcon color="primary" />, linkto: '/teacher/classes' },
   { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
@@ -184,12 +161,32 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function NavBar({ children }) {
-  const isStudent = useLocation().pathname.includes("/student");
-  const isTeacher = useLocation().pathname.includes("/teacher");
-  const isAdmin = useLocation().pathname.includes("/admin");
+  const location = useLocation();
+  let userRole = location.pathname.split('/')[1]; 
+  userRole = userRole.toLowerCase();
+
+  //checking if pathname includes the word was buggy, as it detected isStudent=true for /admin/lists/students, so i changed it
+  const isStudent = userRole === 'student';
+  const isAdmin = userRole === 'admin';
+  const isTeacher = userRole === 'teacher';
+
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
  
+  const standardOptions = [
+    { title: "Home", Icon: <HomeIcon color="primary" />, linkto: "/"+userRole },
+    {
+      title: "Threads",
+      Icon: <AnnouncementIcon color="primary" />,
+      linkto: "/"+userRole+"/threads",
+    },
+    {
+      title:"Settings",
+      Icon: <SettingsIcon color="primary" />,
+      linkto: "/"+userRole+"/settings",
+    },
+    { title: "Logout", Icon: <LogoutIcon color="primary" /> },
+  ];
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -202,6 +199,8 @@ export default function NavBar({ children }) {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
+      
+      {/* Navbar (Top bar) with button to open drawer */}
       <AppBar position="fixed" open={open}>
         <Toolbar>
           <IconButton
@@ -221,6 +220,9 @@ export default function NavBar({ children }) {
           </Typography>
         </Toolbar>
       </AppBar>
+
+
+      {/* Sidebar (Drawer) */}
       <Drawer variant="permanent" open={open}>
         <DrawerHeader>
           <IconButton onClick={handleDrawerClose}>
@@ -232,6 +234,8 @@ export default function NavBar({ children }) {
           </IconButton>
         </DrawerHeader>
         <Divider />
+
+        {/* List of Standard options in the sidebar */}
         <List>
           {standardOptions.map((element, index) => (
             <ListItem
@@ -265,10 +269,12 @@ export default function NavBar({ children }) {
             </ListItem>
           ))}
         </List>
-        <Divider />
-        <List>
-          {isStudent &&
-            studentOptions.map((element, index) => (
+        { isStudent ?
+          <>
+            <Divider />
+            <List>
+          
+            {studentOptions.map((element, index) => (
               <ListItem
                 key={element.title}
                 disablePadding
@@ -297,12 +303,16 @@ export default function NavBar({ children }) {
                   />
                 </ListItemButton>
               </ListItem>
-            ))}
-        </List>
-        <Divider />
-        <List>
-          {isAdmin &&
-            adminOptions.map((element, index) => (
+              )) }
+            </List>
+          </> 
+          : 
+          null
+        }
+        {isAdmin ? <>
+          <Divider />
+          <List>
+            {adminOptions.map((element, index) => (
               <ListItem
                 key={element.title}
                 disablePadding
@@ -333,11 +343,15 @@ export default function NavBar({ children }) {
                 </ListItemButton>
               </ListItem>
             ))}
-        </List>
-        <Divider />
-        <List>
-          {isTeacher &&
-            teacherOptions.map((element, index) => (
+          </List>
+        </>
+          :
+          null
+        }
+        {isTeacher ? <>
+          <Divider />
+          <List>
+            {teacherOptions.map((element, index) => (
               <ListItem
                 key={element.title}
                 disablePadding
@@ -368,7 +382,11 @@ export default function NavBar({ children }) {
                 </ListItemButton>
               </ListItem>
             ))}
-        </List>
+          </List>
+        </>
+          :
+          null
+        }
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
