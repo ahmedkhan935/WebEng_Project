@@ -21,8 +21,30 @@ export const getClasses = async () => {
     return handleResponse(response);
 };
 
+export const getClass = async (classCode) => {
+    console.log(classCode);
+    console.log("GOING TO CLASS ", classCode);
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
 export const getThreads = async () => {
     const response = await axios.get(`${BASE_URL}/teacher/threads`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
+export const getThread = async (threadId) => {
+    const response = await axios.get(`${BASE_URL}/teacher/threads/${threadId}`, {
         headers: {
             'Content-Type': 'application/json',
         },
@@ -102,39 +124,6 @@ export const deleteAnnouncement = async (classCode, announcementId) => {
 
 export const getProfile = async () => {
     const response = await axios.get(`${BASE_URL}/teacher/profile`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        withCredentials: true
-    });
-    return handleResponse(response);
-};
-
-export const getClass = async (classCode) => {
-    console.log(classCode);
-    console.log("GOING TO CLASS ", classCode);
-    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        withCredentials: true
-    });
-    return handleResponse(response);
-}
-
-export const getThreads = async () => {
-    const response = await axios.get(`${BASE_URL}/teacher/threads`, {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        withCredentials: true
-    });
-    return handleResponse(response);
-};
-
-
-export const getThread = async (threadId) => {
-    const response = await axios.get(`${BASE_URL}/teacher/threads/${threadId}`, {
         headers: {
             'Content-Type': 'application/json',
         },
