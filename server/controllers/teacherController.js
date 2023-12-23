@@ -1,10 +1,28 @@
 const Classroom = require('../models/Classroom');
+const Thread = require('../models/Thread');
+const Teacher = require('../models/Teacher');
 
 const teacherController = {
     getClasses: async (req, res) => {
         try {
             const classrooms = await Classroom.find({ teachers: req.user });
             res.status(200).json({ classrooms });
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
+    getThreads: async (req, res) => {
+        try {
+            const teacher = await Teacher.findById(req.user);
+            if (!teacher) {
+                return res.status(404).json({ message: 'Teacher not found' });
+            }
+            const threadIds = teacher.threads.map(thread => thread.threadId);
+            console.log(threadIds);
+            const threads = await Thread.find({ _id: { $in: threadIds } });
+
+            res.status(201).json({ threads });
         } catch (error) {
             res.status(500).json({ message: 'Server error', error });
         }
