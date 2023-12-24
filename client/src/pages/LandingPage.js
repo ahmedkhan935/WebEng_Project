@@ -34,7 +34,6 @@ const LandingPage = () => {
     setSemesterModalOpen(false);
   };
 
-
   return (
     <NavBar>
       <div
@@ -81,6 +80,16 @@ const LandingPage = () => {
             color="primary"
           >
             View Teachers
+          </Button>
+          <Button
+            component={Link}
+            onClick={() => {
+              navigate("/admin/viewDegrees");
+            }}
+            variant="outlined"
+            color="primary"
+          >
+            View Degrees
           </Button>
         </Box>
 
