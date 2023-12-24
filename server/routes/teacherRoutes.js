@@ -11,7 +11,8 @@ router.get('/classes/:classCode/students', Auth, AuthTeacher, teacherController.
 router.get('/threads',              Auth, AuthTeacher, teacherStudentController.getThreads);
 router.get('/threads/:threadId',    Auth, AuthTeacher, teacherStudentController.getThread);
 router.get('/profile',              Auth, AuthTeacher, teacherController.getProfile);
-router.get('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.getAttendance);
+router.get('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.getAllAttendance);
+router.get('/classes/:classCode/attendance/:date', Auth, AuthTeacher, teacherController.getAttendance);
 
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);

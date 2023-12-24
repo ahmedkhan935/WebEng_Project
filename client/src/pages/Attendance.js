@@ -4,7 +4,7 @@ import { Container, Table, Typography, TableBody, TableCell, TableContainer, Tab
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { getStudents, addAttendance, getAttendance } from '../services/TeacherService';
+import { getStudents, addAttendance, getAllAttendance } from '../services/TeacherService';
 import { read, utils } from 'xlsx';
 
 
@@ -29,7 +29,7 @@ function Attendance() {
                 }
             });
 
-            getAttendance(classCode).then((data) => {
+            getAllAttendance(classCode).then((data) => {
                 if (data.data) {
                     console.log(data.data);
                     setRows(data.data.map(item => ({
@@ -41,11 +41,15 @@ function Attendance() {
                     console.log(data.error);
                 }
             });
+
+            // can call get attendance here for the changed date on in a new useEffect
+
         } catch (err) {
             console.log(err);
         }
 
     }, [])
+        
 
     const handleClickOpen = () => {
         setOpen(!open);
@@ -61,8 +65,9 @@ function Attendance() {
 
         addAttendance(classCode, selectedDate, duration, students).then((data) => {
             if (data.data) {
-                console.log(data.data);
+                console.log(data.data.attendanceData);
                 alert("Attendance added successfully");
+                setRows([...rows, data.data.attendanceData]);
             }
             else {
                 console.log(data.error);

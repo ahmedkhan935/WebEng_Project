@@ -267,7 +267,14 @@ const teacherController = {
             }
             
             await courseEval.save();
-            res.status(201).json({ message: 'Attendance added successfully' });
+            // return date, presents, absents
+            let attendanceData = {
+                date,
+                presents: attendance.filter(student => student.status === 'P').length,
+                absents: attendance.filter(student => student.status === 'A').length
+            };
+
+            res.status(201).json({ message: 'Attendance added successfully', attendanceData });
 
         } catch (error) {
             console.log(error);
@@ -323,7 +330,7 @@ const teacherController = {
         }
     },
 
-    getAttendance: async (req, res) => {
+    getAllAttendance: async (req, res) => {
         try {
             const { classCode } = req.params;
 
@@ -353,7 +360,35 @@ const teacherController = {
         } catch (error) {
             res.status(500).json({ message: 'Server error', error });
         }
-    }
+    },
+
+    getAttendance: async (req, res) => {
+        try{
+            const { classCode, date } = req.params;
+
+            const courseEval = await CourseEval.findOne({ classCode });
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            const lecture = courseEval.lectures.find(lecture => new Date(lecture.date).toISOString().split('T')[0] == date);
+            if (!lecture) {
+                return res.status(404).json({ message: 'Lecture not found' });
+            }
+
+            const attendance = lecture.attendance;
+            if (!attendance) {
+                return res.status(404).json({ message: 'No attendance found' });
+            }
+
+            res.json(attendance);
+
+        }catch(error){
+            console.log(error);
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
     // markAssignment: async (req, res) => {
     //     try{
     //         const {classCode, assignmentId} = req.params;

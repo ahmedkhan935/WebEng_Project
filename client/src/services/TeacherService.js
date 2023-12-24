@@ -95,8 +95,18 @@ export const getProfile = async () => {
     return handleResponse(response);
 };
 
-export const getAttendance = async (classCode) => {
+export const getAllAttendance = async (classCode) => {
     const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/attendance`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
+export const getAttendance = async (classCode, date) => {
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/attendance/${date}`, {
         headers: {
             'Content-Type': 'application/json',
         },
