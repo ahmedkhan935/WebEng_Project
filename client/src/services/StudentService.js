@@ -129,3 +129,27 @@ export const postComment = async (classCode, announcementId, content) => {
   );
   return handleResponse(response);
 };
+export const givefeedback = async (classCode, feedback) => {
+  try
+  {
+  const response = await axios.post(
+    `${BASE_URL}/student/class/${classCode}/feedback`,
+    {
+      feedback: feedback,
+    },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    });
+    return handleResponse(response);
+  
+  }
+  catch(err)
+  {
+    console.log(err);
+    return {error:err.message};
+  }
+
+}

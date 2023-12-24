@@ -3,6 +3,8 @@ const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Course = require("../models/Course");
 const Logs = require("../models/Logs");
+const Degree = require("../models/Degree");
+const Classroom = require("../models/Classroom");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -380,6 +382,101 @@ const viewLogs = async (req, res) => {
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
+
+const addDegree = async (req, res) => {
+  try {
+    const { name, abbreviation } = req.body;
+
+    if (!name) {
+      throw new Error("Please provide values for name ");
+    }
+    const degree = new Degree({
+      name: name,
+      abbreviation: abbreviation,
+    });
+    const saveddegree = await degree.save();
+    res.status(201).json(saveddegree);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error.message || "Invalid input" });
+  }
+};
+
+const ViewAllDegrees = async (req, res) => {
+  try {
+    const degrees = await Degree.find({}).exec();
+    console.log(degrees);
+    res.status(200).json(degrees);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error.message || "No degrees" });
+  }
+};
+
+const getFeedback = async (req, res) => {
+  try {
+    const classroom = await Classroom.findOne({ code: req.params.id }).populate(
+      "feedback.studentId",
+      "name"
+    );
+    if (!classroom) {
+      return res.status(404).json({ errorMessage: "Classroom not found" });
+    }
+    const feedback = classroom.feedback;
+
+    res.status(200).json(feedback);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+const getCoursename = async (req, res) => {
+  try {
+    const course = await Classroom.find().select("code name");
+    if (!course) {
+      return res.status(404).json({ errorMessage: "Course not found" });
+    }
+    res.status(200).json(course);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
+const assignCourse = async (req, res) => {
+  try {
+    const { teacherId, courseId } = req.body;
+    console.log(teacherId, courseId);
+
+    // Find the teacher by ID
+    const teacher = await Teacher.findById(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    // Check if the course ID already exists in the courses array
+    const courseExists = teacher.courses.some(
+      (course) => course.courseId.toString() === courseId.toString()
+    );
+
+    if (!courseExists) {
+      // Add the new course ID to the courses array
+      teacher.courses.push({ courseId });
+
+      await teacher.save();
+      return res.status(200).json({ message: "Course added successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Course already exists for the teacher" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -402,4 +499,9 @@ module.exports = {
   updateTeacher,
   deleteTeacher,
   viewLogs,
+  getFeedback,
+  getCoursename,
+  assignCourse,
+  addDegree,
+  ViewAllDegrees,
 };

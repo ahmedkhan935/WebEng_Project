@@ -9,8 +9,17 @@ import {
   Typography,
   Box,
   Link,
+  CardActionArea,
+  CardActions,
+  CardMedia,
 } from "@mui/material";
+import PersonSearchIcon from "@mui/icons-material/PersonSearch";
+import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import Face2Icon from "@mui/icons-material/Face2";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import NavBar from "../components/Navbar";
+import { getThreads } from "../services/ThreadService";
 
 import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
 import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
@@ -21,8 +30,38 @@ const LandingPage = () => {
   const [semesterModalOpen, setSemesterModalOpen] = useState(false);
   const [semesterModalContent, setSemesterModalContent] = useState("");
   const [semesterModalIcon, setSemesterModalIcon] = useState(null);
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
-  useEffect(() => {}, []);
+  const [threads, setThreads] = useState([]);
+
+  const styles = {
+    threadCard: {
+      position: "relative",
+      padding: "20px",
+      marginBottom: "10px",
+    },
+    threadOptions: {
+      position: "absolute",
+      top: "10px",
+      right: "10px",
+      display: "flex",
+      gap: "5px",
+      transition: "opacity 0.3s ease-in-out, visibility 0.3s ease-in-out",
+    },
+    h7: {
+      fontSize: "15px",
+    },
+  };
+
+  useEffect(() => {
+    getThreads().then((res) => {
+      if (res.status === 200) {
+        res.json().then((data) => {
+          setThreads(data.slice(0, 3));
+        });
+      }
+    });
+  }, []);
 
   const handleSemesterModalOpen = (message, icon) => {
     setSemesterModalContent(message);
@@ -32,6 +71,18 @@ const LandingPage = () => {
 
   const handleSemesterModalClose = () => {
     setSemesterModalOpen(false);
+  };
+
+  const handleViewThreadPosts = (thread) => {
+    navigate(`/admin/threads/${thread._id}`);
+  };
+
+  const handleMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
   };
 
   return (
@@ -57,7 +108,13 @@ const LandingPage = () => {
               navigate("/admin/searchCourses");
             }}
             variant="outlined"
-            color="primary"
+            color="secondary"
+            startIcon={
+              <VisibilityOutlinedIcon
+                color="primary"
+                style={{ fontSize: 25 }}
+              />
+            }
           >
             View Courses
           </Button>
@@ -67,7 +124,8 @@ const LandingPage = () => {
               navigate("/admin/viewStudents");
             }}
             variant="outlined"
-            color="primary"
+            color="secondary"
+            startIcon={<Face2Icon color="primary" style={{ fontSize: 25 }} />}
           >
             View Students
           </Button>
@@ -77,7 +135,10 @@ const LandingPage = () => {
               navigate("/admin/viewTeachers");
             }}
             variant="outlined"
-            color="primary"
+            color="secondary"
+            startIcon={
+              <PersonSearchIcon color="primary" style={{ fontSize: 25 }} />
+            }
           >
             View Teachers
           </Button>
@@ -87,11 +148,84 @@ const LandingPage = () => {
               navigate("/admin/viewDegrees");
             }}
             variant="outlined"
-            color="primary"
+            color="secondary"
+            startIcon={
+              <WorkspacePremiumIcon color="primary" style={{ fontSize: 25 }} />
+            }
           >
             View Degrees
           </Button>
         </Box>
+
+        <CardContent style={{ width: "100%" }}>
+          <Typography variant="h5" style={{ marginBottom: "10px" }}>
+            Latest Threads
+          </Typography>
+
+          {threads.map((thread) => (
+            <Card
+              key={thread._id}
+              sx={{
+                ...styles.threadCard,
+                backgroundColor: (theme) => `${theme.palette.primary.main}`,
+                color: "white",
+                position: "relative",
+                ":hover": {
+                  cursor: "pointer",
+                  "& .rotate-icon": {
+                    transform: "rotate(-90deg)", // Change rotation angle to face left
+                  },
+                },
+              }}
+            >
+              <CardActionArea onClick={() => handleViewThreadPosts(thread)}>
+                <CardContent>
+                  <Typography sx={({ marginLeft: "10px" }, styles.h7)}>
+                    {thread.title}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+
+              <Box
+                sx={{
+                  position: "absolute",
+                  top: 0,
+                  right: 30,
+                  bottom: 0,
+                  width: "100px",
+                  backgroundColor: (theme) => `${theme.palette.primary.main}`,
+                }}
+              >
+                {/* Icon inside the shadow box */}
+                <CampaignOutlinedIcon
+                  className="rotate-icon" // Add a class for easier selection
+                  sx={{
+                    fontSize: 60,
+                    color: "white",
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    opacity: "0.9",
+                    transition: "transform 0.3s ease-in-out",
+                  }}
+                />
+              </Box>
+            </Card>
+          ))}
+          {threads.length >= 3 && (
+            <Button
+              variant="contained"
+              sx={{ float: "right" }}
+              onClick={() => {
+                navigate("/admin/threads");
+              }}
+            >
+              {" "}
+              View All
+            </Button>
+          )}
+        </CardContent>
 
         <Card style={{ width: "100%" }}>
           <CardContent>

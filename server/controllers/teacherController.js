@@ -159,7 +159,10 @@ const teacherController = {
 
             await classroom.save();
 
-            res.status(201).json({ message: 'Announcement added successfully', announcement });
+            const authorName = await Teacher.findById(req.user).select('name');
+            announcement.createdBy = authorName.name;
+
+            res.status(201).json(announcement);
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
@@ -348,7 +351,7 @@ const teacherController = {
                 return res.status(404).json({ message: 'No lectures found' });
             }
 
-            const attendanceData = lectures.map(lecture => {
+            let attendanceData = lectures.map(lecture => {
                 const presents = lecture.attendance.filter(student => student.status === 'P').length;
                 const absents = lecture.attendance.filter(student => student.status === 'A').length;
                 const duration = lecture.duration;
@@ -361,9 +364,12 @@ const teacherController = {
                 };
             });
 
-            res.json(attendanceData);
+            attendanceData = attendanceData.sort((a, b) => new Date(b.date) - new Date(a.date)); // sort by date
+
+            return res.status(200).json(attendanceData);
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({ message: 'Server error', error });
         }
     },
@@ -394,6 +400,22 @@ const teacherController = {
             res.status(500).json({ message: 'Server error', error });
         }
     },
+    getFeedback: async (req, res) => {
+        
+        
+        const { classCode } = req.params;
+        const classroom = await Classroom.findOne({ code: classCode }).populate({path:'feedback.studentId', select:'name'});
+        if (!classroom) {
+            return res.status(404).json({ message: 'Classroom not found' });
+        }
+        const feedback = classroom.feedback;
+        if (!feedback) {
+            return res.status(404).json({ message: 'No feedback found' });
+        }
+        res.json(feedback);
+        
+
+    }
 
     markAssignment: async (req, res) => {
         try {

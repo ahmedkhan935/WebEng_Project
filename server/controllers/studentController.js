@@ -5,6 +5,7 @@ const Semester = require("../models/Semester");
 const Degree = require("../models/Degree");
 const Thread = require("../models/Thread");
 const Teacher = require("../models/Teacher");
+const StudentEval = require("../models/StudentEval");
 
 const studentController = {
   getProfile: async (req, res) => {
@@ -107,7 +108,7 @@ const studentController = {
           (announcement.type == "Assignment" || announcement.type == "Quiz") &&
           new Date(announcement.dueDate) > now
         ) {
-          console.log("announcement found");
+          
           todos.push(announcement);
         }
       }); // Get the todos of the class
@@ -126,6 +127,31 @@ const studentController = {
       res.status(500).json({ error: err.message });
     }
   },
+  givefeedback: async (req, res) => {
+    const student = await Student.findById(req.user);
+    const classCode = req.params.classCode;
+    const feedback = req.body.feedback;
+    const classs = await Classroom.findOne({ code: classCode });
+    if (!classs) {
+      return res.status(404).json({ error: "Classroom not found" });
+    }
+  
+    const studenteval = await StudentEval.findOne({studentId: student._id, classCode: classCode});
+    if(!studenteval){
+      return res.status(404).json({ error: "Student not found" });
+    }
+    studenteval.feedback=feedback;
+    await studenteval.save();
+    classs.feedback.push({
+      studentId: student._id,
+      feedback: feedback,
+    });
+    await classs.save();
+    res.status(201).json({ message: "Feedback given successfully" });
+
+
+  
+  }
 };
 
 module.exports = studentController;

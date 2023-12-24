@@ -6,7 +6,6 @@ import classroomHeader from '../assets/images/classroomHeader.jpg'; // import th
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 
-
 //Course card represents a small tile containing brief info about the course.
 function ClassCard({ classroom }) {
   const theme = useTheme();

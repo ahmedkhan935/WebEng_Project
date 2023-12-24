@@ -150,6 +150,14 @@ const ClassroomSchema = new mongoose.Schema({
         type: String,
         enum: ['Pending', 'Ongoing', 'Completed'],
         required: true
+    },
+    feedback : {
+        type: [
+            {
+                studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+                feedback: { type: String }
+            }
+        ]
     }
 });
 

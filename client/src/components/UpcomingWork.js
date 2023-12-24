@@ -22,7 +22,7 @@ function UpcomingWork({ classCode }) {
 
 
     return (
-        <Box sx={{ border: '1px solid gray',width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px' }}>
+        <Box sx={{ border: '1px solid gray',width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px'  }}>
             <Typography variant="h6" color="text.secondary" display="inline-block"  sx= {{ marginTop: '15px'}}>
                 Upcoming Work
             </Typography>

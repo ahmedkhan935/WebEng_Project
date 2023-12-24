@@ -11,9 +11,6 @@ import {
   CardContent,
   Typography,
   CardActionArea,
-  Box,
-  Link,
-  Collapse,
   IconButton,
   CardActions,
   Menu,
@@ -21,11 +18,15 @@ import {
 } from "@mui/material";
 
 import NavBar from "../components/Navbar";
-
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 import { useNavigate } from "react-router-dom";
-import { addThread, deleteThread, getThreads, updateThread } from "../services/ThreadService";
+import {
+  addThread,
+  deleteThread,
+  getThreads,
+  updateThread,
+} from "../services/ThreadService";
 
 const AdminThreads = () => {
   const navigate = useNavigate();
@@ -54,14 +55,12 @@ const AdminThreads = () => {
     setAnchorEl(null);
   };
 
-  const [threads, setThreads] = useState([
-  ]);
+  const [threads, setThreads] = useState([]);
 
   useEffect(() => {
     getThreads().then((res) => {
       if (res.status === 200) {
         res.json().then((data) => {
-
           setThreads(data);
         });
       }
@@ -100,9 +99,7 @@ const AdminThreads = () => {
       if (res.status === 200) {
         setThreads(threads.filter((t) => t._id !== thread._id));
       }
-    }
-    );
-
+    });
   };
   //add thread
   const handleAddThread = () => {
@@ -118,8 +115,6 @@ const AdminThreads = () => {
         });
       }
     });
-
-
 
     //setThreads([newThread, ...threads]);
     setFormOpen(false);
@@ -141,7 +136,7 @@ const AdminThreads = () => {
           );
         });
       }
-    }); 
+    });
     handleUpdateFormClose();
   };
 

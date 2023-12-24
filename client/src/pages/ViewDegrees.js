@@ -18,14 +18,22 @@ import Pagination from "@mui/material/Pagination";
 
 import NavBar from "../components/Navbar";
 import { useNavigate } from "react-router-dom";
+import { viewDegrees } from "../services/AdminService";
 
 const ViewDegrees = () => {
   const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
-  //   const [rows, setRows] = useState([]);
-  useEffect(() => {}, []);
+  const [rows, setRows] = useState([]);
+  useEffect(async () => {
+    viewDegrees().then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setRows(data);
+      });
+    });
+  }, []);
 
   const styles = {
     h2: {
@@ -33,19 +41,6 @@ const ViewDegrees = () => {
       float: "left",
     },
   };
-
-  const rows = [
-    {
-      name: "Software Engineering",
-      Abbreviation: "SE",
-      CreditHours: "26",
-    },
-    {
-      name: "Mechanical Engineering",
-      Abbreviation: "ME",
-      CreditHours: "34",
-    },
-  ];
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -125,8 +120,8 @@ const ViewDegrees = () => {
               {filteredRows.map((row, index) => (
                 <TableRow key={index}>
                   <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.Abbreviation}</TableCell>
-                  <TableCell>{row.CreditHours}</TableCell>
+                  <TableCell>{row.abbreviation}</TableCell>
+                  <TableCell>{row.totalCredits}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

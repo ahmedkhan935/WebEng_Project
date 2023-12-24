@@ -36,4 +36,11 @@ router.post(
   AuthStudent,
   teacherStudentController.comment
 );
+router.post(
+  "/class/:classCode/feedback",
+  Auth,
+  AuthStudent,
+  studentController.givefeedback
+
+)
 module.exports = router;
