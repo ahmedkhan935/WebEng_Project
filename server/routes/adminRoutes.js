@@ -30,4 +30,7 @@ adminRouter.get("/feedback/:id", adminController.getFeedback);
 adminRouter.post("/degree", adminController.addDegree);
 adminRouter.get("/degree", adminController.ViewAllDegrees);
 adminRouter.post("/assignCourse", adminController.assignCourse);
+adminRouter.get("/lowAttendance", adminController.getStudentsWithLowAttendance);
+adminRouter.get("/deans", adminController.deanslist);
+adminRouter.get("/rectors", adminController.rectorslist);
 module.exports = adminRouter;

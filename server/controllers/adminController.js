@@ -5,6 +5,7 @@ const Course = require("../models/Course");
 const Logs = require("../models/Logs");
 const Degree = require("../models/Degree");
 const Classroom = require("../models/Classroom");
+const StudentEval = require("../models/StudentEval");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -477,6 +478,81 @@ const assignCourse = async (req, res) => {
   }
 };
 
+//deans list
+const deanslist = async (req, res) => {
+  try {
+    const students = await Student.find({
+      "semesters.cgpa": { $gte: 3.5 },
+    });
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+//rectors list
+const rectorslist = async (req, res) => {
+  try {
+    const students = await Student.find({
+      "semesters.cgpa": { $eq: 4 },
+    });
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+//debar list
+const getStudentsWithLowAttendance = async (req, res) => {
+  try {
+    const studentsEval = await StudentEval.find({
+      attendance: { $lt: 80 },
+    }).exec();
+
+    if (!studentsEval) {
+      return res
+        .status(404)
+        .json({ errorMessage: "No students found with low attendance" });
+    }
+
+    const formattedStudents = [];
+
+    for (const studentEval of studentsEval) {
+      var student = await Student.findById(studentEval.studentId);
+      console.log(studentEval.studentId.classes);
+      for (const classObj of student.classes) {
+        const classroom = await Classroom.findOne({ code: classObj.classCode })
+          .populate({
+            path: "courseId",
+            model: "Course",
+            select: "courseName",
+          })
+          .exec();
+
+        if (classroom) {
+          formattedStudents.push({
+            studentId: student._id,
+            name: student.name,
+            batch: student.batch,
+            degree: student.degreeName,
+            attendance: studentEval.attendance,
+            courseName: classroom.courseId
+              ? classroom.courseId.courseName
+              : "Unknown",
+          });
+        }
+      }
+    }
+    console.log(formattedStudents);
+    res.status(200).json(formattedStudents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -504,4 +580,7 @@ module.exports = {
   assignCourse,
   addDegree,
   ViewAllDegrees,
+  getStudentsWithLowAttendance,
+  deanslist,
+  rectorslist,
 };

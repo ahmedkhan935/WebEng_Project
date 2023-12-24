@@ -4,16 +4,17 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
-import { viewDegrees } from "../services/AdminService.js";
+import { viewDegrees, viewRectorsList } from "../services/AdminService.js";
 
 // Columns
-const columns = ["studentId", "name", "Batch", "Degree"];
+const columns = ["name", "batch", "degreeName"];
 
 const RectorsList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
   const [selectedDegree, setSelectedDegree] = useState("");
   const [degrees, setDegrees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rows, setrows] = useState([]);
   const rowsPerPage = 2;
   const [filteredRows, setFilteredRows] = useState([]);
 
@@ -30,37 +31,26 @@ const RectorsList = () => {
   };
 
   useEffect(() => {
+    viewRectorsList().then((res) => {
+      res.json().then((data) => {
+        setrows(data);
+        const filtered = data.filter(
+          (row) =>
+            selectedBatch === "" ||
+            row.batch === selectedBatch ||
+            selectedDegree === "" ||
+            row.degreeName === selectedDegree
+        );
+        console.log(filtered);
+        setFilteredRows(filtered);
+      });
+    });
+
     viewDegrees().then((res) => {
       res.json().then((data) => {
         setDegrees(data);
       });
     });
-  }, []);
-
-  const rows = [
-    {
-      studentId: "34234",
-      name: "Fatima Bilal",
-      Batch: "2020",
-      Degree: "SE",
-    },
-    {
-      studentId: "34240",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    // Add more rows...
-  ];
-
-  // Apply filters when batch or degree changes
-  useEffect(() => {
-    const filtered = rows.filter(
-      (row) =>
-        (selectedBatch === "" || row.Batch === selectedBatch) &&
-        (selectedDegree === "" || row.Degree === selectedDegree)
-    );
-    setFilteredRows(filtered);
   }, [selectedBatch, selectedDegree]);
 
   // Calculate the index range for the current page

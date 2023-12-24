@@ -174,3 +174,24 @@ export const assignCourse = async (assignCourseData) => {
   });
   return handleResponse(response);
 };
+
+export async function viewDebarList() {
+  return await fetch(`${BASE_URL}/admin/lowAttendance`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+
+export async function viewDeansList() {
+  return await fetch(`${BASE_URL}/admin/deans`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+
+export async function viewRectorsList() {
+  return await fetch(`${BASE_URL}/admin/rectors`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

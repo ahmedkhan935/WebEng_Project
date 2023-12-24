@@ -4,16 +4,21 @@ import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { viewDegrees } from "../services/AdminService.js";
+import {
+  viewDeansList,
+  viewDebarList,
+  viewDegrees,
+} from "../services/AdminService.js";
 
 // The column names must be in camel case notation
-const columns = ["studentId", "name", "Batch", "Degree"];
+const columns = ["name", "batch", "degreeName"];
 
 const DeansList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
   const [selectedDegree, setSelectedDegree] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [degrees, setDegrees] = useState([]);
+  const [rows, setrows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
 
   const rowsPerPage = 2;
@@ -27,48 +32,26 @@ const DeansList = () => {
   };
 
   useEffect(() => {
+    viewDeansList().then((res) => {
+      res.json().then((data) => {
+        setrows(data);
+        const filtered = data.filter(
+          (row) =>
+            selectedBatch === "" ||
+            row.batch === selectedBatch ||
+            selectedDegree === "" ||
+            row.degreeName === selectedDegree
+        );
+        console.log(filtered);
+        setFilteredRows(filtered);
+      });
+    });
+
     viewDegrees().then((res) => {
       res.json().then((data) => {
         setDegrees(data);
       });
     });
-  }, []);
-
-  const rows = [
-    {
-      studentId: "34234",
-      name: "Fatima Bilal",
-      Batch: "2020",
-      Degree: "SE",
-    },
-    {
-      studentId: "343",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "2132",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "324",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-  ];
-
-  // Apply filters when batch or degree changes
-  useEffect(() => {
-    const filtered = rows.filter(
-      (row) =>
-        (selectedBatch === "" || row.Batch === selectedBatch) &&
-        (selectedDegree === "" || row.Degree === selectedDegree)
-    );
-    setFilteredRows(filtered);
   }, [selectedBatch, selectedDegree]);
 
   // Calculate the index range for the current page

@@ -4,16 +4,24 @@ import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { viewDegrees } from "../services/AdminService.js";
+import { viewDebarList, viewDegrees } from "../services/AdminService.js";
 
-const columns = ["studentId", "name", "debarCourse", "Batch", "Degree"];
+const columns = [
+  "studentId",
+  "name",
+  "courseName",
+  "attendance",
+  "batch",
+  "degree",
+];
 
 const DebarList = () => {
-  const [selectedBatch, setSelectedBatch] = useState("2021");
+  const [selectedBatch, setSelectedBatch] = useState("");
   const [selectedDegree, setSelectedDegree] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2; // Adjust as needed
   const [degrees, setDegrees] = useState([]);
+  const [rows, setrows] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
 
   const handleBatchChange = (event) => {
@@ -25,51 +33,26 @@ const DebarList = () => {
   };
 
   useEffect(() => {
+    viewDebarList().then((res) => {
+      res.json().then((data) => {
+        setrows(data);
+        const filtered = data.filter(
+          (row) =>
+            selectedBatch === "" ||
+            row.batch === selectedBatch ||
+            selectedDegree === "" ||
+            row.degree === selectedDegree
+        );
+        console.log(filtered);
+        setFilteredRows(filtered);
+      });
+    });
+
     viewDegrees().then((res) => {
       res.json().then((data) => {
         setDegrees(data);
       });
     });
-  }, []);
-  const rows = [
-    {
-      studentId: "23544",
-      name: "Fatima Bilal",
-      debarCourse: "Maths",
-      Batch: "2020",
-      Degree: "SE",
-    },
-    {
-      studentId: "34240",
-      name: "Ahmed Raza",
-      debarCourse: "Marketing",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "34323",
-      name: "Ahmed Raza",
-      debarCourse: "English",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "32434",
-      name: "Ahmed Raza",
-      debarCourse: "CPS",
-      Batch: "2021",
-      Degree: "CS",
-    },
-  ];
-
-  // Apply filters when batch or degree changes
-  useEffect(() => {
-    const filtered = rows.filter(
-      (row) =>
-        (selectedBatch === "" || row.Batch === selectedBatch) &&
-        (selectedDegree === "" || row.Degree === selectedDegree)
-    );
-    setFilteredRows(filtered);
   }, [selectedBatch, selectedDegree]);
 
   // Calculate the index range for the current page
