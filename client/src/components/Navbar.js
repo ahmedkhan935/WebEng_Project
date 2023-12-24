@@ -33,6 +33,7 @@ import {
   EventAvailable as EventAvailableIcon,
   FormatListNumbered as FormatListNumberedIcon,
   AssignmentTurnedIn as AssignmentTurnedInIcon,
+  VpnKey as VpnKeyIcon,
 } from "@mui/icons-material";
 
 import { Link, useLocation } from "react-router-dom";
@@ -77,7 +78,7 @@ const adminOptions = [
   },
   {
     title: "View Session Logs",
-    Icon: <SettingsIcon color="primary" />,
+    Icon: <VpnKeyIcon color="primary" />,
     linkto: "/admin/viewLogs",
   },
   {

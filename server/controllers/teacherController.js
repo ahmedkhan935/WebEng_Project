@@ -347,9 +347,11 @@ const teacherController = {
             const attendanceData = lectures.map(lecture => {
                 const presents = lecture.attendance.filter(student => student.status === 'P').length;
                 const absents = lecture.attendance.filter(student => student.status === 'A').length;
+                const duration = lecture.duration;
 
                 return {
                     date: lecture.date,
+                    duration,
                     presents,
                     absents
                 };

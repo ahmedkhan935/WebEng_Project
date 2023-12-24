@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { Container, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
+import { Container, Table, TablePagination, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import { getStudents, addAttendance, getAllAttendance } from '../services/TeacherService';
 import { read, utils } from 'xlsx';
-
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 function Attendance() {
     const { classCode } = useParams();
@@ -16,6 +18,9 @@ function Attendance() {
     const [duration, setDuration] = useState(3);
     const [rows, setRows] = useState([]);
     const fileInput = useRef(null);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+
 
     useEffect(() => {
         try {
@@ -49,7 +54,7 @@ function Attendance() {
         }
 
     }, [])
-        
+
 
     const handleClickOpen = () => {
         setOpen(!open);
@@ -62,7 +67,10 @@ function Attendance() {
     };
 
     const handleSaveAttendance = () => {
-
+        if(!selectedDate || !duration) {
+            alert("Please fill all the fields");
+            return;
+        }
         addAttendance(classCode, selectedDate, duration, students).then((data) => {
             if (data.data) {
                 console.log(data.data.attendanceData);
@@ -73,6 +81,8 @@ function Attendance() {
                 console.log(data.error);
             }
         });
+        setOpen(!open);
+
     };
 
     const handleFileUpload = () => {
@@ -117,37 +127,60 @@ function Attendance() {
         fileReader.readAsBinaryString(file);
     };
 
-    // Placeholder data
-    // const rows = [
-    //     { date: '2022-01-01', presents: 20, absents: 5 },
-    //     { date: '2022-01-02', presents: 22, absents: 3 },
-    // ];
+    //Pagination functions
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
+
+
 
     return (
         <NavBar>
             <Container>
-                <h1>Attendance for this class</h1>
+                <Typography variant="h5" sx={{ width: '100%', marginBottom: '10px' }}>
+                    Attendance for this class
+                </Typography>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow sx={{ backgroundColor: 'primary.main' }}>
+                                <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>S.No</TableCell>
                                 <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Date</TableCell>
-                                <TableCell align="right" sx={{ color: '#fff', fontWeight: 'bold' }}>Presents</TableCell>
-                                <TableCell align="right" sx={{ color: '#fff', fontWeight: 'bold' }}>Absents</TableCell>
+                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Day</TableCell>
+                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Duration (Hrs)</TableCell>
+                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Presents</TableCell>
+                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Absents</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {rows.map((row) => (
-                                <TableRow key={row.date} onClick={() => console.log('Redirect to detail page')}>
+                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                                <TableRow key={index} onClick={() => console.log('Redirect to detail page')}>
+                                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
                                     <TableCell component="th" scope="row">
                                         {row.date}
                                     </TableCell>
-                                    <TableCell align="right">{row.presents}</TableCell>
-                                    <TableCell align="right">{row.absents}</TableCell>
+                                    <TableCell align="left">{new Date(row.date).toLocaleDateString('en-US', { weekday: 'long' })}</TableCell>
+                                    <TableCell align="left">{row.duration}</TableCell>
+                                    <TableCell align="left">{row.presents}</TableCell>
+                                    <TableCell align="left">{row.absents}</TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
+                    <TablePagination
+                        rowsPerPageOptions={[5]}
+                        component="div"
+                        count={rows.length}
+                        rowsPerPage={rowsPerPage}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                    />
                 </TableContainer>
 
                 <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ marginTop: '20px' }}>
@@ -159,6 +192,9 @@ function Attendance() {
                         <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
                             Add new attendance
                         </Typography>
+                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px', marginBottom: '20px', color: "#fff" }} startIcon={<FileUploadIcon />}> 
+                            Import From Excel File
+                        </Button>
                         <Box display="flex" alignItems="baseline" >
                             <TextField
                                 id="date"
@@ -208,7 +244,7 @@ function Attendance() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }}>
+                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }} startIcon={ <CheckCircleIcon /> }>
                             Save Attendance
                         </Button>
                         <input
@@ -218,9 +254,7 @@ function Attendance() {
                             style={{ display: 'none' }}
                             ref={fileInput}
                         />
-                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px' }}>
-                            Import Attendance
-                        </Button>
+                       
                     </Box>
                 </Collapse>
             </Container>
