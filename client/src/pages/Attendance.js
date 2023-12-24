@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import { Container, Table, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect } from 'react';
-import { getStudents, addAttendance } from '../services/TeacherService';
+import { getStudents, addAttendance, getAttendance } from '../services/TeacherService';
+import { read, utils } from 'xlsx';
 
 
 function Attendance() {
@@ -14,19 +14,36 @@ function Attendance() {
     const [students, setStudents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [duration, setDuration] = useState(3);
+    const [rows, setRows] = useState([]);
+    const fileInput = useRef(null);
 
     useEffect(() => {
-        // console.log("helo");
-        // getStudents(classCode).then((data) => {
-        //     if (data.error) {
-        //         console.log(data.error);
-        //     } else {
-        //         setStudents(data.data);
-        //         console.log(students);
-        //     }
-        // }).catch((err) => {
-        //     console.log("ERRR",err);
-        // })
+        try {
+            getStudents(classCode).then((data) => {
+                if (data.data) {
+                    console.log(data.data);
+                    setStudents(data.data.map(student => ({ ...student, status: 'P' })));
+                }
+                else {
+                    console.log(data.error);
+                }
+            });
+
+            getAttendance(classCode).then((data) => {
+                if (data.data) {
+                    console.log(data.data);
+                    setRows(data.data.map(item => ({
+                        ...item,
+                        date: new Date(item.date).toISOString().split('T')[0]
+                    })));
+                }
+                else {
+                    console.log(data.error);
+                }
+            });
+        } catch (err) {
+            console.log(err);
+        }
 
     }, [])
 
@@ -40,11 +57,66 @@ function Attendance() {
         setStudents(newStudents);
     };
 
+    const handleSaveAttendance = () => {
+
+        addAttendance(classCode, selectedDate, duration, students).then((data) => {
+            if (data.data) {
+                console.log(data.data);
+                alert("Attendance added successfully");
+            }
+            else {
+                console.log(data.error);
+            }
+        });
+    };
+
+    const handleFileUpload = () => {
+        fileInput.current.click();
+    };
+
+    const handleImportAttendance = (event) => {
+        console.log('Starting file upload...');
+        const fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        const file = event.target.files[0];
+        if (fileTypes.indexOf(file.type) === -1) {
+            console.log('Invalid file type');
+            alert('Invalid file type. Please select an excel file.');
+            return;
+        }
+        console.log('File type is valid');
+        const fileReader = new FileReader();
+        fileReader.onload = (fileLoadedEvent) => {
+            console.log('File loaded');
+            /* Parse data */
+            const binaryString = fileLoadedEvent.target.result;
+            const workbook = read(binaryString, { type: 'binary' });
+            /* Get first worksheet */
+            const firstWorksheetName = workbook.SheetNames[0];
+            const firstWorksheet = workbook.Sheets[firstWorksheetName];
+            /* Check headings */
+            const headings = utils.sheet_to_json(firstWorksheet, { header: 1, range: 'A1:C1' })[0];
+            if (!headings || headings.length !== 3 || headings[0] !== 'Rno' || headings[1] !== 'Name' || headings[2] !== 'Status') {
+                console.log('Invalid headings');
+                alert('Invalid headings. Please make sure the headings are "Rno", "Name", and "Status".');
+                return;
+            }
+            console.log('Headings are valid');
+            /* Convert array of arrays, ignoring header row */
+            const dataFromExcel = utils.sheet_to_json(firstWorksheet, { header: 1, range: 1 });
+            /* Update state */
+            setStudents(dataFromExcel.map(row => ({ rollNumber: row[0], name: row[1], status: row[2] })));
+            console.log('Attendance imported');
+            alert('Attendance imported successfully');
+        };
+        console.log('Reading file...');
+        fileReader.readAsBinaryString(file);
+    };
+
     // Placeholder data
-    const rows = [
-        { date: '2022-01-01', presents: 20, absents: 5 },
-        { date: '2022-01-02', presents: 22, absents: 3 },
-    ];
+    // const rows = [
+    //     { date: '2022-01-01', presents: 20, absents: 5 },
+    //     { date: '2022-01-02', presents: 22, absents: 3 },
+    // ];
 
     return (
         <NavBar>
@@ -131,8 +203,18 @@ function Attendance() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ marginTop: '20px' }}>
+                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }}>
                             Save Attendance
+                        </Button>
+                        <input
+                            type="file"
+                            accept=".xlsx,.xls"
+                            onChange={handleImportAttendance}
+                            style={{ display: 'none' }}
+                            ref={fileInput}
+                        />
+                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px' }}>
+                            Import Attendance
                         </Button>
                     </Box>
                 </Collapse>

@@ -4,10 +4,11 @@ import ChecklistIcon from '@mui/icons-material/Checklist';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import { addAnnouncement } from '../services/TeacherService'
+import { addAnnouncement, getStudents } from '../services/TeacherService'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Link } from 'react-router-dom';
+import { utils, writeFile } from 'xlsx';
 
 function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
     const [open, setOpen] = useState(false); //for announcement form
@@ -51,8 +52,23 @@ function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
 
         setDialogOpen(true);
         setOpen(false);
-    }
+    };
 
+    const handleExportList = async () => {
+        let students = await getStudents(classCode);
+        students = students.data;
+
+        // Convert array of objects to array of arrays
+        const studentsArray = students.map(student => [student.rollNumber, student.name]);
+
+        // Add header row
+        studentsArray.unshift(['Rno', 'Name']);
+
+        const worksheet = utils.aoa_to_sheet(studentsArray);
+        const workbook = utils.book_new();
+        utils.book_append_sheet(workbook, worksheet, "Students");
+        writeFile(workbook, classCode+"_Students.xlsx");
+    }
     return (
         <Box sx={{ border: '1px solid gray', width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px' }}>
             <Typography variant="h6" color="text.secondary" display="inline-block" sx={{ marginTop: '10px' }}>
@@ -69,6 +85,9 @@ function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
             </Button>
             <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
                 Announcement
+            </Button>
+            <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleExportList}>
+                Export Students
             </Button>
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
                 <DialogTitle sx={{ color: "primary" }}>Announce something to your class</DialogTitle>

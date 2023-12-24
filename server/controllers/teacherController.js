@@ -61,7 +61,7 @@ const teacherController = {
                 return { rollNumber: student.studentId.rollNumber, name: student.studentId.name };
             });
 
-            res.status(201).json({ students });
+            res.status(201).json( students );
 
         } catch (error) {
             console.log(error);
@@ -270,10 +270,90 @@ const teacherController = {
             res.status(201).json({ message: 'Attendance added successfully' });
 
         } catch (error) {
+            console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },
 
+    updateAttendance: async (req, res) => {
+        try {
+            const { classCode } = req.params;
+            const { date, duration, attendance } = req.body;
+
+            const courseEval = await CourseEval.findOne({ classCode });
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            const lecture = courseEval.lectures.find(lecture => new Date(lecture.date).toISOString().split('T')[0] == date);
+            if (!lecture) {
+                return res.status(404).json({ message: 'Lecture not found' });
+            }
+
+            lecture.duration = duration;
+            lecture.attendance = attendance;
+
+            let studentEvals = await StudentEval.find({ classCode })
+            .populate({
+                path: 'studentId',
+                select: 'rollNumber'
+            });
+
+            if (!studentEvals) {
+                return res.status(404).json({ message: 'No student evals found' });
+            }
+
+            for(let i = 0; i < studentEvals.length; i++){
+                const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
+                const status = studentAttendance.status;
+                const studentLecture = studentEvals[i].lectures.find(lecture => new Date(lecture.date).toISOString().split('T')[0] == date);
+                if (studentLecture) {
+                    studentLecture.status = status;
+                    studentLecture.duration = duration;
+                    await studentEvals[i].save();
+                }
+            }
+
+            await courseEval.save();
+            res.status(200).json({ message: 'Attendance updated successfully' });
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
+    getAttendance: async (req, res) => {
+        try {
+            const { classCode } = req.params;
+
+            const courseEval = await CourseEval.findOne({ classCode });
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            const lectures = courseEval.lectures;
+            if (!lectures) {
+                return res.status(404).json({ message: 'No lectures found' });
+            }
+
+            const attendanceData = lectures.map(lecture => {
+                const presents = lecture.attendance.filter(student => student.status === 'P').length;
+                const absents = lecture.attendance.filter(student => student.status === 'A').length;
+
+                return {
+                    date: lecture.date,
+                    presents,
+                    absents
+                };
+            });
+
+            res.json(attendanceData);
+
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error });
+        }
+    }
     // markAssignment: async (req, res) => {
     //     try{
     //         const {classCode, assignmentId} = req.params;

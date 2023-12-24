@@ -95,6 +95,16 @@ export const getProfile = async () => {
     return handleResponse(response);
 };
 
+export const getAttendance = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/attendance`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
 export const addAnnouncement = async (classCode, announcement) => {
     try {
         const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/announcement`,
@@ -137,7 +147,24 @@ export const editAnnouncement = async (classCode, announcementId, announcement) 
     } catch (error) {
         return { error: error.message };
     }
-}
+};
+
+export const updateAttendance = async (classCode, date, duration, attendance) => {
+    const response = await axios.put(`${BASE_URL}/teacher/classes/${classCode}/attendance`,
+        {
+            date: date,
+            duration: duration,
+            attendance: attendance
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        }
+    );
+    return handleResponse(response);
+};
 
 export const deleteAnnouncement = async (classCode, announcementId) => {
     try {

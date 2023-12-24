@@ -11,6 +11,7 @@ router.get('/classes/:classCode/students', Auth, AuthTeacher, teacherController.
 router.get('/threads',              Auth, AuthTeacher, teacherStudentController.getThreads);
 router.get('/threads/:threadId',    Auth, AuthTeacher, teacherStudentController.getThread);
 router.get('/profile',              Auth, AuthTeacher, teacherController.getProfile);
+router.get('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.getAttendance);
 
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);
@@ -18,6 +19,7 @@ router.post('/classes/:classCode/:announcementId/comment', Auth, AuthTeacher, te
 router.post('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.addAttendance);
 
 router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.editAnnouncement);
+router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
 
