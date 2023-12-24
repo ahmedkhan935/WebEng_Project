@@ -161,7 +161,7 @@ const ViewFeedback = () => {
           <Table>
             <TableHead>
               <TableRow style={{ background: "#22717d" }}>
-                <TableCell style={{ color: "#FFFFFF" }}>Student Id</TableCell>
+                <TableCell style={{ color: "#FFFFFF" }}>Student Name</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Course Code</TableCell>
 
                 <TableCell style={{ color: "#FFFFFF" }}>Feedback</TableCell>

@@ -553,6 +553,49 @@ const getStudentsWithLowAttendance = async (req, res) => {
   }
 };
 
+//rectors list
+const medalHolderslist = async (req, res) => {
+  try {
+    const medalTypes = ["gold", "silver", "bronze"];
+
+    const students = await Student.find({}).sort({
+      "semesters.sgpa": -1,
+    });
+
+    const medalHoldersList = students.reduce((result, student) => {
+      student.semesters.sort((a, b) => b.sgpa - a.sgpa);
+
+      const degree = student.degreeName;
+
+      // Check if the degree exists in the result object
+      if (!result[degree]) {
+        result[degree] = [];
+      }
+
+      const topStudents = student.semesters
+        .slice(0, 3)
+        .map((semester, index) => ({
+          studentId: student._id,
+          studentName: student.name,
+          batch: student.batch,
+          degree: student.degreeName,
+          maxSgpa: semester.sgpa,
+          medalType: semester.sgpa < 2 ? "None" : medalTypes[index],
+        }));
+
+      // Concatenate the topStudents to the corresponding degree in the result object
+      result[degree] = result[degree].concat(topStudents);
+
+      return result;
+    }, {});
+
+    res.json(medalHoldersList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -583,4 +626,5 @@ module.exports = {
   getStudentsWithLowAttendance,
   deanslist,
   rectorslist,
+  medalHolderslist,
 };

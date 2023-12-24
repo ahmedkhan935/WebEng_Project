@@ -195,3 +195,10 @@ export async function viewRectorsList() {
     credentials: "include",
   });
 }
+
+export async function viewMedalHoldersList() {
+  return await fetch(`${BASE_URL}/admin/medalHolders`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

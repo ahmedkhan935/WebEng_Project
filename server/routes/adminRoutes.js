@@ -33,4 +33,5 @@ adminRouter.post("/assignCourse", adminController.assignCourse);
 adminRouter.get("/lowAttendance", adminController.getStudentsWithLowAttendance);
 adminRouter.get("/deans", adminController.deanslist);
 adminRouter.get("/rectors", adminController.rectorslist);
+adminRouter.get("/medalHolders", adminController.medalHolderslist);
 module.exports = adminRouter;
