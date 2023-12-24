@@ -20,21 +20,21 @@ const AnnouncementSchema = new mongoose.Schema({
     },
     dueDate: {
         type: Date,
-        
+
     },
     attachments: {
-        type: 
-            {
-                name: {
-                    type: String,
-                  
-                },
-               originalName: {
-                    type: String,
-                    
-                },
-              
+        type:
+        {
+            name: {
+                type: String,
+
             },
+            originalName: {
+                type: String,
+
+            },
+
+        },
         default: null
         ,
     },
@@ -74,23 +74,21 @@ const AnnouncementSchema = new mongoose.Schema({
                     type: Date,
                     required: true
                 },
-                attachments: {
-                    type: [
-                        {
-                            name: {
-                                type: String,
-                                required: true
-                            },
-                            url: {
-                                type: String,
-                                required: true
-                            }
+                attachment: {
+                    type: {
+                        name: {
+                            type: String,
+                            required: true
+                        },
+                        url: {
+                            type: String,
+                            required: true
                         }
-                    ]
+                    }
                 }
             }
         ]
-    
+
     }
 });
 
@@ -102,7 +100,7 @@ const ClassroomSchema = new mongoose.Schema({
     code: {
         type: String,
         required: true,
-        unique:true
+        unique: true
     },
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
@@ -112,7 +110,7 @@ const ClassroomSchema = new mongoose.Schema({
     degreeId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Degree',
-       // required: true
+        // required: true
     },
 
     semesterId: {
@@ -122,27 +120,27 @@ const ClassroomSchema = new mongoose.Schema({
 
     //ADD SEMESTER ID 
     //(course+degree+semester = unique identifier)
-    
+
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher',
         required: true
     },
-    teachers:{
+    teachers: {
         type: [
             {
                 teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
             }
         ]
     },
-    students:{
+    students: {
         type: [
             {
                 studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
             }
         ]
     },
-    announcements:{
+    announcements: {
         type: [AnnouncementSchema]
     },
     status: { //status of the classroom
@@ -150,7 +148,7 @@ const ClassroomSchema = new mongoose.Schema({
         enum: ['Pending', 'Ongoing', 'Completed'],
         required: true
     },
-    feedback : {
+    feedback: {
         type: [
             {
                 studentId: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },

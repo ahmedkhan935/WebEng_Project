@@ -21,6 +21,7 @@ router.get('/classes/:classCode/feedback', Auth, AuthTeacher, teacherController.
 router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);
 router.post('/classes/:classCode/:announcementId/comment', Auth, AuthTeacher, teacherStudentController.comment);
 router.post('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.addAttendance);
+router.post('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.addEvaluation);
 
 router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.editAnnouncement);
 router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);

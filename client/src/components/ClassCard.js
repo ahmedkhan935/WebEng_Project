@@ -50,14 +50,16 @@ function ClassCard({ classroom }) {
         </Button>
         <Button
           size="small"
+          component={Link}
           sx={{
             '&:hover': {
               backgroundColor: 'primary.main',
               color: '#fff',
             }
           }}
+          to={userRole == "student" ? `/student/classes/${classroom.code}/unregister` : `/teacher/classes/${classroom.code}/evaluations`}
         >
-          {userRole == "student" ? "Unregister" : "View feedback"}
+          {userRole == "student" ? "Unregister" : "Evaluations"}
         </Button>
       </CardActions>
     </Card>

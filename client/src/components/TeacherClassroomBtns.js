@@ -1,9 +1,9 @@
 import React, { useState, useContext } from 'react';
-import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
+import { Box, Tooltip, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
-import ListAltIcon from '@mui/icons-material/ListAlt';
+import DownloadIcon from '@mui/icons-material/Download';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { addAnnouncement, getStudents } from '../services/TeacherService'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
@@ -11,7 +11,7 @@ import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDiss
 import { Link } from 'react-router-dom';
 import { utils, writeFile } from 'xlsx';
 import { ClassroomContext } from '../context/ClassroomContext';
- 
+
 function TeacherClassroomBtns({ classCode }) {
     const [open, setOpen] = useState(false); //for announcement form
     const [dialogOpen, setDialogOpen] = useState(false); //for success/failure dialog
@@ -77,7 +77,7 @@ function TeacherClassroomBtns({ classCode }) {
         const worksheet = utils.aoa_to_sheet(studentsArray);
         const workbook = utils.book_new();
         utils.book_append_sheet(workbook, worksheet, "Students");
-        writeFile(workbook, classCode+"_Students.xlsx");
+        writeFile(workbook, classCode + "_Students.xlsx");
     }
 
     return (
@@ -85,21 +85,28 @@ function TeacherClassroomBtns({ classCode }) {
             <Typography variant="h6" color="text.secondary" display="inline-block" sx={{ marginTop: '10px' }}>
                 Manage your Class
             </Typography>
-            <Button component={Link} to={`/teacher/classes/${classCode}/attendance`} variant="contained" color="primary" startIcon={<ChecklistIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
-                Attendance
-            </Button>
-            <Button component={Link} to={`/teacher/classes/${classCode}/evaluations`} variant="contained" color="primary" startIcon={<AssignmentTurnedInIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
-                Evaluations
-            </Button>
-            <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
-                Video Call
-            </Button>
-            <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
-                Announcement
-            </Button>
-            <Button variant="contained" color="primary" startIcon={<ListAltIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleExportList}>
-                Export Students
-            </Button>
+
+            <Tooltip title="View, update, and add attendance records for this class." placement="right">
+                <Button component={Link} to={`/teacher/classes/${classCode}/attendance`} variant="contained" color="primary" startIcon={<ChecklistIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
+                    Attendance
+                </Button>
+            </Tooltip>
+            <Tooltip title="View, grade, and add evaluations for students." placement="right">
+                <Button component={Link} to={`/teacher/classes/${classCode}/evaluations`} variant="contained" color="primary" startIcon={<AssignmentTurnedInIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }}>
+                    Evaluations
+                </Button>
+            </Tooltip>
+            <Tooltip title="Post an announcement for your students." placement="right">
+                <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
+                    Announcement
+                </Button>
+            </Tooltip>
+            <Tooltip title="Export a list of students in this class as an Excel file." placement="right">
+                <Button variant="contained" color="primary" startIcon={<DownloadIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleExportList}>
+                    Export Students
+                </Button>
+            </Tooltip>
+
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
                 <DialogTitle sx={{ color: "primary" }}>Announce something to your class</DialogTitle>
                 <DialogContent>
