@@ -56,25 +56,24 @@ function App() {
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode" element={<Classroom />}></Route>
+            <Route path="classes/:classCode/feedback" element={<GiveFeedback />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
-            <Route
-              path="givefeedback/:classCode"
-              element={<GiveFeedback />}
-            ></Route>
             <Route path="todos" element={<Thread />}></Route>
           </Route>
 
           <Route path="teacher">
             <Route index element={<UserLandingPage role={"teacher"} />}></Route>
-            <Route path="teacherFeedback" element={<TeacherFeedback />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
-            <Route path="classes/:classCode" element={<Classroom />}></Route>
-            <Route path="classes/:classCode/videoCall" element={<VideoCall />}></Route>
-            <Route path="classes/:classCode/attendance" element={<Attendance />}></Route>
-            <Route path="classes/:classCode/evaluations" element={<Evaluations />}></Route>
+            <Route path="classes/:classCode">
+              <Route index element={<Classroom />}></Route>
+              <Route path="videoCall" element={<VideoCall />}></Route>
+              <Route path="attendance" element={<Attendance />}></Route>
+              <Route path="feedback" element={<TeacherFeedback />}></Route>
+              <Route path="evaluations" element={<Evaluations />}></Route>
+            </Route>
           </Route>
 
           <Route path="/admin">
@@ -85,16 +84,9 @@ function App() {
             <Route path="addStudent" element={<AddStudentForm />}></Route>
             <Route  path="updateStudent/:id" element={<UpdateStudentForm />} ></Route>
             <Route path="updateTeacher/:id"  element={<UpdateTeacherForm />} ></Route>
-            <Route path="viewTeachers" element={<ViewTeachers />}></Route>
-            <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-
             <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
-            <Route
-              path="updateCourse/:id"
-              element={<UpdateCourseForm />}
-            ></Route>
 
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>

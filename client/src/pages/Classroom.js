@@ -81,7 +81,10 @@ function Classroom() {
   }
 
   const handlefeedbackbutton = () => {
-    navigate(`/student/givefeedback/${classCode}`);
+    if(userRole == "student")
+    navigate(`/student/classes/${classCode}/feedback`);
+  else
+    navigate(`/teacher/classes/${classCode}/feedback`);
   };
 
   return (
