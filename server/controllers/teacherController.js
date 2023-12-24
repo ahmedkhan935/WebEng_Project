@@ -156,7 +156,10 @@ const teacherController = {
 
             await classroom.save();
 
-            res.status(201).json({ message: 'Announcement added successfully', announcement });
+            const authorName = await Teacher.findById(req.user).select('name');
+            announcement.createdBy = authorName.name;
+
+            res.status(201).json(announcement);
         } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
