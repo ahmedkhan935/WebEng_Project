@@ -27,6 +27,13 @@ export function CSThemesProvider({ children }) {
                 fontSize: '1.5rem',
             }
         },
+        overrides: {
+            MuiTooltip: {
+              tooltip: {
+                fontSize: "10px", // Change this value as needed
+              }
+            }
+          }
     });
 
     return <ThemeProvider theme={theme}>{children}</ThemeProvider>;
