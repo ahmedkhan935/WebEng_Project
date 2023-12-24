@@ -3,6 +3,8 @@ const Thread = require('../models/Thread');
 const Teacher = require('../models/Teacher');
 const StudentEval = require('../models/StudentEval');
 const CourseEval = require('../models/CourseEval');
+const path = require('path');
+const bucket = require('../firebase_init');
 
 const teacherController = {
     getClasses: async (req, res) => {
@@ -126,32 +128,67 @@ const teacherController = {
     addAnnouncement: async (req, res) => {
         try {
             const { classCode } = req.params;
-            let { type, title, content, dueDate, attachments } = req.body;
+            let { type, title, content, dueDate } = req.body;
+            
 
-            console.log(req.body);
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
                 return res.status(404).json({ message: 'Classroom not found' });
             }
 
-            console.log("classroom found");
-            console.log(req.user);
-            
-            attachments = attachments ? attachments : [];
+            let attachments = null;
+            let file=null;
+            var fileName=null;
+            if(req.files)
+            {
+                file=req.files.file;
+                if (file) {
+                    //add timestamp to file name only excluding path
+                    const fileExtension = path.extname(file.name);
+                    const fileNameWithoutExtension = path.basename(file.name, fileExtension);
+                    fileName = `${fileNameWithoutExtension}-${Date.now()}${fileExtension}`;
+                    
+                    const blob = bucket.file(fileName);
+                    const blobWriter = blob.createWriteStream({
+                        metadata: {
+                            contentType: file.mimetype,
+                        },
+                    });
+                    blobWriter.on('error', ((err) => {
+        
+                        res.status(404).send('File couldnot be uploaded');
+                    }));
+                    blobWriter.on('finish', async () => {
+                        await blob.makePublic();
+                        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                        // Return the file name and its public URL
+        
+                    });
+                    blobWriter.end(file.data);
+                }
+                attachments = { 
+                    name: fileName,
+                    originalName: file.name
+                };
 
-            const announcement = {
+        
+            }
+            var announcement = {
                 type,
                 title,
                 content,
                 date: new Date(),
-                dueDate,
                 attachments,
+
                 createdBy: req.user,
                 comments: [],
                 submissions: []
             };
-
+            console.log(dueDate);
+            if (dueDate) {
+                announcement.dueDate = dueDate;
+            }
             classroom.announcements.push(announcement);
 
             await classroom.save();
@@ -161,6 +198,7 @@ const teacherController = {
 
             res.status(201).json(announcement);
         } catch (error) {
+            
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }

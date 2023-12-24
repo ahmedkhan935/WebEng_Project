@@ -43,8 +43,14 @@ function TeacherClassroomBtns({ classCode }) {
             dueDate: null,
             attachments: attachments
         };
+        const formdata = new FormData();
+        formdata.append('type', 'Announcement');
+        formdata.append('title', title);
+        formdata.append('content', content);
+        
+        formdata.append('file',attachments,attachments.name);
 
-        const data = await addAnnouncement(classCode, announcement);
+        const data = await addAnnouncement(classCode, formdata);
 
         if (data.error) {
             //jeee??
