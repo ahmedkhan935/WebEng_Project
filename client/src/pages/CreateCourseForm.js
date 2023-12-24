@@ -51,6 +51,7 @@ const CreateCourseForm = () => {
     });
 
     if (resp.error) {
+      console.log(resp);
       setsubmitmsg("Cannot create Course!");
       setstatus(false);
       setFormSubmitted(true);

@@ -131,3 +131,34 @@ export async function getLogs() {
     credentials: "include",
   });
 }
+
+export const addDegree = async (degreeData) => {
+  const response = await fetch(`${BASE_URL}/admin/degree`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(degreeData),
+  });
+  return handleResponse(response);
+};
+
+export async function viewDegrees() {
+  return await fetch(`${BASE_URL}/admin/degree`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+export async function getFeedback(id) {
+  return await fetch(`${BASE_URL}/admin/feedback/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+export async function getCourseName() {
+  return await fetch(`${BASE_URL}/admin/coursename`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

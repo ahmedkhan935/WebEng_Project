@@ -3,11 +3,11 @@ import TagFacesIcon from "@mui/icons-material/TagFaces";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import { Button, TextField, Modal, Box, Typography, Grid } from "@mui/material";
 import NavBar from "../components/Navbar";
+import { addDegree } from "../services/AdminService";
 
 const AddDegree = () => {
   const [name, setName] = useState("");
   const [abbreviation, setAbbreviation] = useState("");
-  const [totalCredits, setTotalCredits] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
@@ -37,21 +37,24 @@ const AddDegree = () => {
     setAbbreviation(e.target.value);
   };
 
-  const handleTotalCreditsChange = (e) => {
-    setTotalCredits(e.target.value);
-  };
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
-    setFormSubmitted(true);
-    //depending on error or succes change it to true or false
-    setstatus(true);
-    setsubmitmsg("Degree Added Sucessfully!");
+    const resp = await addDegree({
+      name,
+      abbreviation,
+    });
 
-    // setstatus(false);
-    // setsubmitmsg("Feedback not Given!");
+    if (resp.error) {
+      console.log(resp);
+      setFormSubmitted(true);
+      setstatus(false);
+      setsubmitmsg("Degree not Added!");
+    } else {
+      setFormSubmitted(true);
+      setstatus(true);
+      setsubmitmsg("Degree Added Sucessfully!");
+    }
   };
 
   const handleModalClose = () => {
@@ -83,17 +86,6 @@ const AddDegree = () => {
           variant="outlined"
           value={abbreviation}
           onChange={handleAbbreviationChange}
-          required
-          margin="normal"
-        />
-
-        <TextField
-          fullWidth
-          label="Total Credits"
-          variant="outlined"
-          type="number"
-          value={totalCredits}
-          onChange={handleTotalCreditsChange}
           required
           margin="normal"
         />
