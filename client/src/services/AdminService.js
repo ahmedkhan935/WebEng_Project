@@ -162,3 +162,15 @@ export async function getCourseName() {
     credentials: "include",
   });
 }
+
+export const assignCourse = async (assignCourseData) => {
+  const response = await fetch(`${BASE_URL}/admin/assignCourse`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(assignCourseData),
+  });
+  return handleResponse(response);
+};
