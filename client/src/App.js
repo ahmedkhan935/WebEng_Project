@@ -41,7 +41,7 @@ import AssignCourses from "./pages/AssignCourses";
 import AddDegree from "./pages/AddDegree";
 import ViewDegrees from "./pages/ViewDegrees";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
-import { ClassroomProvider } from './context/ClassroomContext';
+import { ClassroomProvider } from "./context/ClassroomContext";
 
 function App() {
   return (
@@ -59,8 +59,18 @@ function App() {
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
-            <Route path="classes/:classCode" element={ <ClassroomProvider><Classroom /></ClassroomProvider> }></Route>
-            <Route path="classes/:classCode/feedback" element={<GiveFeedback />}></Route>
+            <Route
+              path="classes/:classCode"
+              element={
+                <ClassroomProvider>
+                  <Classroom />
+                </ClassroomProvider>
+              }
+            ></Route>
+            <Route
+              path="classes/:classCode/feedback"
+              element={<GiveFeedback />}
+            ></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="todos" element={<Thread />}></Route>
@@ -72,7 +82,14 @@ function App() {
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode">
-              <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider>}></Route>
+              <Route
+                index
+                element={
+                  <ClassroomProvider>
+                    <Classroom />
+                  </ClassroomProvider>
+                }
+              ></Route>
               <Route path="videoCall" element={<VideoCall />}></Route>
               <Route path="attendance" element={<Attendance />}></Route>
               <Route path="feedback" element={<TeacherFeedback />}></Route>
@@ -86,6 +103,8 @@ function App() {
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
+            <Route path="viewTeachers" element={<ViewTeachers />}></Route>
+            <Route path="viewStudents" element={<ViewStudents />}></Route>
             <Route
               path="updateStudent/:id"
               element={<UpdateStudentForm />}

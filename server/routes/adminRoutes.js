@@ -29,5 +29,5 @@ adminRouter.get("/coursename", adminController.getCoursename);
 adminRouter.get("/feedback/:id", adminController.getFeedback);
 adminRouter.post("/degree", adminController.addDegree);
 adminRouter.get("/degree", adminController.ViewAllDegrees);
-
+adminRouter.post("/assignCourse", adminController.assignCourse);
 module.exports = adminRouter;
