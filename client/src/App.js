@@ -38,6 +38,9 @@ import VideoCall from "./pages/MakeVideoCall";
 import Attendance from "./pages/Attendance";
 import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
+import AddDegree from "./pages/AddDegree";
+import ViewDegrees from "./pages/ViewDegrees";
+import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 
 function App() {
   return (
@@ -56,7 +59,10 @@ function App() {
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode" element={<Classroom />}></Route>
-            <Route path="classes/:classCode/feedback" element={<GiveFeedback />}></Route>
+            <Route
+              path="classes/:classCode/feedback"
+              element={<GiveFeedback />}
+            ></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="todos" element={<Thread />}></Route>
@@ -82,15 +88,30 @@ function App() {
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route  path="updateStudent/:id" element={<UpdateStudentForm />} ></Route>
-            <Route path="updateTeacher/:id"  element={<UpdateTeacherForm />} ></Route>
+            <Route
+              path="updateStudent/:id"
+              element={<UpdateStudentForm />}
+            ></Route>
+            <Route
+              path="updateTeacher/:id"
+              element={<UpdateTeacherForm />}
+            ></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
+            <Route
+              path="updateCourse/:id"
+              element={<UpdateCourseForm />}
+            ></Route>
+            <Route
+              path="addDegree/:degreeid/selectCourses"
+              element={<DegreeCourseSelection />}
+            ></Route>
 
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
             <Route path="assignCourses" element={<AssignCourses />}></Route>
+            <Route path="addDegree" element={<AddDegree />}></Route>
+            <Route path="viewDegrees" element={<ViewDegrees />}></Route>
             <Route path="lists" element={<AdminLists />}></Route>
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>

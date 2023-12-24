@@ -3,6 +3,7 @@ const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Course = require("../models/Course");
 const Logs = require("../models/Logs");
+const Degree = require("../models/Degree");
 const Classroom = require("../models/Classroom");
 
 const validateSemesterFields = (req) => {
@@ -381,6 +382,37 @@ const viewLogs = async (req, res) => {
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
+
+const addDegree = async (req, res) => {
+  try {
+    const { name, abbreviation } = req.body;
+
+    if (!name) {
+      throw new Error("Please provide values for name ");
+    }
+    const degree = new Degree({
+      name: name,
+      abbreviation: abbreviation,
+    });
+    const saveddegree = await degree.save();
+    res.status(201).json(saveddegree);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error.message || "Invalid input" });
+  }
+};
+
+const ViewAllDegrees = async (req, res) => {
+  try {
+    const degrees = await Degree.find({}).exec();
+    console.log(degrees);
+    res.status(200).json(degrees);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: error.message || "No degrees" });
+  }
+};
+
 const getFeedback =async (req,res)=>{
   try{
     const classroom = await Classroom.findOne({code:req.params.id}).populate("feedback.studentId","name");
@@ -431,6 +463,8 @@ module.exports = {
   deleteTeacher,
   viewLogs,
   getFeedback,
-  getCoursename
+  getCoursename,
   
+  addDegree,
+  ViewAllDegrees,
 };

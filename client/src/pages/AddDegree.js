@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import { Button, TextField, Modal, Box, Typography } from "@mui/material";
+import { Button, TextField, Modal, Box, Typography, Grid } from "@mui/material";
 import NavBar from "../components/Navbar";
-import { useParams } from "react-router";
-import {givefeedback} from "../services/StudentService"
-const GiveFeedback = () => {
-  const { classCode } = useParams();
+import { addDegree } from "../services/AdminService";
+
+const AddDegree = () => {
+  const [name, setName] = useState("");
+  const [abbreviation, setAbbreviation] = useState("");
+  const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [submitmsg, setsubmitmsg] = useState("");
+  const [status, setstatus] = useState(false);
+
   const styles = {
     form: {
       width: "50%",
@@ -24,79 +29,69 @@ const GiveFeedback = () => {
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
     },
   };
-
-  const [rating, setRating] = useState("");
-  const [comment, setComment] = useState("");
-  const [isFormSubmitted, setFormSubmitted] = useState(false);
-  const [submitmsg, setsubmitmsg] = useState("");
-  const [status, setstatus] = useState(false);
-
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
-  const handleFormSubmit = (event) => {
+  const handleAbbreviationChange = (e) => {
+    setAbbreviation(e.target.value);
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-   
-      givefeedback(classCode, comment).then((res) => {
-        if(res.error)
-        {
-          setstatus(false);
-          setsubmitmsg(res.error);
-        }
-        else{
-          setstatus(true);
-          setsubmitmsg(res.message);
-        }
-      }
-      );
 
+    const resp = await addDegree({
+      name,
+      abbreviation,
+    });
 
-
-
-    
-    // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
-  
-
-    // setstatus(false);
-    // setsubmitmsg("Feedback not Given!");
+    if (resp.error) {
+      console.log(resp);
+      setFormSubmitted(true);
+      setstatus(false);
+      setsubmitmsg("Degree not Added!");
+    } else {
+      setFormSubmitted(true);
+      setstatus(true);
+      setsubmitmsg("Degree Added Sucessfully!");
+    }
   };
 
   const handleModalClose = () => {
+    setsubmitmsg("");
+    setstatus(false);
     setFormSubmitted(false);
   };
 
   return (
     <NavBar>
       <h1 style={{ color: "#22717d", width: "100%", float: "right" }}>
-        Give Feedback
+        Add Degree
       </h1>
 
-      <form
-        onSubmit={handleFormSubmit}
-        style={
-          ({ width: "50%", margin: "auto", marginTop: "50px" }, styles.form)
-        }
-      >
+      <form style={styles.form} onSubmit={handleSubmit}>
         <TextField
-          id="comment"
-          label="Comment"
-          variant="outlined"
-          multiline
-          rows={4}
           fullWidth
-          value={comment}
-          onChange={handleCommentChange}
+          label="Degree Name"
+          variant="outlined"
+          value={name}
+          onChange={handleNameChange}
+          required
           margin="normal"
         />
 
-        <Button
-          type="submit"
+        <TextField
+          fullWidth
+          label="Abbreviation"
           variant="outlined"
-          color="primary"
-          style={{ marginTop: "10px" }}
-        >
-          Submit Feedback
+          value={abbreviation}
+          onChange={handleAbbreviationChange}
+          required
+          margin="normal"
+        />
+
+        <Button type="submit" variant="contained" color="primary">
+          Add Degree
         </Button>
       </form>
 
@@ -141,4 +136,4 @@ const GiveFeedback = () => {
   );
 };
 
-export default GiveFeedback;
+export default AddDegree;

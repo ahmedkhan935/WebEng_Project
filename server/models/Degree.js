@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const DegreeSchema = new mongoose.Schema({
     name: {
@@ -35,5 +35,5 @@ const DegreeSchema = new mongoose.Schema({
         required: true
     }
 });
-const Degree = mongoose.model('Degree', DegreeSchema);
+const Degree = mongoose.model("Degree", DegreeSchema);
 module.exports = Degree;

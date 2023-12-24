@@ -8,22 +8,26 @@ import {
   TableHead,
   TableRow,
   Paper,
-  IconButton,
   FormControl,
   TextField,
   InputAdornment,
+  Link,
+  Button,
 } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
-import NavBar from "../components/Navbar";
-import { getLogs } from "../services/AdminService";
 
-const ViewLogs = () => {
+import NavBar from "../components/Navbar";
+import { useNavigate } from "react-router-dom";
+import { viewDegrees } from "../services/AdminService";
+
+const ViewDegrees = () => {
+  const navigate = useNavigate();
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 10;
+  const rowsPerPage = 5;
   const [rows, setRows] = useState([]);
-  useEffect(() => {
-    getLogs().then((res) => {
+  useEffect(async () => {
+    viewDegrees().then((res) => {
       res.json().then((data) => {
         console.log(data);
         setRows(data);
@@ -31,34 +35,12 @@ const ViewLogs = () => {
     });
   }, []);
 
-  const handleDelete = (id) => {
-    console.log(`Deleting Log with ID: ${id}`);
-  };
-
   const styles = {
     h2: {
       color: "#22717d",
       float: "left",
     },
   };
-
-  // const rows = [
-  //   {
-  //     name: "Fatima Bilal",
-  //     userType: "Student",
-  //     sessionType: "Login",
-  //     date: "15/12/2023",
-  //     time: "09:30:00",
-  //   },
-  //   {
-  //     name: "Ahmed Raza",
-  //     userType: "Teacher",
-  //     sessionType: "Logout",
-  //     date: "20/12/2023",
-  //     time: "09:30:30",
-  //   },
-  //   Add more rows as needed
-  // ];
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -81,7 +63,7 @@ const ViewLogs = () => {
   return (
     <div>
       <NavBar>
-        <h1 style={styles.h2}>Session Log</h1>
+        <h1 style={styles.h2}>Degrees</h1>
 
         <div
           style={{
@@ -90,6 +72,19 @@ const ViewLogs = () => {
             marginTop: "20px",
           }}
         >
+          <Button
+            component={Link}
+            onClick={() => {
+              navigate("/admin/addDegree");
+            }}
+            variant="outlined"
+            color="primary"
+            style={{
+              height: "40px",
+            }}
+          >
+            Add Degree
+          </Button>
           <FormControl
             variant="outlined"
             style={{ marginLeft: "10px", marginRight: "10px" }}
@@ -117,24 +112,16 @@ const ViewLogs = () => {
             <TableHead>
               <TableRow style={{ background: "#22717d" }}>
                 <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>User Type</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Session Type</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Date</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Time</TableCell>
+                <TableCell style={{ color: "#FFFFFF" }}>Abbreviation</TableCell>
+                <TableCell style={{ color: "#FFFFFF" }}>Credit Hours</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {filteredRows.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.email}</TableCell>
-                  <TableCell>{row.role}</TableCell>
-                  <TableCell>{row.action}</TableCell>
-                  <TableCell>
-                    {new Date(row.timestamp).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell>
-                    {new Date(row.timestamp).toLocaleTimeString()}
-                  </TableCell>
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell>{row.abbreviation}</TableCell>
+                  <TableCell>{row.totalCredits}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -160,4 +147,4 @@ const ViewLogs = () => {
   );
 };
 
-export default ViewLogs;
+export default ViewDegrees;

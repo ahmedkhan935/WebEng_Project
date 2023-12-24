@@ -1,14 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { Container, Table, TablePagination, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse } from '@mui/material';
+import { Container, Table, TablePagination, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse, useMediaQuery } from '@mui/material';
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { getStudents, addAttendance, getAllAttendance } from '../services/TeacherService';
+import { getStudents,  addAttendance, getAttendance, getAllAttendance } from '../services/TeacherService';
 import { read, utils } from 'xlsx';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+
 
 function Attendance() {
     const { classCode } = useParams();
@@ -20,6 +21,9 @@ function Attendance() {
     const fileInput = useRef(null);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
+    const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
+    const [buttonLabel, setButtonLabel] = useState('Save Attendance');
+
 
 
     useEffect(() => {
@@ -54,6 +58,18 @@ function Attendance() {
         }
 
     }, [])
+
+    const fetchAttendance = async () => {
+        const response = await getAttendance(classCode, selectedDate);
+        if (response.status === 200) {
+            setStudents(response.data.attendance);
+            setButtonLabel('Update Attendance');
+        }
+    };
+
+    useEffect(() => {
+        fetchAttendance();
+    }, [selectedDate]);
 
 
     const handleClickOpen = () => {
@@ -151,10 +167,11 @@ function Attendance() {
                             <TableRow sx={{ backgroundColor: 'primary.main' }}>
                                 <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>S.No</TableCell>
                                 <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Date</TableCell>
-                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Day</TableCell>
-                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Duration (Hrs)</TableCell>
-                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Presents</TableCell>
-                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Absents</TableCell>
+                                {!isSmallScreen && <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Day</TableCell>}
+                                <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '15%' }}>Duration (Hrs)</TableCell>
+                                {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Presents</TableCell>}
+                                {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Absents</TableCell>}
+                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold', width: '20%' }}>Ratio</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -164,16 +181,26 @@ function Attendance() {
                                     <TableCell component="th" scope="row">
                                         {row.date}
                                     </TableCell>
-                                    <TableCell align="left">{new Date(row.date).toLocaleDateString('en-US', { weekday: 'long' })}</TableCell>
+                                    {!isSmallScreen && <TableCell align="left">{new Date(row.date).toLocaleDateString('en-US', { weekday: 'long' })}</TableCell>}
                                     <TableCell align="left">{row.duration}</TableCell>
-                                    <TableCell align="left">{row.presents}</TableCell>
-                                    <TableCell align="left">{row.absents}</TableCell>
+                                    {!isSmallScreen && <TableCell align="left">{row.presents}</TableCell>}
+                                    {!isSmallScreen && <TableCell align="left">{row.absents}</TableCell>}
+                                    <TableCell align="left">
+                                        <Box
+                                            sx={{
+                                                width: '100%',
+                                                height: '10px',
+                                                borderRadius: '5px',
+                                                background: `linear-gradient(to right, #b83d30 ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b 100%)`
+                                            }}
+                                        />
+                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
                     </Table>
                     <TablePagination
-                        rowsPerPageOptions={[5]}
+                        rowsPerPageOptions={[5, 10, 25, 50]}
                         component="div"
                         count={rows.length}
                         rowsPerPage={rowsPerPage}
@@ -244,8 +271,8 @@ function Attendance() {
                                 </TableBody>
                             </Table>
                         </TableContainer>
-                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }} startIcon={ <CheckCircleIcon /> }>
-                            Save Attendance
+                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }} startIcon={<CheckCircleIcon />}>
+                            {buttonLabel}
                         </Button>
                         <input
                             type="file"

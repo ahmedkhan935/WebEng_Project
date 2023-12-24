@@ -270,6 +270,7 @@ const teacherController = {
             // return date, presents, absents
             let attendanceData = {
                 date,
+                duration,
                 presents: attendance.filter(student => student.status === 'P').length,
                 absents: attendance.filter(student => student.status === 'A').length
             };
@@ -383,7 +384,7 @@ const teacherController = {
                 return res.status(404).json({ message: 'No attendance found' });
             }
 
-            res.json(attendance);
+            res.status(200).json(attendance);
 
         }catch(error){
             console.log(error);
