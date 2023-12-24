@@ -150,3 +150,15 @@ export async function viewDegrees() {
     credentials: "include",
   });
 }
+export async function getFeedback(id) {
+  return await fetch(`${BASE_URL}/admin/feedback/${id}`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+export async function getCourseName() {
+  return await fetch(`${BASE_URL}/admin/coursename`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

@@ -87,6 +87,9 @@ function DegreeCourseSelection() {
                 }));
             }
         }
+
+        console.log("SEMESTERS")
+        console.log(semesters)
     }
 
     const handleRemoveFromSemester = (courseCode, semesterName) => {

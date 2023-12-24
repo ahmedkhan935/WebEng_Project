@@ -23,5 +23,5 @@ router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher
 router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
-
+router.get ('/classes/:classCode/feedback', Auth, AuthTeacher, teacherController.getFeedback);
 module.exports = router;

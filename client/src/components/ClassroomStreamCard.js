@@ -1,5 +1,5 @@
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { Card, Collapse, CardContent, Box, Typography, alpha, IconButton, Menu, MenuItem, Avatar, TextField } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
@@ -15,6 +15,7 @@ import { useTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement } from '../services/TeacherService';
 import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
+import { ClassroomContext } from '../context/ClassroomContext';
 
 
 function ClassroomStreamCard({ card }) {
@@ -38,8 +39,10 @@ function ClassroomStreamCard({ card }) {
     //dealing with collapsing the card
     const [expanded, setExpanded] = useState(false);
 
-    //dealing with delete confirmation
+    //dealing with delete 
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
+
 
     const handleDelete = () => {
         setDeleteDialogOpen(true);
@@ -86,11 +89,13 @@ function ClassroomStreamCard({ card }) {
         deleteAnnouncement(classCode, cardId)
             .then((res) => {
                 console.log(res);
-                window.location.reload();
             })
             .catch((err) => {
                 console.log(err);
             });
+
+        //update announcements state according to delete
+        setClassroomAnnouncements(classroomAnnouncements.filter((announcement) => announcement._id !== cardId));
         handleClose();
         setDeleteDialogOpen(false);
     };

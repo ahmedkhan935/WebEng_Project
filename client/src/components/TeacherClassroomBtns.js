@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Box, Typography, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from '@mui/material';
 import ChecklistIcon from '@mui/icons-material/Checklist';
 import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 import VideoCallIcon from '@mui/icons-material/VideoCall';
+import ListAltIcon from '@mui/icons-material/ListAlt';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { addAnnouncement, getStudents } from '../services/TeacherService'
 import SentimentVerySatisfiedIcon from '@mui/icons-material/SentimentVerySatisfied';
 import SentimentVeryDissatisfiedIcon from '@mui/icons-material/SentimentVeryDissatisfied';
 import { Link } from 'react-router-dom';
 import { utils, writeFile } from 'xlsx';
-
-function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
+import { ClassroomContext } from '../context/ClassroomContext';
+ 
+function TeacherClassroomBtns({ classCode }) {
     const [open, setOpen] = useState(false); //for announcement form
     const [dialogOpen, setDialogOpen] = useState(false); //for success/failure dialog
     const [dialogMessage, setDialogMessage] = useState('');
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
     const [attachments, setAttachments] = useState(null);
+    const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -41,12 +44,13 @@ function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
             attachments: attachments
         };
 
-        const result = await addAnnouncement(classCode, announcement);
+        const data = await addAnnouncement(classCode, announcement);
 
-        if (result.error) {
-            setDialogMessage('Failed to add announcement: ' + result.error);
+        if (data.error) {
+            //jeee??
+            setDialogMessage('Failed to add announcement: ' + data.error);
         } else {
-            onNewAnnouncement(announcement);
+            setClassroomAnnouncements([data.data, ...classroomAnnouncements]);
             setDialogMessage('Announcement added successfully');
         }
 
@@ -69,6 +73,7 @@ function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
         utils.book_append_sheet(workbook, worksheet, "Students");
         writeFile(workbook, classCode+"_Students.xlsx");
     }
+
     return (
         <Box sx={{ border: '1px solid gray', width: '100%', borderRadius: '5px', mt: '10px', pb: '20px', pl: '20px', pr: '20px' }}>
             <Typography variant="h6" color="text.secondary" display="inline-block" sx={{ marginTop: '10px' }}>
@@ -86,7 +91,7 @@ function TeacherClassroomBtns({ classCode, onNewAnnouncement }) {
             <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
                 Announcement
             </Button>
-            <Button variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleExportList}>
+            <Button variant="contained" color="primary" startIcon={<ListAltIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleExportList}>
                 Export Students
             </Button>
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">

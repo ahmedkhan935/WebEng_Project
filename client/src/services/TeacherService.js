@@ -10,7 +10,15 @@ const handleResponse = async (response) => {
         return { error: response.data.errorMessage };
     }
 };
-
+export const getFeedback = async (classCode) => {   
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/feedback`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+}
 export const getClasses = async () => {
     const response = await axios.get(`${BASE_URL}/teacher/classes`, {
         headers: {

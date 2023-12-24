@@ -25,6 +25,8 @@ adminRouter.get("/course/:id", adminController.viewCourse);
 adminRouter.patch("/course/:id", adminController.updateCourse);
 adminRouter.delete("/course/:id", adminController.deleteCourse);
 adminRouter.get("/logs", adminController.viewLogs);
+adminRouter.get("/coursename", adminController.getCoursename);
+adminRouter.get("/feedback/:id", adminController.getFeedback);
 adminRouter.post("/degree", adminController.addDegree);
 adminRouter.get("/degree", adminController.ViewAllDegrees);
 
