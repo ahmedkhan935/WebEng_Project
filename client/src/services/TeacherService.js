@@ -243,3 +243,18 @@ export const addAttendance = async (classCode, date, duration, attendance) => {
     );
     return handleResponse(response);
 };
+
+export const addEvaluation = async (classCode, title, evaluations) => {
+    const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/evaluations/${title}`,
+        {
+            evaluations: evaluations
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        }
+    );
+    return handleResponse(response);
+};
