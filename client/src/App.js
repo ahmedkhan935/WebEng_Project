@@ -38,6 +38,7 @@ import VideoCall from "./pages/MakeVideoCall";
 import Attendance from "./pages/Attendance";
 import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
+import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 
 function App() {
   return (
@@ -87,6 +88,7 @@ function App() {
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
             <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
+            <Route path="addDegree/:degreeid/selectCourses"  element={<DegreeCourseSelection />} ></Route>
 
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
