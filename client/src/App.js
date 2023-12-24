@@ -40,6 +40,7 @@ import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
 import AddDegree from "./pages/AddDegree";
 import ViewDegrees from "./pages/ViewDegrees";
+import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 
 function App() {
   return (
@@ -100,6 +101,10 @@ function App() {
             <Route
               path="updateCourse/:id"
               element={<UpdateCourseForm />}
+            ></Route>
+            <Route
+              path="addDegree/:degreeid/selectCourses"
+              element={<DegreeCourseSelection />}
             ></Route>
 
             <Route path="viewLogs" element={<ViewLogs />}></Route>
