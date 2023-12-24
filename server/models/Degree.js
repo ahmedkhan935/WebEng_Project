@@ -14,7 +14,10 @@ const DegreeSchema = new mongoose.Schema({
     semCourses: {
         type: [
             {
-                semesterId: { type: mongoose.Schema.Types.ObjectId, ref: 'Semester' },
+                semNumber: {
+                    type: Number,
+                    required: true
+                }   ,
                 courses: [
                     {
                         courseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Course' },
