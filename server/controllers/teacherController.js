@@ -3,6 +3,7 @@ const Thread = require('../models/Thread');
 const Teacher = require('../models/Teacher');
 const StudentEval = require('../models/StudentEval');
 const CourseEval = require('../models/CourseEval');
+const mongoose = require('mongoose');
 const path = require('path');
 const bucket = require('../firebase_init');
 
@@ -126,6 +127,8 @@ const teacherController = {
     },
 
     addAnnouncement: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
             let { type, title, content, dueDate } = req.body;
@@ -190,17 +193,25 @@ const teacherController = {
                 announcement.dueDate = dueDate;
             }
             classroom.announcements.push(announcement);
-
             await classroom.save();
+
+            //add the assignment and quiz to the course eval evaluations and student eval evaluations
+            // if (type === 'Assignment' || type === 'Quiz') {
+                
+            // }
+
 
             const authorName = await Teacher.findById(req.user).select('name');
             announcement.createdBy = authorName.name;
 
+            await session.commitTransaction();
             res.status(201).json(announcement);
         } catch (error) {
-            
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
@@ -259,6 +270,8 @@ const teacherController = {
     },
 
     addAttendance: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
             const { date, duration, attendance } = req.body;
@@ -308,6 +321,7 @@ const teacherController = {
             }
             
             await courseEval.save();
+            
             // return date, presents, absents
             let attendanceData = {
                 date,
@@ -315,16 +329,22 @@ const teacherController = {
                 presents: attendance.filter(student => student.status === 'P').length,
                 absents: attendance.filter(student => student.status === 'A').length
             };
-
+            
+            await session.commitTransaction();
             res.status(201).json({ message: 'Attendance added successfully', attendanceData });
 
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
     updateAttendance: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
             const { date, duration, attendance } = req.body;
@@ -364,11 +384,15 @@ const teacherController = {
             }
 
             await courseEval.save();
+            await session.commitTransaction();
             res.status(200).json({ message: 'Attendance updated successfully' });
 
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
@@ -435,7 +459,7 @@ const teacherController = {
             res.status(500).json({ message: 'Server error', error });
         }
     },
-    
+
     getFeedback: async (req, res) => {
         
         
@@ -451,7 +475,7 @@ const teacherController = {
         res.json(feedback);
         
 
-    }
+    },
 
     // markAssignment: async (req, res) => {
     //     try{
