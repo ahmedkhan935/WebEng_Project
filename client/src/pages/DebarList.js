@@ -1,17 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { viewDegrees } from "../services/AdminService.js";
 
 const columns = ["studentId", "name", "debarCourse", "Batch", "Degree"];
 
 const DebarList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
-  const [selectedDegree, setSelectedDegree] = useState("SE");
+  const [selectedDegree, setSelectedDegree] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2; // Adjust as needed
+  const [degrees, setDegrees] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -20,6 +23,14 @@ const DebarList = () => {
   const handleDegreeChange = (event) => {
     setSelectedDegree(event.target.value);
   };
+
+  useEffect(() => {
+    viewDegrees().then((res) => {
+      res.json().then((data) => {
+        setDegrees(data);
+      });
+    });
+  }, []);
   const rows = [
     {
       studentId: "23544",
@@ -51,15 +62,23 @@ const DebarList = () => {
     },
   ];
 
-  const batches = ["2020", "2021", "2022"];
-  const degrees = ["SE", "CS"];
+  // Apply filters when batch or degree changes
+  useEffect(() => {
+    const filtered = rows.filter(
+      (row) =>
+        (selectedBatch === "" || row.Batch === selectedBatch) &&
+        (selectedDegree === "" || row.Degree === selectedDegree)
+    );
+    setFilteredRows(filtered);
+  }, [selectedBatch, selectedDegree]);
+
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedRows = rows.slice(startIndex, endIndex);
+  const paginatedRows = filteredRows.slice(startIndex, endIndex);
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
@@ -91,14 +110,14 @@ const DebarList = () => {
             onChange={handleBatchChange}
             sx={{ height: "40px" }}
           >
-            {batches.map((batch) => (
-              <MenuItem key={batch} value={batch}>
-                {batch}
-              </MenuItem>
-            ))}
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="2019">2019</MenuItem>
+            <MenuItem value="2020">2020</MenuItem>
+            <MenuItem value="2021">2021</MenuItem>
+            <MenuItem value="2022">2022</MenuItem>
+            <MenuItem value="2023">2023</MenuItem>
           </Select>
         </FormControl>
-
         <FormControl sx={{ minWidth: "120px" }}>
           <InputLabel id="degree-label">Degree</InputLabel>
           <Select
@@ -108,9 +127,10 @@ const DebarList = () => {
             onChange={handleDegreeChange}
             sx={{ height: "40px" }}
           >
+            <MenuItem value="">All</MenuItem>
             {degrees.map((degree) => (
-              <MenuItem key={degree} value={degree}>
-                {degree}
+              <MenuItem key={degree.name} value={degree.name}>
+                {degree.name}
               </MenuItem>
             ))}
           </Select>

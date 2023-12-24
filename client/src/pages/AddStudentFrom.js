@@ -11,6 +11,7 @@ import Modal from "@mui/material/Modal";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 
 import { studentRegister } from "../services/AuthService";
+import { viewDegrees } from "../services/AdminService";
 const AddStudentForm = () => {
   const [studentName, setStudentName] = useState("");
   const [studentEmail, setStudentEmail] = useState("");
@@ -26,9 +27,16 @@ const AddStudentForm = () => {
   const [password, setStudentPassword] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
+  const [degrees, setDegrees] = useState([]);
   const [status, setstatus] = useState(false);
 
   useEffect(() => {
+    viewDegrees().then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setDegrees(data);
+      });
+    });
     // Fetch countries from the API
     const fetchCountries = async () => {
       try {
@@ -182,13 +190,9 @@ const AddStudentForm = () => {
                 onChange={(e) => setDegree(e.target.value)}
                 style={styles.roundedInput}
               >
-                <MenuItem value="">Select Degree</MenuItem>
-                <MenuItem value="Bachelor of Business Administration">
-                  Bachelor of Business Administration
-                </MenuItem>
-                <MenuItem value="Bachelor of Science (Accounting and Finance)">
-                  Bachelor of Science (Accounting and Finance)
-                </MenuItem>
+                {degrees.map((degree) => (
+                  <MenuItem value={degree.name}>{degree.name}</MenuItem>
+                ))}
                 {/* Add other degrees as needed */}
               </TextField>
             </Container>
