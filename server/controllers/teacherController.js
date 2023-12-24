@@ -3,6 +3,8 @@ const Thread = require('../models/Thread');
 const Teacher = require('../models/Teacher');
 const StudentEval = require('../models/StudentEval');
 const CourseEval = require('../models/CourseEval');
+const path = require('path');
+const bucket = require('../firebase_init');
 
 const teacherController = {
     getClasses: async (req, res) => {
@@ -53,15 +55,15 @@ const teacherController = {
                     select: 'name rollNumber'
                 });
 
-            if (!classroom) {
-                console.log("sad")
-            }
+                if(!classroom){
+                 console.log("sad")
+                }
             let students = classroom.students;
             students = students.map(student => {
                 return { rollNumber: student.studentId.rollNumber, name: student.studentId.name };
             });
 
-            res.status(201).json(students);
+            res.status(201).json( students );
 
         } catch (error) {
             console.log(error);
@@ -126,36 +128,68 @@ const teacherController = {
     addAnnouncement: async (req, res) => {
         try {
             const { classCode } = req.params;
-            let { type, title, content, dueDate, attachments } = req.body;
+            let { type, title, content, dueDate } = req.body;
+            
 
-            console.log(req.body);
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
                 return res.status(404).json({ message: 'Classroom not found' });
             }
 
-            console.log("classroom found");
-            console.log(req.user);
+            let attachments = null;
+            let file=null;
+            var fileName=null;
+            if(req.files)
+            {
+                file=req.files.file;
+                if (file) {
+                    //add timestamp to file name only excluding path
+                    const fileExtension = path.extname(file.name);
+                    const fileNameWithoutExtension = path.basename(file.name, fileExtension);
+                    fileName = `${fileNameWithoutExtension}-${Date.now()}${fileExtension}`;
+                    
+                    const blob = bucket.file(fileName);
+                    const blobWriter = blob.createWriteStream({
+                        metadata: {
+                            contentType: file.mimetype,
+                        },
+                    });
+                    blobWriter.on('error', ((err) => {
+        
+                        res.status(404).send('File couldnot be uploaded');
+                    }));
+                    blobWriter.on('finish', async () => {
+                        await blob.makePublic();
+                        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                        // Return the file name and its public URL
+        
+                    });
+                    blobWriter.end(file.data);
+                }
+                attachments = { 
+                    name: fileName,
+                    originalName: file.name
+                };
 
-            attachments = attachments ? attachments : [];
-
-            const announcement = {
+        
+            }
+            var announcement = {
                 type,
                 title,
                 content,
                 date: new Date(),
-                dueDate,
                 attachments,
+
                 createdBy: req.user,
                 comments: [],
                 submissions: []
             };
-
+            console.log(dueDate);
+            if (dueDate) {
+                announcement.dueDate = dueDate;
+            }
             classroom.announcements.push(announcement);
-
-            //add the assignment and quiz to the course eval evaluations and student eval evaluations
-                
 
             await classroom.save();
 
@@ -164,6 +198,7 @@ const teacherController = {
 
             res.status(201).json(announcement);
         } catch (error) {
+            
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
@@ -234,7 +269,7 @@ const teacherController = {
             }
 
             courseEval.lectures.push({ date, duration, attendance });
-
+            
             const classroom = await Classroom.findOne({ code: classCode })
                 .populate({
                     path: 'students.studentId',
@@ -252,18 +287,18 @@ const teacherController = {
             }
 
             let studentEvals = await StudentEval.find({ classCode })
-                .populate({
-                    path: 'studentId',
-                    select: 'rollNumber'
-                });
+            .populate({
+                path: 'studentId',
+                select: 'rollNumber'
+            });
 
             console.log("eval: ", studentEvals);
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
-
-            for (let i = 0; i < studentEvals.length; i++) {
+            
+            for(let i = 0; i < studentEvals.length; i++){
                 const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
                 console.log("studentAttendance: ", studentAttendance);
                 const status = studentAttendance.status;
@@ -271,7 +306,7 @@ const teacherController = {
                 await studentEvals[i].save();
                 console.log("saved", studentEvals[i]);
             }
-
+            
             await courseEval.save();
             // return date, presents, absents
             let attendanceData = {
@@ -308,16 +343,16 @@ const teacherController = {
             lecture.attendance = attendance;
 
             let studentEvals = await StudentEval.find({ classCode })
-                .populate({
-                    path: 'studentId',
-                    select: 'rollNumber'
-                });
+            .populate({
+                path: 'studentId',
+                select: 'rollNumber'
+            });
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
 
-            for (let i = 0; i < studentEvals.length; i++) {
+            for(let i = 0; i < studentEvals.length; i++){
                 const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
                 const status = studentAttendance.status;
                 const studentLecture = studentEvals[i].lectures.find(lecture => new Date(lecture.date).toISOString().split('T')[0] == date);
@@ -375,7 +410,7 @@ const teacherController = {
     },
 
     getAttendance: async (req, res) => {
-        try {
+        try{
             const { classCode, date } = req.params;
 
             const courseEval = await CourseEval.findOne({ classCode });
@@ -395,11 +430,12 @@ const teacherController = {
 
             res.status(200).json(attendance);
 
-        } catch (error) {
+        }catch(error){
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },
+    
     getFeedback: async (req, res) => {
         
         
@@ -417,35 +453,35 @@ const teacherController = {
 
     }
 
-    markAssignment: async (req, res) => {
-        try {
-            const { classCode, assignmentId } = req.params;
-            const { rollNum, marks } = req.body;
+    // markAssignment: async (req, res) => {
+    //     try{
+    //         const {classCode, assignmentId} = req.params;
+    //         const {rollNum, grade} = req.body;
 
-            const classroom = await Classroom.findOne({ code: classCode });
-            if (!classroom) {
-                return res.status(404).json({ message: 'Classroom not found' });
-            }
+    //         const classroom = await Classroom.findOne({code: classCode});
+    //         if(!classroom){
+    //             return res.status(404).json({message: 'Classroom not found'});
+    //         }
 
-            const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
-            if (!assignment) {
-                return res.status(404).json({ message: 'Assignment not found' });
-            }
+    //         const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
+    //         if(!assignment){
+    //             return res.status(404).json({message: 'Assignment not found'});
+    //         }
 
-            const submission = assignment.submissions.find(submission => submission.studentId == studentId);
-            if (!submission) {
-                return res.status(404).json({ message: 'Submission not found' });
-            }
+    //         const submission = assignment.submissions.find(submission => submission.studentId == studentId);
+    //         if(!submission){
+    //             return res.status(404).json({message: 'Submission not found'});
+    //         }
 
-            submission.grade = grade;
+    //         submission.grade = grade;
 
-            await classroom.save();
+    //         await classroom.save();
 
-            res.status(200).json({ message: 'Assignment marked successfully' });
-        } catch (error) {
-            res.status(500).json({ message: 'Server error', error });
-        }
-    }
+    //         res.status(200).json({message: 'Assignment marked successfully'});
+    //     }catch(error){
+    //         res.status(500).json({ message: 'Server error', error });
+    //     }
+    // }
 };
 
 module.exports = teacherController;
