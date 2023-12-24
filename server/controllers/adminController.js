@@ -3,6 +3,7 @@ const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Course = require("../models/Course");
 const Logs = require("../models/Logs");
+const Classroom = require("../models/Classroom");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -380,6 +381,33 @@ const viewLogs = async (req, res) => {
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
+const getFeedback =async (req,res)=>{
+  try{
+    const classroom = await Classroom.findOne({code:req.params.id}).populate("feedback.studentId","name");
+    if(!classroom){
+      return res.status(404).json({errorMessage:"Classroom not found"});
+    }
+    const feedback = classroom.feedback;
+
+    
+    res.status(200).json(feedback);
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+}
+const getCoursename = async (req,res)=>{
+  try{
+    const course = await Classroom.find().select("code name");
+    if(!course){
+      return res.status(404).json({errorMessage:"Course not found"});
+    }
+    res.status(200).json(course);
+  }catch(error){
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+}
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -402,4 +430,7 @@ module.exports = {
   updateTeacher,
   deleteTeacher,
   viewLogs,
+  getFeedback,
+  getCoursename
+  
 };

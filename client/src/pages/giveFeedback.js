@@ -15,9 +15,9 @@ import {
 import NavBar from "../components/Navbar";
 import { Label } from "@mui/icons-material";
 import { useParams } from "react-router";
-
+import {givefeedback} from "../services/StudentService"
 const GiveFeedback = () => {
-  const { id } = useParams();
+  const { classCode } = useParams();
   const styles = {
     form: {
       width: "50%",
@@ -52,17 +52,26 @@ const GiveFeedback = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log("Submitted Rating:", rating);
-    console.log("Submitted Comment:", comment);
-    
+   
+      givefeedback(classCode, comment).then((res) => {
+        if(res.error)
+        {
+          setstatus(false);
+          setsubmitmsg(res.error);
+        }
+        else{
+          setstatus(true);
+          setsubmitmsg(res.message);
+        }
+      }
+      );
+
+
 
 
     
     // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
-    setFormSubmitted(true);
-    //depending on error or succes change it to true or false
-    setstatus(true);
-    setsubmitmsg("Feedback given Sucessfully!");
+  
 
     // setstatus(false);
     // setsubmitmsg("Feedback not Given!");

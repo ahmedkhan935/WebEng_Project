@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -18,22 +18,33 @@ import { InputLabel, MenuItem, Select, Box } from "@mui/material";
 
 import NavBar from "../components/Navbar";
 
+import { useParams } from "react-router";
+import { getCourseName,getFeedback } from "../services/AdminService";
+
+
 const ViewFeedback = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
-  const [selectedSemester, setSelectedSemester] = useState("1");
+  const [selectedSemester, setSelectedSemester] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2;
+  const [rows, setRows] = useState([]); // [
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
   };
 
   const handleSemesterChange = (event) => {
+    getFeedback(event.target.value).then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setRows(data);
+      });
+    });
+
     setSelectedSemester(event.target.value);
   };
 
-  const batches = ["2020", "2021", "2022"];
-  const semesters = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
@@ -47,20 +58,39 @@ const ViewFeedback = () => {
     },
   };
 
-  const rows = [
-    {
-      StudentId: "983291",
-      CourseCode: "32df23",
-      teacher: "Fatima",
-      feedback: "very good",
-    },
-    {
-      StudentId: "324332",
-      CourseCode: "dfyt32",
-      teacher: "Ahmed",
-      feedback: "very bad",
-    },
-  ];
+  // const rows = [
+  //   {
+  //     StudentId: "983291",
+  //     CourseCode: "32df23",
+  //     teacher: "Fatima",
+  //     feedback: "very good",
+  //   },
+  //   {
+  //     StudentId: "324332",
+  //     CourseCode: "dfyt32",
+  //     teacher: "Ahmed",
+  //     feedback: "very bad",
+  //   },
+  // ];
+  const [course, setCourses] = useState([]); // [
+  const {classCode} = useParams();
+  const getCourses = async () => {  
+    const response = await getCourseName();
+    const data = await response.json();
+   
+    setCourses(data);
+    setSelectedSemester(data[0].code);
+  };
+
+  useEffect(
+    () => {
+      getCourses();
+    }
+
+
+   
+  , []);
+  
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
@@ -92,35 +122,22 @@ const ViewFeedback = () => {
             marginTop: "20px",
           }}
         >
-          <FormControl sx={{ minWidth: "120px", marginRight: "20px" }}>
-            <InputLabel id="batch-label">Batch</InputLabel>
-            <Select
-              labelId="batch-label"
-              id="batch-select"
-              value={selectedBatch}
-              onChange={handleBatchChange}
-              sx={{ height: "40px" }}
-            >
-              {batches.map((batch) => (
-                <MenuItem key={batch} value={batch}>
-                  {batch}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          
 
           <FormControl sx={{ minWidth: "120px" }}>
-            <InputLabel id="semester-label">Semester</InputLabel>
+            <InputLabel id="semester-label">Course</InputLabel>
             <Select
               labelId="semester-label"
               id="semester-select"
               value={selectedSemester}
               onChange={handleSemesterChange}
               sx={{ height: "40px" }}
+              
+              
             >
-              {semesters.map((semester) => (
-                <MenuItem key={semester} value={semester}>
-                  {semester}
+              {course.map((semester) => (
+                <MenuItem key={semester.code} value={semester.code}>
+                  {semester.name}
                 </MenuItem>
               ))}
             </Select>
@@ -158,16 +175,16 @@ const ViewFeedback = () => {
               <TableRow style={{ background: "#22717d" }}>
                 <TableCell style={{ color: "#FFFFFF" }}>Student Id</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Course Code</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Teacher</TableCell>
+           
                 <TableCell style={{ color: "#FFFFFF" }}>Feedback</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {paginatedRows.map((row, index) => (
                 <TableRow key={index}>
-                  <TableCell>{row.StudentId}</TableCell>
-                  <TableCell>{row.CourseCode}</TableCell>
-                  <TableCell>{row.teacher}</TableCell>
+                  <TableCell>{row.studentId.name}</TableCell>
+                  <TableCell>{selectedSemester}</TableCell>
+           
                   <TableCell>{row.feedback}</TableCell>
                 </TableRow>
               ))}
