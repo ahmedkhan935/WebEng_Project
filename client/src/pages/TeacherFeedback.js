@@ -57,7 +57,7 @@ const TeacherFeedback = () => {
   //   },
   // ];
   const [rows, setRows] = useState([]);
-  const {classCode} = useParams();
+  const { classCode } = useParams();
 
   useEffect(() => {
     getFeedback(classCode).then((res) => {
@@ -65,20 +65,20 @@ const TeacherFeedback = () => {
       setRows(res.data);
     });
   }, []);
-  
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedRows = rows.slice(startIndex, endIndex);
-
-  //Calculating the total number of pages
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   const filteredRows = rows.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchKeyword.toLowerCase())
     )
   );
+
+  const paginatedRows = filteredRows.slice(startIndex, endIndex);
+
+  //Calculating the total number of pages
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
   return (
     <div>
@@ -95,8 +95,7 @@ const TeacherFeedback = () => {
             alignItems: "center",
             marginTop: "20px",
           }}
-        >
-        </Box>
+        ></Box>
         <div
           style={{
             display: "flex",
