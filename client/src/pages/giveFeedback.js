@@ -4,7 +4,7 @@ import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDiss
 import { Button, TextField, Modal, Box, Typography } from "@mui/material";
 import NavBar from "../components/Navbar";
 import { useParams } from "react-router";
-import {givefeedback} from "../services/StudentService"
+import { givefeedback } from "../services/StudentService";
 const GiveFeedback = () => {
   const { classCode } = useParams();
   const styles = {
@@ -37,29 +37,18 @@ const GiveFeedback = () => {
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-   
-      givefeedback(classCode, comment).then((res) => {
-        if(res.error)
-        {
-          setstatus(false);
-          setsubmitmsg(res.error);
-        }
-        else{
-          setstatus(true);
-          setsubmitmsg(res.message);
-        }
+
+    givefeedback(classCode, comment).then((res) => {
+      if (res.error) {
+        setFormSubmitted(true);
+        setstatus(false);
+        setsubmitmsg("Feedback not Given!");
+      } else {
+        setFormSubmitted(true);
+        setstatus(true);
+        setsubmitmsg("Feedback submitted successfully");
       }
-      );
-
-
-
-
-    
-    // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
-  
-
-    // setstatus(false);
-    // setsubmitmsg("Feedback not Given!");
+    });
   };
 
   const handleModalClose = () => {

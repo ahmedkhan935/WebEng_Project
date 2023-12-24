@@ -25,18 +25,30 @@ import Pagination from "@mui/material/Pagination";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
-import { viewAllStudents, deleteStudent } from "../services/AdminService";
+import {
+  viewAllStudents,
+  deleteStudent,
+  viewDegrees,
+} from "../services/AdminService";
 import theme from "../assets/theme/theme";
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");
   const [filterDegree, setFilterDegree] = useState("");
   const [rows, setRows] = useState([]);
+  const [degrees, setDegrees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 5;
   const navigate = useNavigate();
 
   useEffect(() => {
+    viewDegrees().then((res) => {
+      res.json().then((data) => {
+        console.log(data);
+        setDegrees(data);
+      });
+    });
+    console.log(degrees);
     viewAllStudents().then((res) => {
       const rows = res.map((row) => ({
         studentId: row.rollNumber,
@@ -126,8 +138,11 @@ const ViewStudents = () => {
               style={{ zIndex: 2000, width: "200px", height: "40px" }}
             >
               <MenuItem value="">All</MenuItem>
+              <MenuItem value="2019">2019</MenuItem>
               <MenuItem value="2020">2020</MenuItem>
               <MenuItem value="2021">2021</MenuItem>
+              <MenuItem value="2022">2022</MenuItem>
+              <MenuItem value="2023">2023</MenuItem>
             </Select>
           </FormControl>
 
@@ -140,6 +155,9 @@ const ViewStudents = () => {
               style={{ zIndex: 2000, width: "200px", height: "40px" }}
             >
               <MenuItem value="">All</MenuItem>
+              {degrees.map((degree) => (
+                <MenuItem value={degree.name}>{degree.name}</MenuItem>
+              ))}
             </Select>
           </FormControl>
 

@@ -11,6 +11,7 @@ import {
   Card,
   CardContent,
   Typography,
+  Input,
 } from "@mui/material";
 import NavBar from "../components/Navbar";
 
@@ -48,7 +49,6 @@ const AdminThread = () => {
           text: content,
         }),
       });
-
     } catch (error) {
       console.error("Error sending email:", error);
     }
@@ -110,7 +110,6 @@ const AdminThread = () => {
         res.json().then((data) => {
           setPosts([...posts, data]);
         });
-        
       }
     });
     setTitle("");
@@ -140,7 +139,6 @@ const AdminThread = () => {
 
     viewAnnouncements(id).then((res) => {
       res.json().then((data) => {
-        
         setPosts(data);
       });
     });
@@ -229,7 +227,9 @@ const AdminThread = () => {
       </Dialog>
       {/* Dialog for Make Post */}
       <Dialog open={formOpen} onClose={handleFormClose}>
-        <DialogTitle>Make Post</DialogTitle>
+        <DialogTitle color="primary" sx={{ fontWeight: "bold" }}>
+          Make Post
+        </DialogTitle>
         <DialogContent>
           <TextField
             label="Title"
@@ -249,14 +249,16 @@ const AdminThread = () => {
             onChange={(e) => setContent(e.target.value)}
             style={{ marginBottom: "10px" }}
           />
-          <input
+          <Input
             type="file"
             onChange={(e) => setfile(e.target.files[0])}
             style={{ margin: "10px 0" }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormClose}>Cancel</Button>
+          <Button onClick={handleFormClose} color="secondary">
+            Cancel
+          </Button>
           <Button onClick={handleAnnounce} variant="contained">
             Post
           </Button>

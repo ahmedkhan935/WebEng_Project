@@ -19,15 +19,14 @@ import { InputLabel, MenuItem, Select, Box } from "@mui/material";
 import NavBar from "../components/Navbar";
 
 import { useParams } from "react-router";
-import { getCourseName,getFeedback } from "../services/AdminService";
-
+import { getCourseName, getFeedback } from "../services/AdminService";
 
 const ViewFeedback = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
   const [selectedSemester, setSelectedSemester] = useState();
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 2;
-  const [rows, setRows] = useState([]); // [
+  const [rows, setRows] = useState([]);
 
   const handleBatchChange = (event) => {
     setSelectedBatch(event.target.value);
@@ -44,7 +43,6 @@ const ViewFeedback = () => {
     setSelectedSemester(event.target.value);
   };
 
-  
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
   };
@@ -73,38 +71,32 @@ const ViewFeedback = () => {
   //   },
   // ];
   const [course, setCourses] = useState([]); // [
-  const {classCode} = useParams();
-  const getCourses = async () => {  
+  const { classCode } = useParams();
+  const getCourses = async () => {
     const response = await getCourseName();
     const data = await response.json();
-   
+
     setCourses(data);
     setSelectedSemester(data[0].code);
   };
 
-  useEffect(
-    () => {
-      getCourses();
-    }
-
-
-   
-  , []);
-  
+  useEffect(() => {
+    getCourses();
+  }, []);
 
   // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedRows = rows.slice(startIndex, endIndex);
-
-  // Calculate the total number of pages
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
 
   const filteredRows = rows.filter((row) =>
     Object.values(row).some((value) =>
       String(value).toLowerCase().includes(searchKeyword.toLowerCase())
     )
   );
+  const paginatedRows = filteredRows.slice(startIndex, endIndex);
+
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
   return (
     <div>
@@ -122,8 +114,6 @@ const ViewFeedback = () => {
             marginTop: "20px",
           }}
         >
-          
-
           <FormControl sx={{ minWidth: "120px" }}>
             <InputLabel id="semester-label">Course</InputLabel>
             <Select
@@ -132,8 +122,6 @@ const ViewFeedback = () => {
               value={selectedSemester}
               onChange={handleSemesterChange}
               sx={{ height: "40px" }}
-              
-              
             >
               {course.map((semester) => (
                 <MenuItem key={semester.code} value={semester.code}>
@@ -175,7 +163,7 @@ const ViewFeedback = () => {
               <TableRow style={{ background: "#22717d" }}>
                 <TableCell style={{ color: "#FFFFFF" }}>Student Id</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Course Code</TableCell>
-           
+
                 <TableCell style={{ color: "#FFFFFF" }}>Feedback</TableCell>
               </TableRow>
             </TableHead>
@@ -184,7 +172,7 @@ const ViewFeedback = () => {
                 <TableRow key={index}>
                   <TableCell>{row.studentId.name}</TableCell>
                   <TableCell>{selectedSemester}</TableCell>
-           
+
                   <TableCell>{row.feedback}</TableCell>
                 </TableRow>
               ))}
