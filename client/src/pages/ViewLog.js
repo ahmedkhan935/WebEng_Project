@@ -22,7 +22,7 @@ import { getLogs } from "../services/AdminService";
 const ViewLogs = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 2;
+  const rowsPerPage = 10;
   const [rows, setRows] = useState([]);
   useEffect(() => {
     getLogs().then((res) => {
