@@ -53,15 +53,15 @@ const teacherController = {
                     select: 'name rollNumber'
                 });
 
-                if(!classroom){
-                 console.log("sad")
-                }
+            if (!classroom) {
+                console.log("sad")
+            }
             let students = classroom.students;
             students = students.map(student => {
                 return { rollNumber: student.studentId.rollNumber, name: student.studentId.name };
             });
 
-            res.status(201).json( students );
+            res.status(201).json(students);
 
         } catch (error) {
             console.log(error);
@@ -137,7 +137,7 @@ const teacherController = {
 
             console.log("classroom found");
             console.log(req.user);
-            
+
             attachments = attachments ? attachments : [];
 
             const announcement = {
@@ -153,6 +153,9 @@ const teacherController = {
             };
 
             classroom.announcements.push(announcement);
+
+            //add the assignment and quiz to the course eval evaluations and student eval evaluations
+                
 
             await classroom.save();
 
@@ -228,7 +231,7 @@ const teacherController = {
             }
 
             courseEval.lectures.push({ date, duration, attendance });
-            
+
             const classroom = await Classroom.findOne({ code: classCode })
                 .populate({
                     path: 'students.studentId',
@@ -246,18 +249,18 @@ const teacherController = {
             }
 
             let studentEvals = await StudentEval.find({ classCode })
-            .populate({
-                path: 'studentId',
-                select: 'rollNumber'
-            });
+                .populate({
+                    path: 'studentId',
+                    select: 'rollNumber'
+                });
 
             console.log("eval: ", studentEvals);
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
-            
-            for(let i = 0; i < studentEvals.length; i++){
+
+            for (let i = 0; i < studentEvals.length; i++) {
                 const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
                 console.log("studentAttendance: ", studentAttendance);
                 const status = studentAttendance.status;
@@ -265,7 +268,7 @@ const teacherController = {
                 await studentEvals[i].save();
                 console.log("saved", studentEvals[i]);
             }
-            
+
             await courseEval.save();
             // return date, presents, absents
             let attendanceData = {
@@ -302,16 +305,16 @@ const teacherController = {
             lecture.attendance = attendance;
 
             let studentEvals = await StudentEval.find({ classCode })
-            .populate({
-                path: 'studentId',
-                select: 'rollNumber'
-            });
+                .populate({
+                    path: 'studentId',
+                    select: 'rollNumber'
+                });
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
 
-            for(let i = 0; i < studentEvals.length; i++){
+            for (let i = 0; i < studentEvals.length; i++) {
                 const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
                 const status = studentAttendance.status;
                 const studentLecture = studentEvals[i].lectures.find(lecture => new Date(lecture.date).toISOString().split('T')[0] == date);
@@ -366,7 +369,7 @@ const teacherController = {
     },
 
     getAttendance: async (req, res) => {
-        try{
+        try {
             const { classCode, date } = req.params;
 
             const courseEval = await CourseEval.findOne({ classCode });
@@ -386,41 +389,41 @@ const teacherController = {
 
             res.status(200).json(attendance);
 
-        }catch(error){
+        } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },
 
-    // markAssignment: async (req, res) => {
-    //     try{
-    //         const {classCode, assignmentId} = req.params;
-    //         const {rollNum, grade} = req.body;
+    markAssignment: async (req, res) => {
+        try {
+            const { classCode, assignmentId } = req.params;
+            const { rollNum, marks } = req.body;
 
-    //         const classroom = await Classroom.findOne({code: classCode});
-    //         if(!classroom){
-    //             return res.status(404).json({message: 'Classroom not found'});
-    //         }
+            const classroom = await Classroom.findOne({ code: classCode });
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
 
-    //         const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
-    //         if(!assignment){
-    //             return res.status(404).json({message: 'Assignment not found'});
-    //         }
+            const assignment = classroom.announcements.find(announcement => announcement._id == assignmentId);
+            if (!assignment) {
+                return res.status(404).json({ message: 'Assignment not found' });
+            }
 
-    //         const submission = assignment.submissions.find(submission => submission.studentId == studentId);
-    //         if(!submission){
-    //             return res.status(404).json({message: 'Submission not found'});
-    //         }
+            const submission = assignment.submissions.find(submission => submission.studentId == studentId);
+            if (!submission) {
+                return res.status(404).json({ message: 'Submission not found' });
+            }
 
-    //         submission.grade = grade;
+            submission.grade = grade;
 
-    //         await classroom.save();
+            await classroom.save();
 
-    //         res.status(200).json({message: 'Assignment marked successfully'});
-    //     }catch(error){
-    //         res.status(500).json({ message: 'Server error', error });
-    //     }
-    // }
+            res.status(200).json({ message: 'Assignment marked successfully' });
+        } catch (error) {
+            res.status(500).json({ message: 'Server error', error });
+        }
+    }
 };
 
 module.exports = teacherController;
