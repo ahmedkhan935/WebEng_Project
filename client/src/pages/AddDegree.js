@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import { Button, TextField, Modal, Box, Typography } from "@mui/material";
+import { Button, TextField, Modal, Box, Typography, Grid } from "@mui/material";
 import NavBar from "../components/Navbar";
-import { useParams } from "react-router";
 
-const GiveFeedback = () => {
-  const { id } = useParams();
+const AddDegree = () => {
+  const [name, setName] = useState("");
+  const [abbreviation, setAbbreviation] = useState("");
+  const [totalCredits, setTotalCredits] = useState("");
+  const [isFormSubmitted, setFormSubmitted] = useState(false);
+  const [submitmsg, setsubmitmsg] = useState("");
+  const [status, setstatus] = useState(false);
+
   const styles = {
     form: {
       width: "50%",
@@ -24,67 +29,77 @@ const GiveFeedback = () => {
       boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
     },
   };
-
-  const [rating, setRating] = useState("");
-  const [comment, setComment] = useState("");
-  const [isFormSubmitted, setFormSubmitted] = useState(false);
-  const [submitmsg, setsubmitmsg] = useState("");
-  const [status, setstatus] = useState(false);
-
-  const handleCommentChange = (event) => {
-    setComment(event.target.value);
+  const handleNameChange = (e) => {
+    setName(e.target.value);
   };
 
-  const handleFormSubmit = (event) => {
+  const handleAbbreviationChange = (e) => {
+    setAbbreviation(e.target.value);
+  };
+
+  const handleTotalCreditsChange = (e) => {
+    setTotalCredits(e.target.value);
+  };
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Submitted Rating:", rating);
-    console.log("Submitted Comment:", comment);
 
     // For demonstration purposes, setting form submitted state to show a modal fpr success or failure
     setFormSubmitted(true);
     //depending on error or succes change it to true or false
     setstatus(true);
-    setsubmitmsg("Feedback given Sucessfully!");
+    setsubmitmsg("Degree Added Sucessfully!");
 
     // setstatus(false);
     // setsubmitmsg("Feedback not Given!");
   };
 
   const handleModalClose = () => {
+    setsubmitmsg("");
+    setstatus(false);
     setFormSubmitted(false);
   };
 
   return (
     <NavBar>
       <h1 style={{ color: "#22717d", width: "100%", float: "right" }}>
-        Give Feedback
+        Add Degree
       </h1>
 
-      <form
-        onSubmit={handleFormSubmit}
-        style={
-          ({ width: "50%", margin: "auto", marginTop: "50px" }, styles.form)
-        }
-      >
+      <form style={styles.form} onSubmit={handleSubmit}>
         <TextField
-          id="comment"
-          label="Comment"
-          variant="outlined"
-          multiline
-          rows={4}
           fullWidth
-          value={comment}
-          onChange={handleCommentChange}
+          label="Degree Name"
+          variant="outlined"
+          value={name}
+          onChange={handleNameChange}
+          required
           margin="normal"
         />
 
-        <Button
-          type="submit"
+        <TextField
+          fullWidth
+          label="Abbreviation"
           variant="outlined"
-          color="primary"
-          style={{ marginTop: "10px" }}
-        >
-          Submit Feedback
+          value={abbreviation}
+          onChange={handleAbbreviationChange}
+          required
+          margin="normal"
+        />
+
+        <TextField
+          fullWidth
+          label="Total Credits"
+          variant="outlined"
+          type="number"
+          value={totalCredits}
+          onChange={handleTotalCreditsChange}
+          required
+          margin="normal"
+        />
+
+        <Button type="submit" variant="contained" color="primary">
+          Add Degree
         </Button>
       </form>
 
@@ -129,4 +144,4 @@ const GiveFeedback = () => {
   );
 };
 
-export default GiveFeedback;
+export default AddDegree;

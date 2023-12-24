@@ -38,6 +38,8 @@ import VideoCall from "./pages/MakeVideoCall";
 import Attendance from "./pages/Attendance";
 import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
+import AddDegree from "./pages/AddDegree";
+import ViewDegrees from "./pages/ViewDegrees";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 
 function App() {
@@ -93,6 +95,8 @@ function App() {
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
             <Route path="assignCourses" element={<AssignCourses />}></Route>
+            <Route path="addDegree" element={<AddDegree />}></Route>
+            <Route path="viewDegrees" element={<ViewDegrees />}></Route>
             <Route path="lists" element={<AdminLists />}></Route>
             <Route path="list">
               <Route path="debar" element={<DebarList />}></Route>
