@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
-import { Container, Table, TablePagination, Typography, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, TextField, Select, MenuItem, Collapse, useMediaQuery } from '@mui/material';
+import {
+    Container, Table, TablePagination, Typography, TableBody,
+    TableCell, Dialog, DialogTitle, DialogActions, TableContainer, TableHead, TableRow, Paper, Button, Box,
+    TextField, Select, MenuItem, Collapse, useMediaQuery
+} from '@mui/material';
+
 import NavBar from '../components/Navbar'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import { getStudents,  addAttendance, getAttendance, getAllAttendance } from '../services/TeacherService';
+import { getStudents, addAttendance, updateAttendance, getAttendance, getAllAttendance } from '../services/TeacherService';
 import { read, utils } from 'xlsx';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -22,8 +27,9 @@ function Attendance() {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
-    const [buttonLabel, setButtonLabel] = useState('Save Attendance');
-
+    const [buttonLabel, setButtonLabel] = useState('Save New Record');
+    const [dialogMessage, setDialogMessage] = useState('');
+    const [dialogOpen, setDialogOpen] = useState(false);
 
 
     useEffect(() => {
@@ -57,18 +63,26 @@ function Attendance() {
             console.log(err);
         }
 
-    }, [])
+    }, []);
 
-    const fetchAttendance = async () => {
-        const response = await getAttendance(classCode, selectedDate);
-        if (response.status === 200) {
-            setStudents(response.data.attendance);
-            setButtonLabel('Update Attendance');
+    useEffect(async () => {
+        try {
+            const response = await getAttendance(classCode, selectedDate);
+            console.log("RESPONSE");
+            console.log(response);
+
+            if (response.error) {
+                return;
+            }
+
+            if (response.data) {
+                setStudents(response.data);
+                setButtonLabel('Update and Save');
+            }
+        } catch (error) {
+            console.log(error);
+            setButtonLabel('Save New Record');
         }
-    };
-
-    useEffect(() => {
-        fetchAttendance();
     }, [selectedDate]);
 
 
@@ -83,24 +97,38 @@ function Attendance() {
     };
 
     const handleSaveAttendance = () => {
-        if(!selectedDate || !duration) {
-            alert("Please fill all the fields");
+        if (!selectedDate || !duration) {
+            setDialogMessage('Please fill all the fields');
+            setDialogOpen(true);
             return;
         }
-        addAttendance(classCode, selectedDate, duration, students).then((data) => {
-            if (data.data) {
-                console.log(data.data.attendanceData);
-                alert("Attendance added successfully");
-                setRows([...rows, data.data.attendanceData]);
-            }
-            else {
-                console.log(data.error);
-            }
-        });
-        setOpen(!open);
+        if (buttonLabel == "Add New Record") {
+            addAttendance(classCode, selectedDate, duration, students).then((data) => {
+                handleData(data);
 
+            });
+        }
+        else if (buttonLabel == "Update and Save") {
+            updateAttendance(classCode, selectedDate, duration, students).then((data) => {
+                handleData(data);
+
+            });
+        }
     };
 
+    const handleData = (data) => {
+        if (data.data) {
+            console.log(data.data.attendanceData);
+            setDialogMessage('Attendance added successfully');
+            setDialogOpen(true);
+            setRows([...rows, data.data.attendanceData]);
+        }
+        else {
+            console.log(data.error);
+        }
+        setOpen(!open);
+
+    }
     const handleFileUpload = () => {
         fileInput.current.click();
     };
@@ -111,7 +139,8 @@ function Attendance() {
         const file = event.target.files[0];
         if (fileTypes.indexOf(file.type) === -1) {
             console.log('Invalid file type');
-            alert('Invalid file type. Please select an excel file.');
+            setDialogMessage('Invalid file type. Please select an excel file.');
+            setDialogOpen(true);
             return;
         }
         console.log('File type is valid');
@@ -128,7 +157,8 @@ function Attendance() {
             const headings = utils.sheet_to_json(firstWorksheet, { header: 1, range: 'A1:C1' })[0];
             if (!headings || headings.length !== 3 || headings[0] !== 'Rno' || headings[1] !== 'Name' || headings[2] !== 'Status') {
                 console.log('Invalid headings');
-                alert('Invalid headings. Please make sure the headings are "Rno", "Name", and "Status".');
+                setDialogMessage('Invalid headings. Please make sure the headings are "Rno", "Name", and "Status".');
+                setDialogOpen(true);
                 return;
             }
             console.log('Headings are valid');
@@ -137,7 +167,8 @@ function Attendance() {
             /* Update state */
             setStudents(dataFromExcel.map(row => ({ rollNumber: row[0], name: row[1], status: row[2] })));
             console.log('Attendance imported');
-            alert('Attendance imported successfully');
+            setDialogMessage('Attendance imported successfully');
+            setDialogOpen(true);
         };
         console.log('Reading file...');
         fileReader.readAsBinaryString(file);
@@ -219,7 +250,7 @@ function Attendance() {
                         <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
                             Add new attendance
                         </Typography>
-                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px', marginBottom: '20px', color: "#fff" }} startIcon={<FileUploadIcon />}> 
+                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px', marginBottom: '20px', color: "#fff" }} startIcon={<FileUploadIcon />}>
                             Import From Excel File
                         </Button>
                         <Box display="flex" alignItems="baseline" >
@@ -281,9 +312,20 @@ function Attendance() {
                             style={{ display: 'none' }}
                             ref={fileInput}
                         />
-                       
+
                     </Box>
                 </Collapse>
+                <Dialog
+                    open={dialogOpen}
+                    onClose={() => setDialogOpen(false)}
+                >
+                    <DialogTitle>{dialogMessage}</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={() => setDialogOpen(false)}>
+                            OK
+                        </Button>
+                    </DialogActions>
+                </Dialog>
             </Container>
         </NavBar>
     );

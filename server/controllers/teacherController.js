@@ -348,7 +348,7 @@ const teacherController = {
                 return res.status(404).json({ message: 'No lectures found' });
             }
 
-            const attendanceData = lectures.map(lecture => {
+            let attendanceData = lectures.map(lecture => {
                 const presents = lecture.attendance.filter(student => student.status === 'P').length;
                 const absents = lecture.attendance.filter(student => student.status === 'A').length;
                 const duration = lecture.duration;
@@ -361,9 +361,12 @@ const teacherController = {
                 };
             });
 
-            res.json(attendanceData);
+            attendanceData = attendanceData.sort((a, b) => new Date(b.date) - new Date(a.date)); // sort by date
+
+            return res.status(200).json(attendanceData);
 
         } catch (error) {
+            console.log(error)
             res.status(500).json({ message: 'Server error', error });
         }
     },
