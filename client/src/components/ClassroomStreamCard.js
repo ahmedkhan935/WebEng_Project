@@ -16,9 +16,11 @@ import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement } from '../services/TeacherService';
 import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
 import { ClassroomContext } from '../context/ClassroomContext';
+import { downloadFile } from '../services/ThreadService';
 
 
 function ClassroomStreamCard({ card }) {
+    
     const theme = useTheme();
 
     const location = useLocation();
@@ -120,6 +122,29 @@ function ClassroomStreamCard({ card }) {
         setComments(card.comments);
 
     }, [card]);
+    const download = async () => {
+        try {
+         
+          const response = await downloadFile(card.attachments.name);
+          if (!response.ok) {
+              throw new Error("HTTP error " + response.status);
+          }
+          
+          const blob = await response.blob();
+          console.log(blob);
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = card.attachments.originalName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+      } catch (error) {
+          console.error("Fetch error: ", error);
+      }
+      }
+
+
 
     return (
         <Card sx={{
@@ -193,21 +218,21 @@ function ClassroomStreamCard({ card }) {
                 </IconButton>
 
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    {card.attachments?.length > 0 ? (
+                    {card.attachments.name ? (
                         <>
                             <hr></hr>
                             <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
                                 Attachments
                             </Typography>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '10px' }}>
-                                {card.attachments.map((attachment, index) => (
+                                
                                     <Chip
-                                        key={index}
+                                        key={card.attachments.name}
                                         icon={<AttachmentIcon />}
-                                        label={attachment.name}
+                                        label={card.attachments.originalName}
                                         clickable
                                         component="a"
-                                        href={attachment.url}
+                                        onClick={()=>download(card.attachments.name)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"
@@ -216,7 +241,7 @@ function ClassroomStreamCard({ card }) {
                                             backgroundColor: theme => `${theme.palette.secondary.main}1A` // 33 is hex for 20% opacity
                                         }}
                                     />
-                                ))}
+                             
                             </Box>
                         </>
                     ) : null}

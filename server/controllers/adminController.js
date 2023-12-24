@@ -5,6 +5,7 @@ const Course = require("../models/Course");
 const Logs = require("../models/Logs");
 const Degree = require("../models/Degree");
 const Classroom = require("../models/Classroom");
+const StudentEval = require("../models/StudentEval");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -413,33 +414,145 @@ const ViewAllDegrees = async (req, res) => {
   }
 };
 
-const getFeedback =async (req,res)=>{
-  try{
-    const classroom = await Classroom.findOne({code:req.params.id}).populate("feedback.studentId","name");
-    if(!classroom){
-      return res.status(404).json({errorMessage:"Classroom not found"});
+const getFeedback = async (req, res) => {
+  try {
+    const classroom = await Classroom.findOne({ code: req.params.id }).populate(
+      "feedback.studentId",
+      "name"
+    );
+    if (!classroom) {
+      return res.status(404).json({ errorMessage: "Classroom not found" });
     }
     const feedback = classroom.feedback;
 
-    
     res.status(200).json(feedback);
-  }catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });
   }
-}
-const getCoursename = async (req,res)=>{
-  try{
+};
+const getCoursename = async (req, res) => {
+  try {
     const course = await Classroom.find().select("code name");
-    if(!course){
-      return res.status(404).json({errorMessage:"Course not found"});
+    if (!course) {
+      return res.status(404).json({ errorMessage: "Course not found" });
     }
     res.status(200).json(course);
-  }catch(error){
+  } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });
   }
-}
+};
+
+const assignCourse = async (req, res) => {
+  try {
+    const { teacherId, courseId } = req.body;
+    console.log(teacherId, courseId);
+
+    // Find the teacher by ID
+    const teacher = await Teacher.findById(teacherId);
+
+    if (!teacher) {
+      return res.status(404).json({ message: "Teacher not found" });
+    }
+
+    // Check if the course ID already exists in the courses array
+    const courseExists = teacher.courses.some(
+      (course) => course.courseId.toString() === courseId.toString()
+    );
+
+    if (!courseExists) {
+      // Add the new course ID to the courses array
+      teacher.courses.push({ courseId });
+
+      await teacher.save();
+      return res.status(200).json({ message: "Course added successfully" });
+    } else {
+      return res
+        .status(400)
+        .json({ message: "Course already exists for the teacher" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
+//deans list
+const deanslist = async (req, res) => {
+  try {
+    const students = await Student.find({
+      "semesters.cgpa": { $gte: 3.5 },
+    });
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+//rectors list
+const rectorslist = async (req, res) => {
+  try {
+    const students = await Student.find({
+      "semesters.cgpa": { $eq: 4 },
+    });
+
+    res.json(students);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+//debar list
+const getStudentsWithLowAttendance = async (req, res) => {
+  try {
+    const studentsEval = await StudentEval.find({
+      attendance: { $lt: 80 },
+    }).exec();
+
+    if (!studentsEval) {
+      return res
+        .status(404)
+        .json({ errorMessage: "No students found with low attendance" });
+    }
+
+    const formattedStudents = [];
+
+    for (const studentEval of studentsEval) {
+      var student = await Student.findById(studentEval.studentId);
+      console.log(studentEval.studentId.classes);
+      for (const classObj of student.classes) {
+        const classroom = await Classroom.findOne({ code: classObj.classCode })
+          .populate({
+            path: "courseId",
+            model: "Course",
+            select: "courseName",
+          })
+          .exec();
+
+        if (classroom) {
+          formattedStudents.push({
+            studentId: student._id,
+            name: student.name,
+            batch: student.batch,
+            degree: student.degreeName,
+            attendance: studentEval.attendance,
+            courseName: classroom.courseId
+              ? classroom.courseId.courseName
+              : "Unknown",
+          });
+        }
+      }
+    }
+    console.log(formattedStudents);
+    res.status(200).json(formattedStudents);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
+
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -464,7 +577,10 @@ module.exports = {
   viewLogs,
   getFeedback,
   getCoursename,
-  
+  assignCourse,
   addDegree,
   ViewAllDegrees,
+  getStudentsWithLowAttendance,
+  deanslist,
+  rectorslist,
 };

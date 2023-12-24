@@ -21,7 +21,7 @@ function Attendance() {
     const [open, setOpen] = useState(false);
     const [students, setStudents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
-    const [duration, setDuration] = useState(3);
+    const [duration, setDuration] = useState(1.5);
     const [rows, setRows] = useState([]);
     const fileInput = useRef(null);
     const [page, setPage] = useState(0);

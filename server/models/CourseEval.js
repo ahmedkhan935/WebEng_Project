@@ -66,6 +66,17 @@ const CourseEvalSchema = new mongoose.Schema({
                     type: Number,
                     required: true
                 },
+                hasSubmissions: {
+                    type: Boolean,
+                    required: true
+                },
+                createdOn: {
+                    type: Date,
+                    default: new Date()
+                },
+                dueDate: {
+                    type: Date,
+                },
             }
         ]
     },

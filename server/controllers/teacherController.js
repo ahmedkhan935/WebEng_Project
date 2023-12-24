@@ -3,6 +3,9 @@ const Thread = require('../models/Thread');
 const Teacher = require('../models/Teacher');
 const StudentEval = require('../models/StudentEval');
 const CourseEval = require('../models/CourseEval');
+const mongoose = require('mongoose');
+const path = require('path');
+const bucket = require('../firebase_init');
 
 const teacherController = {
     getClasses: async (req, res) => {
@@ -124,45 +127,106 @@ const teacherController = {
     },
 
     addAnnouncement: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
-            let { type, title, content, dueDate, attachments } = req.body;
-
-            console.log(req.body);
+            let { type, title, content, dueDate } = req.body;
+            let { weightage, totalMarks } = req.body;
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
                 return res.status(404).json({ message: 'Classroom not found' });
             }
 
-            console.log("classroom found");
-            console.log(req.user);
-            
-            attachments = attachments ? attachments : [];
+            let attachments = null;
+            let file=null;
+            var fileName=null;
+            if(req.files)
+            {
+                file=req.files.file;
+                if (file) {
+                    //add timestamp to file name only excluding path
+                    const fileExtension = path.extname(file.name);
+                    const fileNameWithoutExtension = path.basename(file.name, fileExtension);
+                    fileName = `${fileNameWithoutExtension}-${Date.now()}${fileExtension}`;
+                    
+                    const blob = bucket.file(fileName);
+                    const blobWriter = blob.createWriteStream({
+                        metadata: {
+                            contentType: file.mimetype,
+                        },
+                    });
+                    blobWriter.on('error', ((err) => {
+        
+                        res.status(404).send('File couldnot be uploaded');
+                    }));
+                    blobWriter.on('finish', async () => {
+                        await blob.makePublic();
+                        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                        // Return the file name and its public URL
+        
+                    });
+                    blobWriter.end(file.data);
+                }
+                attachments = { 
+                    name: fileName,
+                    originalName: file.name
+                };
 
-            const announcement = {
+        
+            }
+            var announcement = {
                 type,
                 title,
                 content,
                 date: new Date(),
-                dueDate,
                 attachments,
                 createdBy: req.user,
                 comments: [],
                 submissions: []
             };
-
+            console.log(dueDate);
+            if (dueDate) {
+                announcement.dueDate = dueDate;
+            }
             classroom.announcements.push(announcement);
-
             await classroom.save();
+
+            //add the assignment and quiz to the course eval evaluations and student eval evaluations
+            if (type == 'Assignment' || type == 'Other') {
+                const courseEval = CourseEval.findOne({ classCode });
+
+                if (!courseEval) {
+                    return res.status(404).json({ message: 'Course eval not found' });
+                }
+
+                const evaluation = {
+                    title,
+                    weightage,
+                    totalMarks,
+                    averageMarks: 0,
+                    maxMarks: 0,
+                    minMarks: 0,
+                    hasSubmissions: type == 'Assignment' ? true : false,
+                    dueDate,
+                }
+
+                courseEval.evaluations.push(evaluation);
+                await courseEval.save();
+            }
 
             const authorName = await Teacher.findById(req.user).select('name');
             announcement.createdBy = authorName.name;
 
+            await session.commitTransaction();
             res.status(201).json(announcement);
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
@@ -221,6 +285,8 @@ const teacherController = {
     },
 
     addAttendance: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
             const { date, duration, attendance } = req.body;
@@ -270,6 +336,7 @@ const teacherController = {
             }
             
             await courseEval.save();
+            
             // return date, presents, absents
             let attendanceData = {
                 date,
@@ -277,16 +344,22 @@ const teacherController = {
                 presents: attendance.filter(student => student.status === 'P').length,
                 absents: attendance.filter(student => student.status === 'A').length
             };
-
+            
+            await session.commitTransaction();
             res.status(201).json({ message: 'Attendance added successfully', attendanceData });
 
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
     updateAttendance: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
         try {
             const { classCode } = req.params;
             const { date, duration, attendance } = req.body;
@@ -326,11 +399,15 @@ const teacherController = {
             }
 
             await courseEval.save();
+            await session.commitTransaction();
             res.status(200).json({ message: 'Attendance updated successfully' });
 
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
         }
     },
 
@@ -397,6 +474,7 @@ const teacherController = {
             res.status(500).json({ message: 'Server error', error });
         }
     },
+
     getFeedback: async (req, res) => {
         
         
@@ -412,12 +490,115 @@ const teacherController = {
         res.json(feedback);
         
 
-    }
+    },
+
+    getAllEvaluations: async (req, res) => {
+        try {
+            const { classCode } = req.params;
+
+            const courseEval = CourseEval.findOne( {classCode} );
+
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            let evaluations = courseEval.evaluations;
+
+            evaluations.sort((a, b) => {
+                // If both have submissions or both don't, sort by date
+                if ((a.hasSubmissions && b.hasSubmissions) || (!a.hasSubmissions && !b.hasSubmissions)) {
+                    return new Date(b.createdOn) - new Date(a.createdOn);
+                }
+                // If only a has submissions, a should come first
+                if (a.hasSubmissions) {
+                    return -1;
+                }
+                // If only b has submissions, b should come first
+                if (b.hasSubmissions) {
+                    return 1;
+                }
+            });
+
+            res.status(200).json( evaluations );
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+
+    getEvaluationMarks: async (req, res) => {
+        try {
+            const { classCode, title } = req.params;
+
+            const courseEval = await CourseEval.findOne( {classCode} );
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            const evaluation = courseEval.evaluations.find(evaluation => evaluation.title == title);
+            if (!evaluation) {
+                return res.status(404).json({ message: 'Evaluation not found' });
+            }
+
+            const studentEvals = await StudentEval.find({ classCode })
+                // .populate({
+                //     path: 'studentId',
+                //     select: 'rollNumber name'
+                // });
+
+            if (!studentEvals) {
+                return res.status(404).json({ message: 'No student evals found' });
+            }
+
+            let data = studentEvals.map(studentEval => {
+                const eval = studentEval.evaluations.find(eval => eval.title == evaluation.title);
+                const obtainedMarks = eval ? eval.obtainedMarks : 0;
+                const obtainedWeightage = eval ? eval.obtainedWeightage : 0;
+                return {
+                    studentId: studentEval.studentId,
+                    // rollNumber: studentEval.studentId.rollNumber,
+                    // name: studentEval.studentId.name,
+                    obtainedMarks,
+                    obtainedWeightage
+                };
+            });
+
+            if(evaluation.hasSubmissions){
+                const classroom = await Classroom.findOne({ code: classCode });
+                if (!classroom) {
+                    return res.status(404).json({ message: 'Classroom not found' });
+                }
+
+                const assignment = classroom.announcements.find(announcement => announcement.title == title);
+                if (!assignment) {
+                    return res.status(404).json({ message: 'Assignment not found' });
+                }
+
+                const submissions = assignment.submissions;
+
+                data = data.map(student => {
+                    const submission = submissions.find(submission => submission.studentId == student.studentId);
+                    if(submission){
+                        student.submission = submission;
+                    }
+                    return student;
+                });
+            }
+
+            res.status(200).json(data);
+
+        } catch (error) {
+            console.log(error)
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
 
     // markAssignment: async (req, res) => {
+    //     const session = await mongoose.startSession();
+    //     session.startTransaction();
     //     try{
     //         const {classCode, assignmentId} = req.params;
-    //         const {rollNum, grade} = req.body;
+    //         const {evaluations} = req.body;
 
     //         const classroom = await Classroom.findOne({code: classCode});
     //         if(!classroom){
@@ -438,11 +619,16 @@ const teacherController = {
 
     //         await classroom.save();
 
+    //         await session.commitTransaction();
     //         res.status(200).json({message: 'Assignment marked successfully'});
     //     }catch(error){
+    //         await session.abortTransaction();
+    //         console.log(error);
     //         res.status(500).json({ message: 'Server error', error });
+    //     }finally{
+    //         session.endSession();
     //     }
-    // }
+    // },
 };
 
 module.exports = teacherController;

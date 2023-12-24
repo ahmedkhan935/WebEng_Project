@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const AnnouncementSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['Assignment', 'Quiz', 'Material', 'Announcement'],
+        enum: ['Assignment', 'Other', 'Announcement'],
         required: true
     },
     title: {
@@ -20,20 +20,23 @@ const AnnouncementSchema = new mongoose.Schema({
     },
     dueDate: {
         type: Date,
+        
     },
     attachments: {
-        type: [
+        type: 
             {
                 name: {
                     type: String,
-                    required: true
+                  
                 },
-                url: {
+               originalName: {
                     type: String,
-                    required: true
-                }
-            }
-        ],
+                    
+                },
+              
+            },
+        default: null
+        ,
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -84,11 +87,7 @@ const AnnouncementSchema = new mongoose.Schema({
                             }
                         }
                     ]
-                },
-                isMarked: {
-                    type: Boolean,
-                    required: true
-                },
+                }
             }
         ]
     

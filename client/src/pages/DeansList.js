@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FormControl, InputLabel, MenuItem, Select, Box } from "@mui/material";
 import CustomTable from "../components/CustomTable.js";
 import NavBar from "../components/Navbar.js";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import {
+  viewDeansList,
+  viewDebarList,
+  viewDegrees,
+} from "../services/AdminService.js";
 
 // The column names must be in camel case notation
-const columns = ["studentId", "name", "Batch", "Degree"];
+const columns = ["name", "batch", "degreeName"];
 
 const DeansList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
-  const [selectedDegree, setSelectedDegree] = useState("SE");
+  const [selectedDegree, setSelectedDegree] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [degrees, setDegrees] = useState([]);
+  const [rows, setrows] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+
   const rowsPerPage = 2;
 
   const handleBatchChange = (event) => {
@@ -22,43 +31,36 @@ const DeansList = () => {
     setSelectedDegree(event.target.value);
   };
 
-  const batches = ["2020", "2021", "2022"];
-  const degrees = ["SE", "CS"];
+  useEffect(() => {
+    viewDeansList().then((res) => {
+      res.json().then((data) => {
+        setrows(data);
+        const filtered = data.filter(
+          (row) =>
+            selectedBatch === "" ||
+            row.batch === selectedBatch ||
+            selectedDegree === "" ||
+            row.degreeName === selectedDegree
+        );
+        console.log(filtered);
+        setFilteredRows(filtered);
+      });
+    });
 
-  const rows = [
-    {
-      studentId: "34234",
-      name: "Fatima Bilal",
-      Batch: "2020",
-      Degree: "SE",
-    },
-    {
-      studentId: "343",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "2132",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-    {
-      studentId: "324",
-      name: "Ahmed Raza",
-      Batch: "2021",
-      Degree: "CS",
-    },
-  ];
+    viewDegrees().then((res) => {
+      res.json().then((data) => {
+        setDegrees(data);
+      });
+    });
+  }, [selectedBatch, selectedDegree]);
 
-  // Calculating the index range for the current page
+  // Calculate the index range for the current page
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
-  const paginatedRows = rows.slice(startIndex, endIndex);
+  const paginatedRows = filteredRows.slice(startIndex, endIndex);
 
-  // Calculating the total number of pages
-  const totalPages = Math.ceil(rows.length / rowsPerPage);
+  // Calculate the total number of pages
+  const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
   const handlePageChange = (event, newPage) => {
     setCurrentPage(newPage);
@@ -91,14 +93,14 @@ const DeansList = () => {
             onChange={handleBatchChange}
             sx={{ height: "40px" }}
           >
-            {batches.map((batch) => (
-              <MenuItem key={batch} value={batch}>
-                {batch}
-              </MenuItem>
-            ))}
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="2019">2019</MenuItem>
+            <MenuItem value="2020">2020</MenuItem>
+            <MenuItem value="2021">2021</MenuItem>
+            <MenuItem value="2022">2022</MenuItem>
+            <MenuItem value="2023">2023</MenuItem>
           </Select>
         </FormControl>
-
         <FormControl sx={{ minWidth: "120px" }}>
           <InputLabel id="degree-label">Degree</InputLabel>
           <Select
@@ -108,9 +110,10 @@ const DeansList = () => {
             onChange={handleDegreeChange}
             sx={{ height: "40px" }}
           >
+            <MenuItem value="">All</MenuItem>
             {degrees.map((degree) => (
-              <MenuItem key={degree} value={degree}>
-                {degree}
+              <MenuItem key={degree.name} value={degree.name}>
+                {degree.name}
               </MenuItem>
             ))}
           </Select>

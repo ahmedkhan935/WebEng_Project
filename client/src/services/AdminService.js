@@ -162,3 +162,36 @@ export async function getCourseName() {
     credentials: "include",
   });
 }
+
+export const assignCourse = async (assignCourseData) => {
+  const response = await fetch(`${BASE_URL}/admin/assignCourse`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+    body: JSON.stringify(assignCourseData),
+  });
+  return handleResponse(response);
+};
+
+export async function viewDebarList() {
+  return await fetch(`${BASE_URL}/admin/lowAttendance`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+
+export async function viewDeansList() {
+  return await fetch(`${BASE_URL}/admin/deans`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
+
+export async function viewRectorsList() {
+  return await fetch(`${BASE_URL}/admin/rectors`, {
+    method: "GET",
+    credentials: "include",
+  });
+}
