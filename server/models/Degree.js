@@ -25,11 +25,9 @@ const DegreeSchema = new mongoose.Schema({
   },
   totalCredits: {
     type: Number,
-    required: true,
   },
   totalSemesters: {
     type: Number,
-    required: true,
   },
 });
 const Degree = mongoose.model("Degree", DegreeSchema);

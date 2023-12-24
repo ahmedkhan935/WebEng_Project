@@ -58,7 +58,10 @@ function App() {
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode" element={<Classroom />}></Route>
-            <Route path="classes/:classCode/feedback" element={<GiveFeedback />}></Route>
+            <Route
+              path="classes/:classCode/feedback"
+              element={<GiveFeedback />}
+            ></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="todos" element={<Thread />}></Route>
@@ -84,11 +87,20 @@ function App() {
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route  path="updateStudent/:id" element={<UpdateStudentForm />} ></Route>
-            <Route path="updateTeacher/:id"  element={<UpdateTeacherForm />} ></Route>
+            <Route
+              path="updateStudent/:id"
+              element={<UpdateStudentForm />}
+            ></Route>
+            <Route
+              path="updateTeacher/:id"
+              element={<UpdateTeacherForm />}
+            ></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route path="updateCourse/:id"  element={<UpdateCourseForm />} ></Route>
+            <Route
+              path="updateCourse/:id"
+              element={<UpdateCourseForm />}
+            ></Route>
 
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
