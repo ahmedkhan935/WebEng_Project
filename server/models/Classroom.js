@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const AnnouncementSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['Assignment', 'Quiz', 'Material', 'Announcement'],
+        enum: ['Assignment', 'Other', 'Announcement'],
         required: true
     },
     title: {
@@ -87,11 +87,7 @@ const AnnouncementSchema = new mongoose.Schema({
                             }
                         }
                     ]
-                },
-                isMarked: {
-                    type: Boolean,
-                    required: true
-                },
+                }
             }
         ]
     

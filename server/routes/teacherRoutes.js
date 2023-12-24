@@ -13,6 +13,9 @@ router.get('/threads/:threadId',    Auth, AuthTeacher, teacherStudentController.
 router.get('/profile',              Auth, AuthTeacher, teacherController.getProfile);
 router.get('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.getAllAttendance);
 router.get('/classes/:classCode/attendance/:date', Auth, AuthTeacher, teacherController.getAttendance);
+router.get('/classes/:classCode/evaluations', Auth, AuthTeacher, teacherController.getAllEvaluations);
+router.get('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.getEvaluationMarks);
+router.get('/classes/:classCode/feedback', Auth, AuthTeacher, teacherController.getFeedback);
 
 // router.post('/classroom', Auth, AuthTeacher, teacherController.createClassroom);
 router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherController.addAnnouncement);
@@ -23,5 +26,4 @@ router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher
 router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
-router.get ('/classes/:classCode/feedback', Auth, AuthTeacher, teacherController.getFeedback);
 module.exports = router;

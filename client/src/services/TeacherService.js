@@ -123,6 +123,26 @@ export const getAttendance = async (classCode, date) => {
     return handleResponse(response);
 };
 
+export const getAllEvaluations = async (classCode) => {
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/evaluations`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
+export const getEvaluationMarks = async (classCode, title) => {
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/evaluations/${title}`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+};
+
 export const addAnnouncement = async (classCode, formdata) => {
     try {
         const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/announcement`,
