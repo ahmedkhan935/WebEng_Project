@@ -1,6 +1,9 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Card, Collapse, CardContent, Box, Typography, alpha, IconButton, Menu, MenuItem, Avatar, TextField } from '@mui/material';
+import {
+    Card, Collapse, CardContent, Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
+    IconButton, Menu, MenuItem, Avatar, TextField, Tooltip
+} from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AnnouncementIcon from '@mui/icons-material/Announcement';
 import DescriptionIcon from '@mui/icons-material/Description';
@@ -14,13 +17,13 @@ import { postComment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement } from '../services/TeacherService';
-import { Dialog, DialogTitle, DialogActions, Button } from '@mui/material';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
 
 
 function ClassroomStreamCard({ card }) {
-    
+    console.log(card);
+
     const theme = useTheme();
 
     const location = useLocation();
@@ -41,9 +44,11 @@ function ClassroomStreamCard({ card }) {
     //dealing with collapsing the card
     const [expanded, setExpanded] = useState(false);
 
-    //dealing with delete 
+    //dealing with delete , submit
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
+    const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
+
 
 
     const handleDelete = () => {
@@ -115,34 +120,34 @@ function ClassroomStreamCard({ card }) {
                 setIcon(() => AnnouncementIcon);
                 break;
             default:
-                setIcon(null);
+                setIcon(() => DescriptionIcon);
         }
 
         setCardId(card._id);
         setComments(card.comments);
-
     }, [card]);
+
     const download = async () => {
         try {
-         
-          const response = await downloadFile(card.attachments.name);
-          if (!response.ok) {
-              throw new Error("HTTP error " + response.status);
-          }
-          
-          const blob = await response.blob();
-          console.log(blob);
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = card.attachments.originalName;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-      } catch (error) {
-          console.error("Fetch error: ", error);
-      }
-      }
+
+            const response = await downloadFile(card.attachments.name);
+            if (!response.ok) {
+                throw new Error("HTTP error " + response.status);
+            }
+
+            const blob = await response.blob();
+            console.log(blob);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = card.attachments.originalName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        }
+    }
 
 
 
@@ -218,21 +223,21 @@ function ClassroomStreamCard({ card }) {
                 </IconButton>
 
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    {card.attachments.name ? (
+                    {card.attachments?.name ? (
                         <>
                             <hr></hr>
                             <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
                                 Attachments
                             </Typography>
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', marginTop: '10px' }}>
-                                
+                                <Tooltip title="Click to download attachment" placement="right">
                                     <Chip
                                         key={card.attachments.name}
                                         icon={<AttachmentIcon />}
                                         label={card.attachments.originalName}
                                         clickable
                                         component="a"
-                                        onClick={()=>download(card.attachments.name)}
+                                        onClick={() => download(card.attachments.name)}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         variant="outlined"
@@ -241,7 +246,7 @@ function ClassroomStreamCard({ card }) {
                                             backgroundColor: theme => `${theme.palette.secondary.main}1A` // 33 is hex for 20% opacity
                                         }}
                                     />
-                             
+                                </Tooltip>
                             </Box>
                         </>
                     ) : null}
@@ -294,13 +299,49 @@ function ClassroomStreamCard({ card }) {
                             </Button>
                         </Box>
                     </Box>
+                    {userRole == "student" && card.type == "Assignment" ?
+                        <>
+                            <hr></hr>
+                            <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
+                                Submission
+                            </Typography>
+                            <Button variant="contained" color="secondary" onClick={() => setSubmitDialogOpen(true)} sx={{ marginLeft: '10px', marginTop: '5px', color: '#fff' }}>Submit Work</Button>
+
+                        </>
+                        :
+                        null
+                    }
                 </Collapse>
                 <Dialog open={deleteDialogOpen} onClose={() => setDeleteDialogOpen(false)}>
-                    <DialogTitle>Are you sure you want to delete this announcement?</DialogTitle>
+                    <DialogTitle>Confirm Deletion</DialogTitle>
+                    <DialogContent>
+                        Are you sure you want to delete this announcement?
+                    </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
                         <Button onClick={confirmDelete}>Delete</Button>
                     </DialogActions>
+                </Dialog>
+                <Dialog open={submitDialogOpen} onClose={() => setSubmitDialogOpen(false)} sx={{ padding: '24px' }}>
+                    <DialogTitle>
+                        <Typography variant="h4" color="primary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginTop: '20px' }}>
+                            Submit Your Work
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>
+                        <Typography variant="body1" gutterBottom>
+                            Attach files here. Be careful, Once you turn work in, it cannot be unsubmitted.
+                        </Typography>
+                        <Box mt={2}>
+                            <input type="file" />
+                        </Box>
+                        <DialogActions>
+                            <Button variant="outlined" color="primary" onClick={() => setSubmitDialogOpen(false)}>CANCEL</Button>
+                            <Button variant="contained" color="primary" onClick={() => {/* SUBMIT HANDLER */ }}>SUBMIT</Button>
+                        </DialogActions>
+
+                    </DialogContent>
+
                 </Dialog>
             </CardContent>
         </Card>

@@ -131,8 +131,7 @@ const teacherController = {
         session.startTransaction();
         try {
             const { classCode } = req.params;
-            let { type, title, content, dueDate } = req.body;
-            let { weightage, totalMarks } = req.body;
+            let { type, title, content, dueDate, weightage, totalMarks } = req.body;
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
@@ -195,7 +194,7 @@ const teacherController = {
 
             //add the assignment and quiz to the course eval evaluations and student eval evaluations
             if (type == 'Assignment' || type == 'Other') {
-                const courseEval = CourseEval.findOne({ classCode });
+                const courseEval = await CourseEval.findOne({ classCode });
 
                 if (!courseEval) {
                     return res.status(404).json({ message: 'Course eval not found' });
@@ -210,7 +209,9 @@ const teacherController = {
                     minMarks: 0,
                     hasSubmissions: type == 'Assignment' ? true : false,
                     dueDate,
-                }
+                };
+
+                console.log("evaluation: ", courseEval)
 
                 courseEval.evaluations.push(evaluation);
                 await courseEval.save();
@@ -496,11 +497,13 @@ const teacherController = {
         try {
             const { classCode } = req.params;
 
-            const courseEval = CourseEval.findOne( {classCode} );
+            const courseEval = await CourseEval.findOne( {classCode} );
 
             if (!courseEval) {
                 return res.status(404).json({ message: 'Course eval not found' });
             }
+
+            console.log("course eval", courseEval)
 
             let evaluations = courseEval.evaluations;
 
