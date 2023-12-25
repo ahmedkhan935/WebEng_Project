@@ -166,7 +166,6 @@ export const editAnnouncement = async (classCode, announcementId, announcement) 
                 title: announcement.title,
                 content: announcement.content,
                 dueDate: announcement.dueDate,
-                attachments: announcement.attachments
             },
             {
                 headers: {

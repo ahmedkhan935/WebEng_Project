@@ -3,11 +3,13 @@ import {
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
-    Chip, Paper, DialogActions
+    Chip, Paper, DialogActions, ButtonGroup,Menu, MenuItem, ListItemIcon, ListItemText
 } from "@mui/material";
 import NavBar from '../components/Navbar';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
+import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation, addAnnouncement } from '../services/TeacherService';
 import { useParams } from 'react-router';
@@ -47,6 +49,14 @@ function Evaluations() {
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
+
+    //states for editing evaluation
+    const [editEvalTitle, setEditEvalTitle] = useState("");
+    const [editEvalContent, setEditEvalContent] = useState(null);
+    const [editEvalWeightage, setEditEvalWeightage] = useState(null);
+    const [editEvalTotalMarks, setEditEvalTotalMarks] = useState(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         getStudents(classCode).then((data) => {
@@ -139,6 +149,10 @@ function Evaluations() {
         setEditMode(true);
     };
 
+    //Edit evaluation button clicked
+    const handleEditEvaluation = () => {
+    }
+
     //Editing in process - updating student marks & validating
     const handleMarksChange = (event, evalIndex, subIndex) => {
         const value = event.target.value;
@@ -194,6 +208,15 @@ function Evaluations() {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    };
+
+    //handle evaluation edit buttons
+    const handleEvalEditClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleEvalEditClose = () => {
+        setAnchorEl(null);
     };
 
     //Add new evaluation
@@ -281,8 +304,33 @@ function Evaluations() {
                                                             :
                                                             null
                                                     }
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleImportMarks} startIcon={<FileUploadIcon />}> Import Marks </Button>
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={handleEditMarks} startIcon={<EditIcon />}> Add/Edit Marks </Button>
+                                                    <ButtonGroup variant="contained" color="primary" sx={{ marginTop: '10px' }}>
+                                                        <Button onClick={handleEvalEditClick} sx={{marginRight: '10px'}} startIcon={ <GradeIcon /> }>
+                                                            Manage Marks
+                                                        </Button>
+                                                        <Menu
+                                                            anchorEl={anchorEl}
+                                                            open={Boolean(anchorEl)}
+                                                            onClose={handleEvalEditClose}
+                                                        >
+                                                            <MenuItem onClick={handleImportMarks}>
+                                                                <ListItemIcon>
+                                                                    <FileUploadIcon fontSize="small" />
+                                                                </ListItemIcon>
+                                                                <ListItemText>Import Marks</ListItemText>
+                                                            </MenuItem>
+                                                            <MenuItem onClick={handleEditMarks}>
+                                                                <ListItemIcon>
+                                                                    <GradingIcon fontSize="small" />
+                                                                </ListItemIcon>
+                                                                <ListItemText>Add/Edit Marks</ListItemText>
+                                                            </MenuItem>
+                                                        </Menu>
+                                                        <Button onClick={handleEditEvaluation} startIcon={<EditIcon />}>
+                                                            Manage Evaluation
+                                                        </Button>
+                                                    </ButtonGroup>
+
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
                                                             <TableRow>
@@ -368,15 +416,17 @@ function Evaluations() {
                     </Table>
                 </TableContainer>
 
+                { /* Adding new evaluation */}
                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle sx={{ pb: 0 }}>
                         <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
                             Add Evaluation
                         </Typography>
                     </DialogTitle>
+                    
                     <DialogContent>
                         <TextField
-                            label="Title"
+                            label="Title" 
                             value={createEvalTitle}
                             onChange={handleTitleChange}
                             fullWidth
@@ -458,6 +508,7 @@ function Evaluations() {
                         </DialogActions>
                     </DialogContent>
                 </Dialog>
+                
             </Container>
         </NavBar>
     );

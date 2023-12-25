@@ -35,6 +35,7 @@ import {
   FormatListNumbered as FormatListNumberedIcon,
   AssignmentTurnedIn as AssignmentTurnedInIcon,
   VpnKey as VpnKeyIcon,
+  Checklist as ChecklistIcon,
 } from "@mui/icons-material";
 
 //zustand
@@ -96,7 +97,10 @@ const adminOptions = [
 ];
 
 const studentOptions = [
-  { title: "Assignments", Icon: <AssignmentIcon color="primary" /> },
+  { title: "Attendance", 
+    Icon: <ChecklistIcon color="primary" />,
+    linkto: '/student/attendance' 
+  },
   {
     title: "Classes",
     Icon: <SchoolIcon color="primary" />,
