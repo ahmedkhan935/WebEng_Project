@@ -39,18 +39,10 @@ function TeacherClassroomBtns({ classCode }) {
             return;
         }
 
-        const announcement = {
-            type: 'Announcement',
-            title: title,
-            content: content,
-            dueDate: null,
-            attachments: attachments
-        };
         const formdata = new FormData();
         formdata.append('type', 'Announcement');
         formdata.append('title', title);
         formdata.append('content', content);
-
         formdata.append('file', attachments, attachments.name);
 
         const data = await addAnnouncement(classCode, formdata);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
 import {
-    Card, Collapse, CardContent, Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
+    Alert, Card, Collapse, CardContent, Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
     IconButton, Menu, MenuItem, Avatar, TextField, Tooltip
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -48,8 +48,7 @@ function ClassroomStreamCard({ card }) {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
     const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
-
-
+    const [attachments, setAttachments] = useState(null);
 
     const handleDelete = () => {
         setDeleteDialogOpen(true);
@@ -106,6 +105,15 @@ function ClassroomStreamCard({ card }) {
         handleClose();
         setDeleteDialogOpen(false);
     };
+
+    const handleAssignmentSubmit = async () => {
+        if (!attachments) {
+            return;
+        }
+        const formdata = new FormData();
+        formdata.append('file', attachments, attachments.name);
+        // const data = await addSubmission(classCode, formdata);
+    }
 
 
     useEffect(() => {
@@ -305,8 +313,12 @@ function ClassroomStreamCard({ card }) {
                             <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
                                 Submission
                             </Typography>
+                            {new Date(card.dueDate) < new Date() &&
+                                <Alert severity="warning" sx={{ marginTop: '10px', marginBottom: '10px' }}>
+                                    The due date has passed. This could result in marks deduction.
+                                </Alert>
+                            }
                             <Button variant="contained" color="secondary" onClick={() => setSubmitDialogOpen(true)} sx={{ marginLeft: '10px', marginTop: '5px', color: '#fff' }}>Submit Work</Button>
-
                         </>
                         :
                         null
@@ -326,6 +338,7 @@ function ClassroomStreamCard({ card }) {
                     <DialogTitle>
                         <Typography variant="h4" color="primary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginTop: '20px' }}>
                             Submit Your Work
+
                         </Typography>
                     </DialogTitle>
                     <DialogContent>
@@ -333,11 +346,11 @@ function ClassroomStreamCard({ card }) {
                             Attach files here. Be careful, Once you turn work in, it cannot be unsubmitted.
                         </Typography>
                         <Box mt={2}>
-                            <input type="file" />
+                            <TextField margin="dense" id="attachments" label="Attach Files" type="file" fullWidth InputLabelProps={{ shrink: true }} onChange={e => setAttachments(e.target.files[0])} />
                         </Box>
                         <DialogActions>
                             <Button variant="outlined" color="primary" onClick={() => setSubmitDialogOpen(false)}>CANCEL</Button>
-                            <Button variant="contained" color="primary" onClick={() => {/* SUBMIT HANDLER */ }}>SUBMIT</Button>
+                            <Button variant="contained" color="primary" onClick={handleAssignmentSubmit} disabled={!attachments}>SUBMIT</Button>
                         </DialogActions>
 
                     </DialogContent>
