@@ -17,6 +17,9 @@ export function CSThemesProvider({ children }) {
                 default: darkMode ? '#333' : '#ebfafc', 
             }
         },
+        footerColors:  {
+            main: darkMode ? '#333' : '#fff',
+        },
         typography: {
             fontFamily: 'Rethink Sans, sans-serif',
             h5: {

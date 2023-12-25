@@ -1,7 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import {
-    Alert, Card, Collapse, CardContent, Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
+import { Alert, Card, Collapse, CardContent, CircularProgress,
+    Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
     IconButton, Menu, MenuItem, Avatar, TextField, Tooltip
 } from '@mui/material';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -13,13 +13,12 @@ import Chip from '@mui/material/Chip';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import { useParams } from 'react-router-dom';
-import { postComment } from '../services/StudentService';
+import { postComment, submitAssignment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement } from '../services/TeacherService';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
-import { submitAssignment } from '../services/StudentService';
 
 function ClassroomStreamCard({ card }) {
 
@@ -43,11 +42,34 @@ function ClassroomStreamCard({ card }) {
     //dealing with collapsing the card
     const [expanded, setExpanded] = useState(false);
 
-    //dealing with delete , submit
+    //dealing with delete , submissions, downlaods
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
     const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
     const [attachments, setAttachments] = useState(null);
+    const [downloading, setDownloading] = useState(false);
+
+
+    useEffect(() => {
+        switch (card.type.toLowerCase()) {
+            case 'assignment':
+                setIcon(() => AssignmentIcon);
+                break;
+            case 'material':
+                setIcon(() => DescriptionIcon);
+                break;
+            case 'announcement':
+                setIcon(() => AnnouncementIcon);
+                break;
+            default:
+                setIcon(() => DescriptionIcon);
+        }
+
+        setCardId(card._id);
+        setComments(card.comments);
+        console.log("CARD", card);
+    }, [card]);
+
 
     const handleDelete = () => {
         setDeleteDialogOpen(true);
@@ -106,7 +128,6 @@ function ClassroomStreamCard({ card }) {
     };
 
     const handleAssignmentSubmit = async () => {
-
         if (!attachments) {
             return;
         }
@@ -119,28 +140,10 @@ function ClassroomStreamCard({ card }) {
         setSubmitDialogOpen(false);
     }
 
-    useEffect(() => {
-        switch (card.type.toLowerCase()) {
-            case 'assignment':
-                setIcon(() => AssignmentIcon);
-                break;
-            case 'material':
-                setIcon(() => DescriptionIcon);
-                break;
-            case 'announcement':
-                setIcon(() => AnnouncementIcon);
-                break;
-            default:
-                setIcon(() => DescriptionIcon);
-        }
-
-        setCardId(card._id);
-        setComments(card.comments);
-    }, [card]);
-
+    //to download card attachment
     const download = async () => {
+        setDownloading(true);
         try {
-
             const response = await downloadFile(card.attachments.name);
             if (!response.ok) {
                 throw new Error("HTTP error " + response.status);
@@ -157,6 +160,33 @@ function ClassroomStreamCard({ card }) {
             document.body.removeChild(link);
         } catch (error) {
             console.error("Fetch error: ", error);
+        } finally {
+            setDownloading(false);
+        }
+    }
+
+    //to download student submission
+    const downloadSubmission = async () => {
+        setDownloading(true);
+        try {
+            const response = await downloadFile(card.submissions[0].attachment.name);
+            if (!response.ok) {
+                throw new Error("HTTP error " + response.status);
+            }
+
+            const blob = await response.blob();
+            console.log(blob);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = card.submissions[0].attachment.originalName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        } finally {
+            setDownloading(false);
         }
     }
 
@@ -297,7 +327,7 @@ function ClassroomStreamCard({ card }) {
                                 variant="outlined"
                                 placeholder="Comment your thoughts..."
                                 fullWidth
-                                sx={{ marginRight: '10px', marginLeft: '10px', flex: 1, height: '100%' }}
+                                sx={{ marginRight: '10px', marginLeft: '10px', marginBottom: '10px', flex: 1, height: '100%' }}
                             />
                             <Button
                                 variant="contained"
@@ -310,18 +340,44 @@ function ClassroomStreamCard({ card }) {
                             </Button>
                         </Box>
                     </Box>
-                    {userRole == "student" && card.type == "Assignment" ?
+                    {userRole == "student" && card.type == "Assignment" ? //display the submissions section
                         <>
                             <hr></hr>
-                            <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px' }}>
+                            <Typography variant="h6" color="secondary" sx={{ fontWeight: 'bolder', zIndex: 1, position: 'relative', marginLeft: '10px', marginTop: '10px' }}>
                                 Submission
                             </Typography>
+                            <Typography variant="subtitle2" sx={{ marginLeft: '10px' }}>
+                                {card.submissions.length > 0 && card.submissions[0].studentId == "USER" ? "You have submitted this assignment." : "You are eligible to submit your work."}
+                            </Typography>
+
+                            {card.submissions.length > 0 && card.submissions[0].studentId == "USER" ?
+                                <Tooltip title="Click to download submission" placement="right">
+                                    <Chip
+                                        icon={<AttachmentIcon />}
+                                        label={card.submissions[0].attachment.originalName}
+                                        clickable
+                                        component="a"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        variant="outlined"
+                                        sx={{
+                                            margin: "5px",
+                                            backgroundColor: (theme) =>
+                                                `${theme.palette.secondary.main}1A`,
+                                        }}
+                                        onClick={() => downloadSubmission()}
+
+                                    />
+                                </Tooltip>
+                                :
+                                <Button variant="contained" color="secondary" onClick={() => { console.log(card); setSubmitDialogOpen(true) }} sx={{ marginLeft: '10px', marginTop: '5px', color: '#fff' }}>Submit Work</Button>
+                            }
+
                             {new Date(card.dueDate) < new Date() &&
                                 <Alert severity="warning" sx={{ marginTop: '10px', marginBottom: '10px' }}>
                                     The due date has passed. This could result in marks deduction.
                                 </Alert>
                             }
-                            <Button variant="contained" color="secondary" onClick={() => setSubmitDialogOpen(true)} sx={{ marginLeft: '10px', marginTop: '5px', color: '#fff' }}>Submit Work</Button>
                         </>
                         :
                         null
@@ -358,6 +414,13 @@ function ClassroomStreamCard({ card }) {
 
                     </DialogContent>
 
+                </Dialog>
+
+                <Dialog open={downloading}>
+                    <Box sx={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '48px' }}>
+                        <DialogTitle>Downloading file, please wait...</DialogTitle>
+                        <CircularProgress color="secondary"/>
+                    </Box>
                 </Dialog>
             </CardContent>
         </Card>

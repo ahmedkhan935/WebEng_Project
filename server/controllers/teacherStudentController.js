@@ -44,10 +44,22 @@ const teacherStudentController = {
                         classroom.announcements[i].comments[j].createdBy = (commenter ? commenter.name : "Unknown User");
                         //   console.log( "updated createdby" ,  classroom.announcements[i].comments[j].createdBy );
                     }
+
+                    
+                    for(let j=0; j<classroom.announcements[i].submissions.length; j++) {
+                        const stdId = classroom.announcements[i].submissions[j].studentId;
+                        if (req.user == stdId) {
+                            classroom.announcements[i].submissions[j].studentId = "USER";
+                            classroom.announcements[i].submissions = [ classroom.announcements[i].submissions[j] ];
+                            break;
+                        }
+                       // classroom.announcements[i].submissions[j].studentId = (studentRno ? studentRno.rollNumber : stdId);
+                    }
                 }
             }
 
             classroom.announcements = classroom.announcements.reverse();
+
 
             res.status(201).json(classroom);
         } catch (err) {

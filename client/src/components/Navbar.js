@@ -1,6 +1,7 @@
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
 import {
+  alpha,
   Box,
   Drawer as MuiDrawer,
   AppBar as MuiAppBar,
@@ -38,34 +39,25 @@ import {
 
 import { Link, useLocation } from "react-router-dom";
 import {logout} from '../services/AuthService';
+import LogoImage from '../assets/images/logo.png'
 const drawerWidth = 240;
 
+const Footer = () => {
+  const theme = useTheme();
+  return (
+    <Box sx={{ display: 'flex',flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', paddingTop: '40px', paddingBottom: '40px', backgroundColor: alpha(theme.palette.primary.main, 0.1), marginTop: 'auto' }}>
+      <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />
+      <Typography variant="body1" sx={{color: theme.palette.primary.main}}>
+        © 2023 Clean Slate Inc.
+      </Typography>
+      <Typography variant="subtitle1" color="text.secondary" >
+        github.com/cleanSlate
+      </Typography>
+    </Box>
+  );
+};
+
 const adminOptions = [
-  // {
-  //   title: "Deans List",
-  //   Icon: <FormatListNumberedIcon color="primary" />,
-  //   linkto: "/admin/list/deans",
-  // },
-  // {
-  //   title: "Debar List",
-  //   Icon: <SettingsIcon color="primary" />,
-  //   linkto: "/admin/list/debar",
-  // },
-  // {
-  //   title: "Medal Holders",
-  //   Icon: <SettingsIcon color="primary" />,
-  //   linkto: "/admin/list/medalHolders",
-  // },
-  // {
-  //   title: "Rectors List",
-  //   Icon: <SettingsIcon color="primary" />,
-  //   linkto: "/admin/list/rectors",
-  // },
-  // {
-  //   title: "Warning List",
-  //   Icon: <SettingsIcon color="primary" />,
-  //   linkto: "/admin/list/warning",
-  // },
   {
     title: "Assign Courses",
     Icon: <AssignmentTurnedInIcon color="primary" />,
@@ -295,7 +287,7 @@ export default function NavBar({ children }) {
             </ListItem>
           ))}
         </List>
-        {isStudent ? (
+        {isStudent && (
           <>
             <Divider />
             <List>
@@ -331,8 +323,8 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) : null}
-        {isAdmin ? (
+        ) }
+        {isAdmin && (
           <>
             <Divider />
             <List>
@@ -369,8 +361,8 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) : null}
-        {isTeacher ? (
+        ) }
+        {isTeacher &&(
           <>
             <Divider />
             <List>
@@ -407,13 +399,19 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) : null}
+        ) }
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <DrawerHeader />
-        {children}{" "}
-        {/* This is where the content of the page will be rendered */}
+      <Box component="main" sx={{ flexGrow: 1 }}>
+    <DrawerHeader />
+        <Box sx={{ p: 3 }}>
+          {children}
+          {/* This is where the content of the page will be rendered */}
+        </Box>
+        <Footer />
       </Box>
+     
     </Box>
   );
 }
+
+

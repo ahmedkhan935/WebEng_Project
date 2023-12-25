@@ -82,8 +82,10 @@ function AnnouncementList({ isFullList, thread }) {
                         <AnnouncementCard key={announcement._id} announcement={announcement}></AnnouncementCard>
                     )
                 }
-                {!isFullList ?
-                    <Button variant="contained" sx={{ alignSelf: 'flex-end', marginTop: '10px' }} component={Link} to={threadsUrl}>View All</Button> : null}
+                {!isFullList &&
+                    <Button variant="contained" sx={{ alignSelf: 'flex-end', marginTop: '10px' }} component={Link} to={threadsUrl}>
+                        View All
+                    </Button>}
             </Container>
         </Box>
     )

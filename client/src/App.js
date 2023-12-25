@@ -1,3 +1,7 @@
+import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
+import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
+import { ClassroomProvider } from "./context/ClassroomContext";
+
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
 import LandingPage from "./pages/LandingPage";
@@ -10,7 +14,6 @@ import DeansList from "./pages/DeansList";
 import RectorsList from "./pages/RectorsList";
 import ViewStudents from "./pages/ViewStudentS";
 import ViewTeachers from "./pages/ViewTeachers";
-import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import UserLandingPage from "./pages/UserLandingPage";
 import Classroom from "./pages/Classroom";
 import Threads from "./pages/Threads";
@@ -18,10 +21,6 @@ import Thread from "./pages/Thread";
 import CreateCourseForm from "./pages/CreateCourseForm";
 import SearchCourses from "./pages/SearchCourses";
 import Settings from "./pages/Settings";
-//import { ThemeProvider } from "@mui/material";
-//import theme from "./assets/theme/theme";
-import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
-
 import UpdateStudentForm from "./pages/UpdateStudentForm";
 import UpdateCourseForm from "./pages/updateCourse";
 import ViewLogs from "./pages/ViewLog";
@@ -40,90 +39,70 @@ import Evaluations from "./pages/Evaluations";
 import AssignCourses from "./pages/AssignCourses";
 import AddDegree from "./pages/AddDegree";
 import ViewDegrees from "./pages/ViewDegrees";
+import ViewAttendance from "./pages/ViewAttendance";
+import ViewEvaluations from "./pages/ViewEvaluations";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
-import { ClassroomProvider } from "./context/ClassroomContext";
 
 function App() {
   return (
     <CSThemesProvider>
       <Router>
         <Routes>
+          { /* Login Routes */ }
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
-          <Route path="/admin/settings" element={<Settings />}></Route>
-          <Route path="/student/settings" element={<Settings />}></Route>
-          <Route path="/teacher/settings" element={<Settings />}></Route>
-
+      
+          { /* Student Routes */ }
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
-            <Route
-              path="classes/:classCode"
-              element={
-                <ClassroomProvider>
-                  <Classroom />
-                </ClassroomProvider>
-              }
-            ></Route>
-            <Route
-              path="classes/:classCode/feedback"
-              element={<GiveFeedback />}
-            ></Route>
+            <Route path="classes/:classCode">
+              <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider> }></Route>
+              <Route path="videoCall" element={<VideoCall />}></Route>
+              <Route path="attendance" element={<ViewAttendance />}></Route>
+              <Route path="feedback" element={<GiveFeedback />}></Route>
+              <Route path="evaluations" element={<ViewEvaluations />}></Route>
+            </Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="todos" element={<Thread />}></Route>
+            <Route path="settings" element={<Settings />}></Route>
           </Route>
 
+          { /* Teacher Routes */ }
           <Route path="teacher">
             <Route index element={<UserLandingPage role={"teacher"} />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode">
-              <Route
-                index
-                element={
-                  <ClassroomProvider>
-                    <Classroom />
-                  </ClassroomProvider>
-                }
-              ></Route>
+              <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider> }></Route>
               <Route path="videoCall" element={<VideoCall />}></Route>
               <Route path="attendance" element={<Attendance />}></Route>
               <Route path="feedback" element={<TeacherFeedback />}></Route>
               <Route path="evaluations" element={<Evaluations />}></Route>
+              <Route path="settings" element={<Settings />}></Route>
             </Route>
           </Route>
 
+          { /* Admin Routes */ }
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
+            <Route path="settings" element={<Settings />}></Route>
             <Route path="threads" element={<AdminThreads />}></Route>
             <Route path="threads/:id" element={<AdminThread />}></Route>
             <Route path="addTeacher" element={<AddTeacherForm />}></Route>
             <Route path="addStudent" element={<AddStudentForm />}></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
-            <Route
-              path="updateStudent/:id"
-              element={<UpdateStudentForm />}
-            ></Route>
-            <Route
-              path="updateTeacher/:id"
-              element={<UpdateTeacherForm />}
-            ></Route>
+            <Route path="updateStudent/:id" element={<UpdateStudentForm />}></Route>
+            <Route path="updateTeacher/:id" element={<UpdateTeacherForm />} ></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route
-              path="updateCourse/:id"
-              element={<UpdateCourseForm />}
-            ></Route>
-            <Route
-              path="addDegree/:degreeid/selectCourses"
-              element={<DegreeCourseSelection />}
-            ></Route>
-
+            <Route  path="updateCourse/:id"element={<UpdateCourseForm />}  ></Route>
+            <Route path="addDegree/:degreeid/selectCourses" element={<DegreeCourseSelection />} ></Route>
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
             <Route path="assignCourses" element={<AssignCourses />}></Route>
@@ -141,7 +120,9 @@ function App() {
             </Route>
           </Route>
 
+          { /* Page Not Found */ }
           <Route path="*" element={<PageNotFound />} />
+          
         </Routes>
       </Router>
     </CSThemesProvider>
