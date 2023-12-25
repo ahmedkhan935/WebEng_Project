@@ -114,6 +114,7 @@ const ViewDegrees = () => {
                 <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Abbreviation</TableCell>
                 <TableCell style={{ color: "#FFFFFF" }}>Credit Hours</TableCell>
+                <TableCell style={{ color: "#FFFFFF" }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -122,6 +123,15 @@ const ViewDegrees = () => {
                   <TableCell>{row.name}</TableCell>
                   <TableCell>{row.abbreviation}</TableCell>
                   <TableCell>{row.totalCredits}</TableCell>
+                  <TableCell>
+                    <Button
+                      onClick={() => {
+                        navigate(`addDegree/${row._id}/selectCourses`);
+                      }}
+                    >
+                      Add Courses
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

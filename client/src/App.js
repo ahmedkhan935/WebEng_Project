@@ -101,8 +101,15 @@ function App() {
             <Route path="updateTeacher/:id" element={<UpdateTeacherForm />} ></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route  path="updateCourse/:id"element={<UpdateCourseForm />}  ></Route>
-            <Route path="addDegree/:degreeid/selectCourses" element={<DegreeCourseSelection />} ></Route>
+            <Route
+              path="updateCourse/:id"
+              element={<UpdateCourseForm />}
+            ></Route>
+            <Route
+              path="viewDegrees/addDegree/:degreeId/selectCourses"
+              element={<DegreeCourseSelection />}
+            ></Route>
+
             <Route path="viewLogs" element={<ViewLogs />}></Route>
             <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
             <Route path="assignCourses" element={<AssignCourses />}></Route>
