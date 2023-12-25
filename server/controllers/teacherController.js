@@ -313,7 +313,7 @@ const teacherController = {
             }
 
             const students = classroom.students;
-            console.log(students);
+            // console.log(students);
             if (!students) {
                 return res.status(404).json({ message: 'No students found' });
             }
@@ -325,7 +325,7 @@ const teacherController = {
                 })
                 .session(session);
 
-            console.log("eval: ", studentEvals);
+            // console.log("eval: ", studentEvals);
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
@@ -333,11 +333,11 @@ const teacherController = {
 
             for (let i = 0; i < studentEvals.length; i++) {
                 const studentAttendance = attendance.find(student => student.rollNumber == studentEvals[i].studentId.rollNumber);
-                console.log("studentAttendance: ", studentAttendance);
+                // console.log("studentAttendance: ", studentAttendance);
                 const status = studentAttendance.status;
                 studentEvals[i].lectures.push({ date, duration, status });
                 await studentEvals[i].save({ session });
-                console.log("saved", studentEvals[i]);
+                // console.log("saved", studentEvals[i]);
             }
 
             await courseEval.save({ session });
@@ -507,7 +507,7 @@ const teacherController = {
             if (!courseEval) {
                 return res.status(404).json({ message: 'Course eval not found' });
             }
-            console.log(courseEval);
+            // console.log(courseEval);
 
             let evaluations = courseEval.evaluations;
 
@@ -603,14 +603,11 @@ const teacherController = {
                     return res.status(404).json({ message: 'Assignment not found' });
                 }
 
-                console.log(assignment);
+                // console.log(assignment);
                 const submissions = assignment.submissions ? assignment.submissions : [];
-                console.log("SUBBB", submissions);
 
                 data = data.map(student => {
-                    console.log("STUDENT id", student.studentId);
                     const submission = submissions.find(submission => submission.studentId.toString() == student.studentId.toString());
-                    console.log("SUBMISSION", submission);
                     if (submission) {
                         student.submission = submission.attachment;
                     } else {
@@ -637,6 +634,7 @@ const teacherController = {
             const { evaluations } = req.body;
 
             title = title.replace(/~/g, ' ');
+            const cacheKey = `${classCode}-${title}`;
 
             const courseEval = await CourseEval.findOne({ classCode }).session(session);
             if (!courseEval) {
@@ -647,17 +645,53 @@ const teacherController = {
             if (!evaluation) {
                 return res.status(404).json({ message: 'Evaluation not found' });
             }
-            console.log(evaluation);
+            console.log("eval", evaluation);
+            console.log("evals", evaluations);
 
-            const averageMarks = evaluations.reduce((acc, curr) => acc + curr.obtainedMarks, 0) / evaluations.length;
-            const maxMarks = evaluations.reduce((acc, curr) => Math.max(acc, curr.obtainedMarks), 0);
-            const minMarks = evaluations.reduce((acc, curr) => Math.min(acc, curr.obtainedMarks), maxMarks);
+            const calcAvg = () => {
+                let sum = 0;
+                evaluations.forEach(evaluation => {
+                    sum += evaluation.obtainedMarks;
+                });
+                return sum / evaluations.length;
+            }
+            const averageMarks = calcAvg();
+
+            const calcMax = () => {
+                let max = 0;
+                evaluations.forEach(evaluation => {
+                    if (evaluation.obtainedMarks > max) {
+                        max = evaluation.obtainedMarks;
+                    }
+                });
+                return max;
+            }
+            const maxMarks = calcMax();
+
+            const calcMin = () => {
+                let min = maxMarks;
+                evaluations.forEach(evaluation => {
+                    if (evaluation.obtainedMarks < min) {
+                        min = evaluation.obtainedMarks;
+                    }
+                });
+                return min;
+            }
+            const minMarks = calcMin();
+
+            console.log("avg", averageMarks, "max", maxMarks, "min", minMarks);
 
             evaluation.averageMarks = averageMarks;
             evaluation.maxMarks = maxMarks;
             evaluation.minMarks = minMarks;
 
-            const studentEvals = await StudentEval.find({ classCode }).session(session);
+            const studentEvals = await StudentEval.find({ classCode })
+            .populate({
+                path: 'studentId',
+                select: 'rollNumber'
+            })
+            .session(session);
+
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
@@ -665,11 +699,26 @@ const teacherController = {
             for (let i = 0; i < studentEvals.length; i++) {
                 const studentEval = studentEvals[i];
                 const eval = studentEval.evaluations.find(eval => eval.title == title);
+
+                const obtainedMarks = evaluations.find(evaluation => evaluation.rollNumber == studentEval.studentId.rollNumber).obtainedMarks;
+                const obtainedWeightage = obtainedMarks * evaluation.weightage / evaluation.totalMarks;
+
                 if (eval) {
-                    const obtainedMarks = evaluations.find(evaluation => evaluation.studentId == studentEval.studentId).obtainedMarks;
                     eval.obtainedMarks = obtainedMarks;
-                    eval.obtainedWeightage = obtainedMarks * evaluation.weightage / evaluation.totalMarks;
+                    eval.obtainedWeightage = obtainedWeightage;
                     await studentEval.save({ session });
+                } else {
+                    studentEval.evaluations.push({ title, obtainedMarks, obtainedWeightage });
+                    await studentEval.save({ session });
+                }
+
+                if(cache[cacheKey]){
+                    cache[cacheKey].forEach(student => {
+                        if(student.rollNumber == studentEval.studentId.rollNumber){
+                            student.obtainedMarks = obtainedMarks;
+                            student.obtainedWeightage = obtainedWeightage;
+                        }
+                    });
                 }
             }
 
