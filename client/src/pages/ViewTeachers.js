@@ -14,6 +14,7 @@ import {
   Button,
   Link,
 } from "@mui/material";
+import GroupAddTwoToneIcon from "@mui/icons-material/GroupAddTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import NavBar from "../components/Navbar";
@@ -116,6 +117,7 @@ const ViewTeachers = () => {
           onClick={handleaddteacher}
           variant="outlined"
           color="primary"
+          startIcon={<GroupAddTwoToneIcon />}
           style={{
             zIndex: 2000,
             width: "150px",
@@ -164,10 +166,10 @@ const ViewTeachers = () => {
                 <TableCell>{row.email}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleUpdate(row._id)}>
-                    <EditIcon />
+                    <EditIcon color="secondary" />
                   </IconButton>
                   <IconButton onClick={() => handleDelete(row._id)}>
-                    <DeleteIcon />
+                    <DeleteIcon color="secondary" />
                   </IconButton>
                 </TableCell>
               </TableRow>

@@ -38,32 +38,38 @@ import {
 } from "@mui/icons-material";
 
 import { Link, useLocation } from "react-router-dom";
-import {logout} from '../services/AuthService';
-import LogoImage from '../assets/images/logo.png'
+import { logout } from "../services/AuthService";
+import LogoImage from "../assets/images/logo.png";
 const drawerWidth = 240;
 
 const Footer = () => {
   const theme = useTheme();
   return (
-    <Box sx={{
-      position: 'static',
-      bottom: 0,
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '20px',
-      paddingTop: '40px',
-      paddingBottom: '40px',
-      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-      marginTop: 'auto'
-    }}>
-      <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />
+    <Box
+      sx={{
+        position: "static",
+        bottom: 0,
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "20px",
+        paddingTop: "40px",
+        paddingBottom: "40px",
+        backgroundColor: alpha(theme.palette.primary.main, 0.1),
+        marginTop: "auto",
+      }}
+    >
+      <img
+        src={LogoImage}
+        alt="Logo"
+        style={{ width: "30px", height: "30px" }}
+      />
       <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
         © 2023 Clean Slate Inc.
       </Typography>
-      <Typography variant="subtitle1" color="text.secondary" >
+      <Typography variant="subtitle1" color="text.secondary">
         github.com/cleanSlate
       </Typography>
     </Box>
@@ -194,11 +200,7 @@ export default function NavBar({ children }) {
   const [open, setOpen] = React.useState(false);
   const logouts = () => {
     logout();
-  }
-
-
-    
- 
+  };
 
   const standardOptions = [
     {
@@ -216,7 +218,12 @@ export default function NavBar({ children }) {
       Icon: <SettingsIcon color="primary" />,
       linkto: "/" + userRole + "/settings",
     },
-    { title: "Logout", Icon: <LogoutIcon color="primary" />, linkto: "/",onClick: logout },
+    {
+      title: "Logout",
+      Icon: <LogoutIcon color="primary" />,
+      linkto: "/",
+      onClick: logout,
+    },
   ];
 
   const handleDrawerOpen = () => {
@@ -336,7 +343,7 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
         {isAdmin && (
           <>
             <Divider />
@@ -374,8 +381,8 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
-        {isTeacher &&(
+        )}
+        {isTeacher && (
           <>
             <Divider />
             <List>
@@ -412,19 +419,16 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1 }}>
-    <DrawerHeader />
+        <DrawerHeader />
         <Box sx={{ p: 3 }}>
           {children}
           {/* This is where the content of the page will be rendered */}
         </Box>
         <Footer />
       </Box>
-     
     </Box>
   );
 }
-
-

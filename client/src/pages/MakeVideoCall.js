@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import NavBar from "../components/Navbar";
 import VideoCallImg from "../assets/images/vid.gif";
 import JitsiMeetComponent from "../components/JitsiMeetComponent"; // Import the JitsiMeetComponent
-import { Button, Typography, Box, CircularProgress, Container } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
 
 const VideoCall = () => {
@@ -10,7 +16,7 @@ const VideoCall = () => {
   const [meetingStarted, setMeetingStarted] = useState(false); // Track if the meeting has started
   const classCode = useParams();
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+  const userRole = location.pathname.split("/")[1]; // Extract userRole from the URL
 
   const handleStartMeeting = () => {
     setLoading(true);
@@ -63,7 +69,7 @@ const VideoCall = () => {
                 }}
               />
             </div>
-            {userRole == "teacher" &&
+            {userRole == "teacher" && (
               <Button
                 variant="outlined"
                 color="primary"
@@ -73,10 +79,10 @@ const VideoCall = () => {
               >
                 {loading && (
                   <CircularProgress size={24} style={{ marginRight: "10px" }} />
-                ) }
+                )}
                 Start Meeting
               </Button>
-            }
+            )}
           </Box>
         )}
       </Container>

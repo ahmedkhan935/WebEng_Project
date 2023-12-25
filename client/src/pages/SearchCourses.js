@@ -14,6 +14,7 @@ import {
   Button,
   Link,
 } from "@mui/material";
+import LibraryAddTwoToneIcon from "@mui/icons-material/LibraryAddTwoTone";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -107,6 +108,7 @@ const SearchCourses = () => {
               width: "150px",
               height: "40px",
             }}
+            startIcon={<LibraryAddTwoToneIcon />}
           >
             Add Course
           </Button>
@@ -152,10 +154,10 @@ const SearchCourses = () => {
                   <TableCell>{row.type}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleUpdate(row._id)}>
-                      <EditIcon />
+                      <EditIcon color="secondary" />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(row._id)}>
-                      <DeleteIcon />
+                      <DeleteIcon color="secondary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
