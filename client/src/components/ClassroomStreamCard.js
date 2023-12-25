@@ -99,7 +99,7 @@ function ClassroomStreamCard({ card }) {
 
     const handleClick = (event) => {
         event.stopPropagation();
-        console.log("Three dots clicked")
+       
         setAnchorEl(event.currentTarget);
     };
 
@@ -108,7 +108,7 @@ function ClassroomStreamCard({ card }) {
     };
 
     const handleEdit = () => {
-        console.log("Edit clicked");
+       
         handleClose();
     }
 
