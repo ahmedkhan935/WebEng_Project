@@ -3,18 +3,13 @@ import { getAttendance } from "../services/StudentService";
 import { useLocation, useParams } from "react-router";
 import NavBar from "../components/Navbar";
 import { Alert, Container,Box, Typography, TablePagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import { styled } from '@mui/system';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { TableHeaderCell } from '../assets/theme/StyledComponents';
 
 const ATTENDANCE_THRESHOLD = 80;
 
-const TableHeaderCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
-    fontWeight: 'bold',
-    color: theme.palette.common.white,
-}));
 
 function ViewAttendance() {
     const location = useLocation();
