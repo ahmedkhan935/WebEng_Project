@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Paper, TableContainer, Container, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import { Box, alpha, CircularProgress, Paper, TableContainer, Container, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
 import { BarChart, ResponsiveContainer, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { useTheme } from '@mui/material/styles';
 import NavBar from "../components/Navbar";
@@ -12,10 +12,15 @@ function ViewEvaluations() {
   const [loading, setLoading] = useState(true);
   const [evaluations, setEvaluations] = useState([]);
   const theme = useTheme();
+  const [totalObtainedWeightage, setTotalObtainedWeightage] = useState(0);
+  const [totalWeightage, setTotalWeightage] = useState(0);
 
   useEffect(() => {
     getEvaluations(classCode).then((data) => {
-      console.log(data.data);
+      const newTotalObtainedWeightage = data.data.reduce((sum, evaluation) => sum + evaluation.obtainedWeightage, 0);
+      const newTotalWeightage = data.data.reduce((sum, evaluation) => sum + evaluation.totalWeightage, 0);
+      setTotalObtainedWeightage(newTotalObtainedWeightage);
+      setTotalWeightage(newTotalWeightage);
       setEvaluations(data.data);
       setLoading(false);
     });
@@ -54,6 +59,7 @@ function ViewEvaluations() {
                     <TableHeaderCell>Title</TableHeaderCell>
                     <TableHeaderCell>Total Marks</TableHeaderCell>
                     <TableHeaderCell>Obtained Marks</TableHeaderCell>
+                    <TableHeaderCell>Total Weightage</TableHeaderCell>
                     <TableHeaderCell>Obt. Weightage</TableHeaderCell>
                     <TableHeaderCell>Average</TableHeaderCell>
                     <TableHeaderCell>Minimum</TableHeaderCell>
@@ -66,12 +72,19 @@ function ViewEvaluations() {
                       <TableCell>{evaluation.title}</TableCell>
                       <TableCell>{evaluation.totalMarks}</TableCell>
                       <TableCell>{evaluation.obtainedMarks}</TableCell>
+                      <TableCell>{evaluation.totalWeightage}</TableCell>
                       <TableCell>{evaluation.obtainedWeightage}</TableCell>
                       <TableCell>{evaluation.averageMarks}</TableCell>
                       <TableCell>{evaluation.minMarks}</TableCell>
                       <TableCell>{evaluation.maxMarks}</TableCell>
                     </TableRow>
                   ))}
+                  <TableRow sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.2) }}>
+                    <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}>Total</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{totalWeightage}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }}>{totalObtainedWeightage}</TableCell>
+                    <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}></TableCell>
+                  </TableRow>
                 </TableBody>
               </Table>
             </TableContainer>

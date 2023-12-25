@@ -3,7 +3,7 @@ import {
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
-    Chip, Paper, DialogActions, ButtonGroup,Menu, MenuItem, ListItemIcon, ListItemText
+    Chip, Paper, DialogActions, ButtonGroup, Menu, MenuItem, ListItemIcon, ListItemText
 } from "@mui/material";
 import NavBar from '../components/Navbar';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -54,12 +54,17 @@ function Evaluations() {
     const fileInput = useRef();
 
     //states for editing evaluation
-    const [editEvalTitle, setEditEvalTitle] = useState("");
-    const [editEvalContent, setEditEvalContent] = useState(null);
-    const [editEvalWeightage, setEditEvalWeightage] = useState(null);
-    const [editEvalTotalMarks, setEditEvalTotalMarks] = useState(null);
-    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editingEval, setEditingEval] = useState(false);
     const [anchorEl, setAnchorEl] = useState(null);
+    const [anchorMarks, setAnchorMarks] = React.useState(null);
+
+    const handleManageMarksClick = (event) => {
+        setAnchorMarks(event.currentTarget);
+    };
+
+    const handleManageMarksClose = () => {
+        setAnchorMarks(null);
+    };
 
     useEffect(() => {
         getStudents(classCode).then((data) => {
@@ -148,12 +153,10 @@ function Evaluations() {
     //Edit marks button clicked
     const handleEditMarks = () => {
         setTempEvaluations([...evaluations]);
+        setAnchorMarks(null);
         setEditMode(true);
     };
 
-    //Edit evaluation button clicked
-    const handleEditEvaluation = () => {
-    }
 
     //Editing in process - updating student marks & validating
     const handleMarksChange = (event, evalIndex, subIndex) => {
@@ -211,11 +214,12 @@ function Evaluations() {
     }
 
     const handleImportMarks = (event, evalIndex) => {
+        setAnchorMarks(null);
         console.log('Starting file upload...');
         const fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
         const file = event.target.files[0];
 
-        if(!file){
+        if (!file) {
             return;
         }
 
@@ -296,6 +300,18 @@ function Evaluations() {
         setAnchorEl(null);
     };
 
+    const handleManageEvaluation = (evalIndex) => {
+        setEditingEval(true);
+        setOpenDialog(true);
+        setCreateEvalTitle(evaluations[evalIndex].title);
+        setCreateEvalContent(evaluations[evalIndex].content);
+        setCreateEvalWeightage(evaluations[evalIndex].weightage);
+        setCreateEvalTotalMarks(evaluations[evalIndex].totalMarks);
+        setCreateEvalOpenSubmission(evaluations[evalIndex].dueDate ? true : false);
+        setCreateEvalDueDate(evaluations[evalIndex].dueDate);
+
+    }
+
     //Add new evaluation
     const addEvaluation = () => {
         const evaluation = { //formdata
@@ -323,6 +339,11 @@ function Evaluations() {
         // Add the evaluation to your state or database here
         setOpenDialog(false);
     };
+
+    const saveEditedEval = () => {
+        //MUSA CALL ENDPOINT HERE.
+    }
+
 
 
     return (
@@ -388,8 +409,26 @@ function Evaluations() {
                                                         style={{ display: 'none' }}
                                                         ref={fileInput}
                                                     />
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleFileUpload} startIcon={<FileUploadIcon />}> Import Marks </Button>
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={handleEditMarks} startIcon={<EditIcon />}> Add/Edit Marks </Button>
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleManageMarksClick} startIcon={<GradeIcon />}>
+                                                        Manage Marks
+                                                    </Button>
+                                                    <Menu
+                                                        id="simple-menu"
+                                                        anchorEl={anchorMarks}
+                                                        keepMounted
+                                                        open={Boolean(anchorMarks)}
+                                                        onClose={handleManageMarksClose}
+                                                    >
+                                                        <MenuItem onClick={handleFileUpload}>
+                                                            <FileUploadIcon color="primary" sx={{marginRight: '5px'}} />
+                                                            Import Marks
+                                                        </MenuItem>
+                                                        <MenuItem onClick={handleEditMarks}>
+                                                            <GradingIcon color="primary" sx={{marginRight: '5px'}} />
+                                                            Edit Marks
+                                                        </MenuItem>
+                                                    </Menu>
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleManageEvaluation(evalIndex)} startIcon={<EditIcon />}> Manage Evaluation </Button>
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
                                                             <TableRow>
@@ -479,13 +518,13 @@ function Evaluations() {
                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle sx={{ pb: 0 }}>
                         <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
-                            Add Evaluation
+                            {editingEval ? "Edit Evaluation" : "Add Evaluation"}
                         </Typography>
                     </DialogTitle>
-                    
+
                     <DialogContent>
                         <TextField
-                            label="Title" 
+                            label="Title"
                             value={createEvalTitle}
                             onChange={handleTitleChange}
                             fullWidth
@@ -530,6 +569,8 @@ function Evaluations() {
                             inputProps={{ min: 1 }}
                             sx={{ marginTop: '20px' }}
                         />
+                        {
+                         (editingEval) ? null :
                         <FormControlLabel
                             control={
                                 <Tooltip title="If you select this checkbox, a submission portal for this evaluation will be opened on the classroom.">
@@ -538,7 +579,9 @@ function Evaluations() {
                             }
                             label="Open Submissions"
                         />
-                        {createEvalOpenSubmission && (
+                        }           
+                        { 
+                         createEvalOpenSubmission && (
                             <TextField
                                 label="Due Date"
                                 type="datetime-local"
@@ -559,15 +602,15 @@ function Evaluations() {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={addEvaluation}
+                                onClick={editingEval ? saveEditedEval : addEvaluation}
                                 disabled={!createEvalTitle || !createEvalWeightage || !createEvalTotalMarks || (createEvalOpenSubmission && !createEvalDueDate) || titleError}
                             >
-                                Add
+                                {editingEval ? "Save Changes" : "Add"}
                             </Button>
                         </DialogActions>
                     </DialogContent>
                 </Dialog>
-                
+
             </Container>
         </NavBar>
     );
