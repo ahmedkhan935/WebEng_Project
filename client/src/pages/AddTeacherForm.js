@@ -16,13 +16,12 @@ const AddTeacherForm = () => {
   const [teacherEmail, setTeacherEmail] = useState("");
   const [password, setTeacherPassword] = useState("");
   const [cnic, setCnic] = useState("");
- const [permanentAddress, setPermanentAddress] = useState("");
+  const [permanentAddress, setPermanentAddress] = useState("");
   const [homePhonePermanent, setHomePhonePermanent] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
   const [countries, setCountries] = useState([]);
-
 
   useEffect(() => {
     // Fetch countries from the API
@@ -48,14 +47,13 @@ const AddTeacherForm = () => {
       teacherName,
       cnic,
       permanentAddress,
-      homePhonePermanent,
+      homePhonePermanent
     );
     if (resp.status === 500 || resp.status === 400) {
       setsubmitmsg("Cannot Add Teacher!");
       setstatus(false);
       setFormSubmitted(true);
     } else {
-      console.log(resp);
       setstatus(true);
       setsubmitmsg("  Teacher successfully added!");
       setFormSubmitted(true);
@@ -163,7 +161,6 @@ const AddTeacherForm = () => {
             <h3>Personal Information</h3>
             <Container style={styles.formGroup}>
               <p>Date of Birth</p>{" "}
-             
               <TextField
                 label="CNIC"
                 variant="outlined"
@@ -171,7 +168,6 @@ const AddTeacherForm = () => {
                 onChange={(e) => setCnic(e.target.value)}
                 style={styles.roundedInput}
               />
-             
             </Container>
 
             <h3>Contact Information</h3>
@@ -190,7 +186,6 @@ const AddTeacherForm = () => {
                 onChange={(e) => setHomePhonePermanent(e.target.value)}
                 style={styles.roundedInput}
               />
-             
             </Container>
 
             <Button

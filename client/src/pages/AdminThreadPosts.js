@@ -132,7 +132,7 @@ const AdminThread = () => {
         email: row.email,
         _id: row._id,
       }));
-      console.log(rows);
+
       setRows(rows);
     });
 

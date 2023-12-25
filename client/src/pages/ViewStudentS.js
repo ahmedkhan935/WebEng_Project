@@ -44,11 +44,10 @@ const ViewStudents = () => {
   useEffect(() => {
     viewDegrees().then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setDegrees(data);
       });
     });
-    console.log(degrees);
+
     viewAllStudents().then((res) => {
       const rows = res.map((row) => ({
         studentId: row.rollNumber,
@@ -62,9 +61,7 @@ const ViewStudents = () => {
   }, []);
 
   const handleDelete = (studentId) => {
-    console.log(`Deleting student with ID: ${studentId}`);
     deleteStudent(studentId).then((res) => {
-      console.log(res);
       if (!res.errorMessage) {
         alert("Student deleted successfully");
         window.location.reload();
@@ -74,7 +71,6 @@ const ViewStudents = () => {
     });
   };
   const handleUpdate = (studentId) => {
-    console.log(`Updating student with ID: ${studentId}`);
     navigate(`/admin/updateStudent/${studentId}`);
   };
 

@@ -263,7 +263,6 @@ const updateCourse = async (req, res) => {
         if (course2.prereq) {
           for (const coursePrereq of course2.prereq) {
             if (coursePrereq.courseCode === course.courseCode) {
-              console.log(coursePrereq.courseCode);
               return res
                 .status(400)
                 .json({ errorMessage: "Circular Prerequisite" });
@@ -298,7 +297,10 @@ const deleteCourse = async (req, res) => {
 
 const viewAllTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find().populate("courses.courseId", "courseCode");
+    const teachers = await Teacher.find().populate(
+      "courses.courseId",
+      "courseCode"
+    );
     res.status(200).json(teachers);
   } catch (error) {
     console.error(error);
@@ -406,7 +408,7 @@ const addDegree = async (req, res) => {
 const ViewAllDegrees = async (req, res) => {
   try {
     const degrees = await Degree.find({}).exec();
-    console.log(degrees);
+
     res.status(200).json(degrees);
   } catch (error) {
     console.error(error);
@@ -447,7 +449,6 @@ const getCoursename = async (req, res) => {
 const assignCourse = async (req, res) => {
   try {
     const { teacherId, courseId } = req.body;
-    console.log(teacherId, courseId);
 
     // Find the teacher by ID
     const teacher = await Teacher.findById(teacherId);
@@ -482,7 +483,7 @@ const assignCourse = async (req, res) => {
 const deanslist = async (req, res) => {
   try {
     const students = await Student.find({
-      "semesters.cgpa": { $gte: 3.5 },
+      "semesters.sgpa": { $gte: 3.5 },
     });
 
     res.json(students);
@@ -495,7 +496,7 @@ const deanslist = async (req, res) => {
 const rectorslist = async (req, res) => {
   try {
     const students = await Student.find({
-      "semesters.cgpa": { $eq: 4 },
+      "semesters.sgpa": { $eq: 4 },
     });
 
     res.json(students);
