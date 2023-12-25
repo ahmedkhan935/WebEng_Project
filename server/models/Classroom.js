@@ -155,7 +155,14 @@ const ClassroomSchema = new mongoose.Schema({
                 feedback: { type: String }
             }
         ]
-    }
+    },
+    meetLink:
+    {
+        type: String,
+        default: null
+    },
+    
+    
 });
 
 const Classroom = mongoose.model('Classroom', ClassroomSchema);

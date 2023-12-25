@@ -228,3 +228,10 @@ export async function getDegreeCourses(DegreeSemestersData) {
   });
   return handleResponse(response);
 }
+
+export async function getDegrees() {
+  return await fetch(`${BASE_URL}/admin/degrees`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

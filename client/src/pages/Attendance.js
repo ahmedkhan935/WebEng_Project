@@ -22,9 +22,9 @@ function Attendance() {
     const [students, setStudents] = useState([]);
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [duration, setDuration] = useState(1.5);
-    const [rows, setRows] = useState([]);
     const fileInput = useRef(null);
     const [page, setPage] = useState(0);
+    const [rows, setRows] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const isSmallScreen = useMediaQuery(theme => theme.breakpoints.down('sm'));
     const [buttonLabel, setButtonLabel] = useState('Save New Record');

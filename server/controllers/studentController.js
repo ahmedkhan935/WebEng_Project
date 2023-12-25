@@ -304,7 +304,32 @@ const studentController = {
     });
     await classs.save();
     res.status(201).json({ message: "Feedback given successfully" });
+  },
+  getMeetLink: async (req, res) => {
+
+    try
+    {
+      const classCode = req.params.classCode;
+      const classroom = await Classroom.findOne({ code: classCode });
+      if (!classroom) {
+        return res.status(404).json({ error: "Classroom not found" });
+      }
+      const link = classroom.meetLink;
+      if(!link)
+      {
+        return res.status(201).json({ error: "Class is not live yet" });
+      }
+      return res.status(201).json({ link: link });
+
+
+
+    }
+    catch (err) {
+      console.log("ERRRRRR", err);
+      res.status(500).json({ error: err.message });
+    }
   }
+
 };
 
 module.exports = studentController;

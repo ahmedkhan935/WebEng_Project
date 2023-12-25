@@ -1,12 +1,13 @@
 import React, { useEffect, useRef } from "react";
+import {JitsiMeeting} from "@jitsi/react-sdk";
 
 const JitsiMeetComponent = ({ roomName, displayName }) => {
   const jitsiContainerRef = useRef(null);
-
+  console.log(roomName);
   useEffect(() => {
     const domain = "meet.jit.si";
     const options = {
-      roomName: roomName.classCode,
+      roomName: roomName,
       width: "100%",
       height: "100vh",
       parentNode: jitsiContainerRef.current,
@@ -16,14 +17,9 @@ const JitsiMeetComponent = ({ roomName, displayName }) => {
     };
 
     const api = new window.JitsiMeetExternalAPI(domain, options);
+  
 
-    //get link 
-    api.addEventListener("videoConferenceJoined", () => {
-     const link = api.getMeetingUrl();
-        console.log(link);
-    }
-    );
-
+    
 
     return () => {
       api.dispose();

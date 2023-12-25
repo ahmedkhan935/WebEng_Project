@@ -1,5 +1,5 @@
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import {
   alpha,
   Box,
@@ -36,43 +36,69 @@ import {
   AssignmentTurnedIn as AssignmentTurnedInIcon,
   VpnKey as VpnKeyIcon,
 } from "@mui/icons-material";
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
+//zustand
+import useStore from "../store/store";
 import { Link, useLocation } from "react-router-dom";
-import { logout } from "../services/AuthService";
-import LogoImage from "../assets/images/logo.png";
-const drawerWidth = 240;
+import {logout} from '../services/AuthService';
+import LogoImage from '../assets/images/logo.png'
+import { DrawerHeader,AppBar, Drawer} from "../assets/theme/StyledComponents";
 
+// const Footer = () => {
+//   const theme = useTheme();
+//   return (
+//     <Box sx={{
+//       position: 'static',
+//       bottom: 0,
+//       width: '100%',
+//       display: 'flex',
+//       flexDirection: 'column',
+//       justifyContent: 'center',
+//       alignItems: 'center',
+//       padding: '20px',
+//       paddingTop: '40px',
+//       paddingBottom: '40px',
+//       backgroundColor: alpha(theme.palette.primary.main, 0.1),
+//       marginTop: 'auto'
+//     }}>
+//       <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />
+//       <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
+//         © 2023 Clean Slate Inc.
+//       </Typography>
+//       <Typography variant="subtitle1" color="text.secondary" >
+//         github.com/cleanSlate
+//       </Typography>
+//     </Box>
+//   );
+// };
 const Footer = () => {
+  const [value, setValue] = React.useState(0);
   const theme = useTheme();
   return (
-    <Box
-      sx={{
-        position: "static",
-        bottom: 0,
-        width: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        padding: "20px",
-        paddingTop: "40px",
-        paddingBottom: "40px",
+    <BottomNavigation
+      value={value}
+      onChange={(event, newValue) => {
+        setValue(newValue);
+      }}
+
+      showLabels
+      sx={{ 
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '20px',
+        paddingTop: '40px',
+        paddingBottom: '40px',
         backgroundColor: alpha(theme.palette.primary.main, 0.1),
-        marginTop: "auto",
+        marginTop: 'auto',
+        fontSize: '10px',
       }}
     >
-      <img
-        src={LogoImage}
-        alt="Logo"
-        style={{ width: "30px", height: "30px" }}
-      />
-      <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
-        © 2023 Clean Slate Inc.
-      </Typography>
-      <Typography variant="subtitle1" color="text.secondary">
-        github.com/cleanSlate
-      </Typography>
-    </Box>
+      <BottomNavigationAction label="" icon={<img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />} />
+      <BottomNavigationAction label="© 2023 Clean Slate Inc." icon={<Typography variant="body1" sx={{ color: theme.palette.primary.main }} />} />
+      <BottomNavigationAction label="github.com/cleanSlate" icon={<Typography variant="subtitle1" color="text.secondary" />} />
+    </BottomNavigation>
   );
 };
 
@@ -121,72 +147,12 @@ const teacherOptions = [
   { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
-const openedMixin = (theme) => ({
-  width: drawerWidth,
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen,
-  }),
-  overflowX: "hidden",
-});
 
-const closedMixin = (theme) => ({
-  transition: theme.transitions.create("width", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  overflowX: "hidden",
-  width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up("sm")]: {
-    width: `calc(${theme.spacing(8)} + 1px)`,
-  },
-});
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "flex-end",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-}));
-
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(["width", "margin"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    marginLeft: drawerWidth,
-    width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(["width", "margin"], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
-
-const Drawer = styled(MuiDrawer, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  width: drawerWidth,
-  flexShrink: 0,
-  whiteSpace: "nowrap",
-  boxSizing: "border-box",
-  ...(open && {
-    ...openedMixin(theme),
-    "& .MuiDrawer-paper": openedMixin(theme),
-  }),
-  ...(!open && {
-    ...closedMixin(theme),
-    "& .MuiDrawer-paper": closedMixin(theme),
-  }),
-}));
 
 export default function NavBar({ children }) {
+  const { setDarkMode } = useStore();
+
   const location = useLocation();
   let userRole = location.pathname.split("/")[1];
   userRole = userRole.toLowerCase();
@@ -199,6 +165,7 @@ export default function NavBar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const logouts = () => {
+    setDarkMode(false);
     logout();
   };
 
@@ -218,12 +185,7 @@ export default function NavBar({ children }) {
       Icon: <SettingsIcon color="primary" />,
       linkto: "/" + userRole + "/settings",
     },
-    {
-      title: "Logout",
-      Icon: <LogoutIcon color="primary" />,
-      linkto: "/",
-      onClick: logout,
-    },
+    { title: "Logout", Icon: <LogoutIcon color="primary" />, linkto: "/",onClick: logouts },
   ];
 
   const handleDrawerOpen = () => {
@@ -235,7 +197,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minHeight:'100vh' }}>
       <CssBaseline />
 
       {/* Navbar (Top bar) with button to open drawer */}
@@ -421,13 +383,13 @@ export default function NavBar({ children }) {
           </>
         )}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1 }}>
-        <DrawerHeader />
-        <Box sx={{ p: 3 }}>
+      <Box component="main" sx={{ flexGrow: 1,minHeight:'' }}>
+    <DrawerHeader />
+        <Box sx={{ p: 3,minHeight:'100%' }}>
           {children}
           {/* This is where the content of the page will be rendered */}
         </Box>
-        <Footer />
+      <Footer  />
       </Box>
     </Box>
   );
