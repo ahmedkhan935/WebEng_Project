@@ -26,6 +26,9 @@ function TeacherClassroomBtns({ classCode }) {
     };
 
     const handleClose = () => {
+        setTitle('');
+        setContent('');
+        setAttachments(null);
         setOpen(false);
     };
 
@@ -36,19 +39,11 @@ function TeacherClassroomBtns({ classCode }) {
             return;
         }
 
-        const announcement = {
-            type: 'Announcement',
-            title: title,
-            content: content,
-            dueDate: null,
-            attachments: attachments
-        };
         const formdata = new FormData();
         formdata.append('type', 'Announcement');
         formdata.append('title', title);
         formdata.append('content', content);
-        
-        formdata.append('file',attachments,attachments.name);
+        formdata.append('file', attachments, attachments.name);
 
         const data = await addAnnouncement(classCode, formdata);
 
@@ -59,7 +54,9 @@ function TeacherClassroomBtns({ classCode }) {
             setClassroomAnnouncements([data.data, ...classroomAnnouncements]);
             setDialogMessage('Announcement added successfully');
         }
-
+        setTitle('');
+        setContent('');
+        setAttachments(null);
         setDialogOpen(true);
         setOpen(false);
     };
@@ -96,9 +93,14 @@ function TeacherClassroomBtns({ classCode }) {
                     Evaluations
                 </Button>
             </Tooltip>
-            <Tooltip title="Post an announcement for your students." placement="right">
-                <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} onClick={handleClickOpen}>
-                    Announcement
+            <Tooltip title="Start a video call" placement="right">
+                <Button component={Link} to={`/teacher/classes/${classCode}/videoCall`} variant="contained" color="primary" startIcon={<VideoCallIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} >
+                    Start Video call
+                </Button>
+            </Tooltip>
+            <Tooltip title="Add an announcement for your students" placement="right">
+                <Button onClick={handleClickOpen} variant="contained" color="primary" startIcon={<CampaignIcon color="secondary" style={{ fontSize: 25 }} />} fullWidth sx={{ mt: '10px' }} >
+                    Add announcement
                 </Button>
             </Tooltip>
             <Tooltip title="Export a list of students in this class as an Excel file." placement="right">

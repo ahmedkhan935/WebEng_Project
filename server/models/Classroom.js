@@ -80,7 +80,7 @@ const AnnouncementSchema = new mongoose.Schema({
                             type: String,
                             required: true
                         },
-                        url: {
+                        originalName: {
                             type: String,
                             required: true
                         }
