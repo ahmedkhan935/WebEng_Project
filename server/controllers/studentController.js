@@ -6,6 +6,8 @@ const Degree = require("../models/Degree");
 const Thread = require("../models/Thread");
 const Teacher = require("../models/Teacher");
 const StudentEval = require("../models/StudentEval");
+const path = require('path');
+const bucket = require('../firebase_init');
 
 const studentController = {
   getProfile: async (req, res) => {
@@ -58,6 +60,47 @@ const studentController = {
         .populate("courseId");
       res.status(201).json(classes);
     } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getAllEvaluations: async (req, res) => {
+    try {
+      const student = await Student.findById(req.user);
+      const classCodes = student.classes.map((classroom) => classroom.classCode); 
+      const studentEvals = await StudentEval.find({
+        studentId: req.user,
+        classCode: { $in: classCodes },
+      });
+
+      let evaluations = [];
+      studentEvals.forEach((studentEval) => {
+        evaluations.push({
+          classCode: studentEval.classCode,
+          evaluations: studentEval.evaluations,
+        });
+      });
+
+      res.status(201).json(evaluations);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getEvaluations: async (req, res) => {
+    try {
+      const classCode = req.params.classCode;
+      const studentEval = await StudentEval.findOne({
+        studentId: req.user,
+        classCode: classCode,
+      });
+      if (!studentEval) {
+        return res.status(404).json({ error: "Student Eval not found" });
+      }
+      res.status(201).json(studentEval.evaluations);
+    } catch (err) {
+      console.log(err);
       res.status(500).json({ error: err.message });
     }
   },
@@ -128,15 +171,61 @@ const studentController = {
     }
   },
 
+  getAllAttendance: async (req, res) => {
+    try {
+      const student = await Student.findById(req.user);
+      const classCodes = student.classes.map((classroom) => classroom.classCode);
+      const studentEvals = await StudentEval.find({
+        studentId: req.user,
+        classCode: { $in: classCodes },
+      });
+
+      let attendance = [];
+      studentEvals.forEach((studentEval) => {
+        attendance.push({
+          classCode: studentEval.classCode,
+          lectures: studentEval.lectures,
+        });
+      });
+
+      res.status(201).json(attendance);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
+  getAttendance: async (req, res) => {
+    try {
+      const classCode = req.params.classCode;
+      const studentEval = await StudentEval.findOne({
+        studentId: req.user,
+        classCode: classCode,
+      });
+      if (!studentEval) {
+        return res.status(404).json({ error: "Student Eval not found" });
+      }
+      res.status(201).json(studentEval.lectures);
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ error: err.message });
+    }
+  },
+
   submitAssignment: async (req, res) => {
     try {
-      const classroom = await Classroom.findOne({ code: req.params.classCode });
+
+      const classCode = req.params.classCode;
+      let title = req.params.title;
+      title = title.replace(/~/g, " ");
+
+      const classroom = await Classroom.findOne({ code: classCode });
       if (!classroom) {
         return res.status(404).json({ error: "Classroom not found" });
       }
 
       const evaluation = classroom.announcements.find((announcement) => {
-        return announcement.title == req.params.title;
+        return announcement.title == title;
       });
 
       if (!evaluation) {
@@ -178,15 +267,18 @@ const studentController = {
         };
       }
 
+      console.log("attachments", attachments);
+
       evaluation.submissions.push({
         studentId: req.user,
         date: new Date(),
-        attachments: attachments,
+        attachment: attachments,
       });
 
       await classroom.save();
+      res.status(201).json({ message: "Assignment submitted successfully" });
     } catch (err) {
-      console.log(err);
+      console.log("ERRRRRR", err);
       res.status(500).json({ error: err.message });
     }
   },

@@ -64,6 +64,26 @@ export const getClass = async (classCode) => {
   return handleResponse(response);
 };
 
+export const getAllEvaluations = async () => {
+  const response = await axios.get(`${BASE_URL}/student/evaluations`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  return handleResponse(response);
+};
+
+export const getEvaluations = async (classCode) => {
+  const response = await axios.get(`${BASE_URL}/student/evaluations/${classCode}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  return handleResponse(response);
+};
+
 export const getAllTodos = async () => {
   const response = await axios.get(`${BASE_URL}/student/todos`, {
     headers: {
@@ -114,6 +134,26 @@ export const getThread = async (threadId) => {
   return handleResponse(response);
 };
 
+export const getAllAttendance = async () => {
+  const response = await axios.get(`${BASE_URL}/student/attendance`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  return handleResponse(response);
+};
+
+export const getAttendance = async (classCode) => {
+  const response = await axios.get(`${BASE_URL}/student/attendance/${classCode}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  return handleResponse(response);
+};
+
 export const postComment = async (classCode, announcementId, content) => {
   const response = await axios.post(
     `${BASE_URL}/student/classes/${classCode}/${announcementId}/comment`,
@@ -145,26 +185,24 @@ export const submitAssignment = async (classCode, title, formData) => {
 }
 
 export const givefeedback = async (classCode, feedback) => {
-  try
-  {
-  const response = await axios.post(
-    `${BASE_URL}/student/class/${classCode}/feedback`,
-    {
-      feedback: feedback,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/student/class/${classCode}/feedback`,
+      {
+        feedback: feedback,
       },
-      withCredentials: true,
-    });
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
     return handleResponse(response);
-  
+
   }
-  catch(err)
-  {
+  catch (err) {
     console.log(err);
-    return {error:err.message};
+    return { error: err.message };
   }
 
 }

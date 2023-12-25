@@ -5,7 +5,7 @@ import NavBar from '../components/Navbar';
 import { styled } from '@mui/system';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import EditIcon from '@mui/icons-material/Edit';
-import { getStudents, getAllEvaluations, addAnnouncement } from '../services/TeacherService';
+import { getStudents, getAllEvaluations, getEvaluationMarks, addAnnouncement } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 
@@ -91,9 +91,32 @@ function Evaluations() {
 
     const handleMarksChange = (event, evalIndex, subIndex) => {
         setTempEvaluations(produce(tempEvaluations, draft => {
-          draft[evalIndex].submissions[subIndex].obtainedMarks = event.target.value;
+            draft[evalIndex].submissions[subIndex].obtainedMarks = event.target.value;
         }));
-      };
+    };
+
+    const populateMarks = (index) => {
+        const evaluation = evaluations[index];
+        const title = evaluation.title;
+        
+        let data = getEvaluationMarks(classCode, title).then((data) => {
+            console.log("GET EVALUATION MARKS", data);
+            if (data.error) {
+                console.log("ERROR", data.error);
+                return;
+            }
+            const marks = data.data;
+            console.log("MARKS", marks);
+            const updatedEvaluations = produce(evaluations, draft => {
+                draft[index].submissions = marks;
+                draft[index].minMarks = Math.min(...marks.map((submission) => submission.obtainedMarks));
+                draft[index].maxMarks = Math.max(...marks.map((submission) => submission.obtainedMarks));
+                draft[index].averageMarks = marks.length > 0 ? marks.reduce((sum, submission) => sum + submission.obtainedMarks, 0) / marks.length : 0;
+            });
+            setEvaluations(updatedEvaluations);
+        });
+    };
+
 
     const handleClick = (index) => {
         setOpen(prevOpen => {
@@ -101,6 +124,8 @@ function Evaluations() {
             newOpen[index] = !newOpen[index];
             return newOpen;
         });
+
+        populateMarks(index);
     };
 
 
@@ -124,7 +149,7 @@ function Evaluations() {
         };
 
         addAnnouncement(classCode, evaluation).then((data) => {
-            if(data.error) {
+            if (data.error) {
                 return;
             }
             evaluation.submissions = [];
@@ -153,27 +178,27 @@ function Evaluations() {
     useEffect(() => {
         getStudents(classCode).then((data) => {
             console.log("GET STUDENTS", data.data);
-            if(data.error) {
+            if (data.error) {
                 return;
             }
             setStudents(data.data);
         })
         getAllEvaluations(classCode).then((data) => {
-            console.log("GET ALL EVALS",data)
-            if(data.error) {
-              return;
+            console.log("GET ALL EVALS", data)
+            if (data.error) {
+                return;
             }
             const newEvaluations = data.data;
             setEvaluations(newEvaluations);
             console.log("DATA ", newEvaluations)
             console.log("EVALUATIONS ", newEvaluations)
-          
-            const updatedEvaluations = newEvaluations.map((evaluation) => ({...evaluation, submissions: []}));
+
+            const updatedEvaluations = newEvaluations.map((evaluation) => ({ ...evaluation, submissions: [] }));
             setEvaluations(updatedEvaluations);
             console.log("EVALUATIONS AFTER MAP", updatedEvaluations)
             setTempEvaluations(updatedEvaluations);
             setOpen(new Array(newEvaluations.length).fill(false)); //all will be closed by default
-          })
+        })
     }, []);
 
     return (
@@ -208,9 +233,9 @@ function Evaluations() {
                                             {evaluation.title}
                                         </TableSubHeaderCell>
                                         <TableSubHeaderCell align="left">
-                                            {evaluation.dueDate ? 
-                                            new Date(evaluation.dueDate).toLocaleDateString() + ' ' + new Date(evaluation.dueDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-                                            : " - "
+                                            {evaluation.dueDate ?
+                                                new Date(evaluation.dueDate).toLocaleDateString() + ' ' + new Date(evaluation.dueDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+                                                : " - "
                                             }
                                         </TableSubHeaderCell>
                                         <TableSubHeaderCell align="left">{evaluation.weightage}</TableSubHeaderCell>
@@ -319,7 +344,7 @@ function Evaluations() {
                             fullWidth
                             sx={{ marginTop: '20px' }}
                             helperText="Optionally, add some descriptory content/instructions. They will be displayed in your classroom stream."
-                          />
+                        />
 
                         <TextField
                             label="Weightage"
@@ -392,4 +417,3 @@ function Evaluations() {
 }
 
 export default Evaluations;
-

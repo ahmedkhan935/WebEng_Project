@@ -19,10 +19,9 @@ import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement } from '../services/TeacherService';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
-
+import { submitAssignment } from '../services/StudentService';
 
 function ClassroomStreamCard({ card }) {
-    console.log(card);
 
     const theme = useTheme();
 
@@ -107,14 +106,18 @@ function ClassroomStreamCard({ card }) {
     };
 
     const handleAssignmentSubmit = async () => {
+
         if (!attachments) {
             return;
         }
         const formdata = new FormData();
         formdata.append('file', attachments, attachments.name);
-        // const data = await addSubmission(classCode, formdata);
+        let title = card.title;
+        title = title.replace(/ /g, '~');
+        const data = await submitAssignment(classCode, title, formdata);
+        console.log("DAAAAA", data.data);
+        setSubmitDialogOpen(false);
     }
-
 
     useEffect(() => {
         switch (card.type.toLowerCase()) {

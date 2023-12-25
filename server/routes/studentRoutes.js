@@ -15,9 +15,13 @@ router.get("/todos/:classCode", Auth, AuthStudent, studentController.getTodos);
 router.get("/notifications", Auth, AuthStudent, studentController.getNotifications);
 router.get("/threads", Auth, AuthStudent, teacherStudentController.getThreads);
 router.get("/threads/:threadId", Auth, AuthStudent, teacherStudentController.getThread);
+router.get("/attendance", Auth, AuthStudent, studentController.getAllAttendance);
+router.get("/attendance/:classCode", Auth, AuthStudent, studentController.getAttendance);
+router.get("/evaluations", Auth, AuthStudent, studentController.getAllEvaluations);
+router.get("/evaluations/:classCode", Auth, AuthStudent, studentController.getEvaluations);
 
 router.post("/classes/:classCode/:announcementId/comment", Auth, AuthStudent, teacherStudentController.comment);
-router.post("/classes/:classCode/evaluation/:title", Auth, AuthStudent, studentController.submitAssignment);
+router.post("/classes/:classCode/assignments/:title", Auth, AuthStudent, studentController.submitAssignment);
 router.post("/class/:classCode/feedback", Auth, AuthStudent, studentController.givefeedback);
 
 module.exports = router;
