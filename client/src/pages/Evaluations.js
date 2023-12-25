@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment, useEffect, useRef } from 'react';
 import {
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
@@ -11,7 +11,8 @@ import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
 import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
-import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation, addAnnouncement } from '../services/TeacherService';
+import { read, utils } from 'xlsx';
+import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
@@ -49,6 +50,8 @@ function Evaluations() {
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
+
+    const fileInput = useRef();
 
     //states for editing evaluation
     const [editEvalTitle, setEditEvalTitle] = useState("");
@@ -172,18 +175,24 @@ function Evaluations() {
     };
 
     //Saving evaluation marks after editing
-    const handleSave = (evaluationTitle) => {
+    const handleSave = async (evalIndex) => {
         setEvaluations(tempEvaluations);
-        addEvaluation(classCode, evaluationTitle, evaluations)
-            .then((data) => { console.log("DATA", data) });
 
+        const evaluation = tempEvaluations[evalIndex];
+        console.log("EVAL", evaluation);
+        const marks = evaluation.submissions.map((submission) => ({ rollNumber: submission.rollNumber, obtainedMarks: submission.obtainedMarks }));
+
+        // To do haadiya add loading
+        const data = await updateMarks(classCode, evaluation.title, marks);
+        //end loading here
+
+        populateMarks(evalIndex);
         setCreateEvalTitle("");
         setCreateEvalContent(null);
         setCreateEvalWeightage(null);
         setCreateEvalTotalMarks(null);
         setCreateEvalOpenSubmission(false);
         setEditMode(false);
-
     };
 
     //Cancel during editing
@@ -197,7 +206,76 @@ function Evaluations() {
         setTempEvaluations(evaluations);
     };
 
-    const handleImportMarks = () => {
+    const handleFileUpload = () => {
+        fileInput.current.click();
+    }
+
+    const handleImportMarks = (event, evalIndex) => {
+        console.log('Starting file upload...');
+        const fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        const file = event.target.files[0];
+
+        if(!file){
+            return;
+        }
+
+        if (fileTypes.indexOf(file.type) === -1) {
+            console.log('Invalid file type');
+            alert('Invalid file type. Please select an excel file.');
+            // setDialogMessage('Invalid file type. Please select an excel file.');
+            // setDialogOpen(true);
+            return;
+        }
+        console.log('File type is valid');
+
+        setEditMode(true);
+
+        const fileReader = new FileReader();
+        fileReader.onload = (fileLoadedEvent) => {
+            console.log('File loaded');
+            /* Parse data */
+            const binaryString = fileLoadedEvent.target.result;
+            const workbook = read(binaryString, { type: 'binary' });
+            /* Get first worksheet */
+            const firstWorksheetName = workbook.SheetNames[0];
+            const firstWorksheet = workbook.Sheets[firstWorksheetName];
+            /* Check headings */
+            const headings = utils.sheet_to_json(firstWorksheet, { header: 1, range: 'A1:C1' })[0];
+            if (!headings || headings.length !== 3 || headings[0] !== 'Rno' || headings[1] !== 'Name' || headings[2] !== 'Marks') {
+                console.log('Invalid headings');
+                alert('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
+                // setDialogMessage('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
+                // setDialogOpen(true);
+                return;
+            }
+            console.log('Headings are valid');
+            /* Convert array of arrays, ignoring header row */
+            const dataFromExcel = utils.sheet_to_json(firstWorksheet, { header: 1, range: 1 });
+
+            /* Update state */
+            const updatedEvaluations = produce(evaluations, draft => {
+                let evaluation = draft[evalIndex];
+
+                dataFromExcel.forEach((row) => {
+                    const rollNumber = row[0];
+                    const obtainedMarks = row[2];
+
+                    const submission = evaluation.submissions.find((submission) => submission.rollNumber == rollNumber);
+                    if (submission) {
+                        submission.obtainedMarks = obtainedMarks;
+                    }
+                });
+            });
+
+            setTempEvaluations(updatedEvaluations);
+
+            console.log('Attendance imported');
+            alert('Attendance imported successfully');
+            // setDialogMessage('Attendance imported successfully');
+            // setDialogOpen(true);
+        };
+        console.log('Reading file...');
+        fileReader.readAsBinaryString(file);
     }
 
     //Open and close form to create new evaluation
@@ -303,33 +381,15 @@ function Evaluations() {
                                                             :
                                                             null
                                                     }
-                                                    <ButtonGroup variant="contained" color="primary" sx={{ marginTop: '10px' }}>
-                                                        <Button onClick={handleEvalEditClick} sx={{marginRight: '10px'}} startIcon={ <GradeIcon /> }>
-                                                            Manage Marks
-                                                        </Button>
-                                                        <Menu
-                                                            anchorEl={anchorEl}
-                                                            open={Boolean(anchorEl)}
-                                                            onClose={handleEvalEditClose}
-                                                        >
-                                                            <MenuItem onClick={handleImportMarks}>
-                                                                <ListItemIcon>
-                                                                    <FileUploadIcon fontSize="small" />
-                                                                </ListItemIcon>
-                                                                <ListItemText>Import Marks</ListItemText>
-                                                            </MenuItem>
-                                                            <MenuItem onClick={handleEditMarks}>
-                                                                <ListItemIcon>
-                                                                    <GradingIcon fontSize="small" />
-                                                                </ListItemIcon>
-                                                                <ListItemText>Add/Edit Marks</ListItemText>
-                                                            </MenuItem>
-                                                        </Menu>
-                                                        <Button onClick={handleEditEvaluation} startIcon={<EditIcon />}>
-                                                            Manage Evaluation
-                                                        </Button>
-                                                    </ButtonGroup>
-
+                                                    <input
+                                                        type="file"
+                                                        accept=".xlsx,.xls"
+                                                        onChange={(event) => handleImportMarks(event, evalIndex)}
+                                                        style={{ display: 'none' }}
+                                                        ref={fileInput}
+                                                    />
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleFileUpload} startIcon={<FileUploadIcon />}> Import Marks </Button>
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={handleEditMarks} startIcon={<EditIcon />}> Add/Edit Marks </Button>
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
                                                             <TableRow>
@@ -402,7 +462,7 @@ function Evaluations() {
                                                     {editMode && (
                                                         <Box display="flex" justifyContent="flex-end" mt={2}>
                                                             <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
-                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evaluation.title)} disabled={editMarksError}>Save</Button>
+                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evalIndex)} disabled={editMarksError}>Save</Button>
                                                         </Box>
                                                     )}
                                                 </Box>

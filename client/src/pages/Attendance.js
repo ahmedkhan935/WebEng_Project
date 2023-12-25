@@ -14,6 +14,7 @@ import { read, utils } from 'xlsx';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { TableHeaderCell } from '../assets/theme/StyledComponents';
 
 
 function Attendance() {
@@ -278,9 +279,9 @@ function Attendance() {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>Roll Number</TableCell>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Status</TableCell>
+                                        <TableHeaderCell>Roll Number</TableHeaderCell>
+                                        <TableHeaderCell>Name</TableHeaderCell>
+                                        <TableHeaderCell>Status</TableHeaderCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
