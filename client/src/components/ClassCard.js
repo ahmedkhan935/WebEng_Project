@@ -38,7 +38,7 @@ function ClassCard({ classroom }) {
         <Button
           size="small"
           component={Link}
-          to={userRole == "student" ? `/student/classes/${classroom.code}/todos` : `/teacher/classes/${classroom.code}/attendance`}
+          to={`/${userRole}/classes/${classroom.code}/attendance`}
           sx={{
             '&:hover': {
               backgroundColor: 'primary.main',
@@ -46,7 +46,7 @@ function ClassCard({ classroom }) {
             }
           }}
         >
-          {userRole == "student" ? "View To-Do" : "Attendance"}
+          Attendance
         </Button>
         <Button
           size="small"
@@ -57,9 +57,9 @@ function ClassCard({ classroom }) {
               color: '#fff',
             }
           }}
-          to={userRole == "student" ? `/student/classes/${classroom.code}/unregister` : `/teacher/classes/${classroom.code}/evaluations`}
+          to={`/${userRole}/classes/${classroom.code}/evaluations`}
         >
-          {userRole == "student" ? "Unregister" : "Evaluations"}
+          Evaluations
         </Button>
       </CardActions>
     </Card>

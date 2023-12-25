@@ -1,34 +1,57 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import NavBar from "../components/Navbar";
 import VideoCallImg from "../assets/images/vid.gif";
 import JitsiMeetComponent from "../components/JitsiMeetComponent"; // Import the JitsiMeetComponent
 import { Button, Typography, Box, CircularProgress, Container } from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
+import { getMeetLink } from "../services/StudentService";
+import { StartMeet, endMeet } from "../services/TeacherService";
 
 const VideoCall = () => {
   const [loading, setLoading] = useState(false);
   const [meetingStarted, setMeetingStarted] = useState(false); // Track if the meeting has started
-  const classCode = useParams();
+  const {classCode} = useParams();
+const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
   const location = useLocation();
+  
   const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+  useEffect(() => {
+    if (userRole == "student") {
+      getMeetLink(classCode).then((res)=>
+      { 
+        if(res.data.link){
+          setMeetingStarted(true);
+        }
+
+      })
+        //setMeetingStarted(true);
+  };
+  }, [])
 
   const handleStartMeeting = () => {
     setLoading(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
+      await StartMeet(classCode, `https://meet.jit.si/${classCode}`);
       setLoading(false);
       setMeetingStarted(true); // Set meetingStarted to true when the meeting starts
     }, 2000);
   };
+  const endMeeting = async () => {
+    await endMeet(classCode);
+    setMeetingEnded(true);
+    setMeetingStarted(false);
+  }
+
 
   return (
     <NavBar>
       <Container>
         <Typography variant="h5">Welcome to Video Call</Typography>
 
-        {meetingStarted ? (
+        {meetingStarted && !meetingEnded ? (
           // Render Jitsi Meet component when the meeting has started
-          <JitsiMeetComponent roomNames={classCode} displayName="Teacher" />
+          <JitsiMeetComponent roomName={classCode} displayName="Teacher" />
         ) : (
           // Render the start meeting button and image
           <Box
@@ -50,6 +73,12 @@ const VideoCall = () => {
                 marginBottom: "20px",
               }}
             >
+              {
+        !meetingStarted && meetingEnded && userRole=="student" && (
+          <Typography variant="h5">Meeting is not Live</Typography>
+          
+        )
+      }
               <img
                 src={VideoCallImg}
                 alt="Zoom Background"
@@ -79,6 +108,10 @@ const VideoCall = () => {
             }
           </Box>
         )}
+        {meetingStarted && (
+        <Button onClick={endMeeting}>End Call</Button>
+      )}
+      
       </Container>
     </NavBar>
   );

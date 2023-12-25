@@ -676,6 +676,50 @@ const teacherController = {
             session.endSession();
         }
     },
+    startMeet : async (req,res) => {
+        try{
+            const {classCode} = req.params;
+            const classroom = await Classroom.findOne({ code: classCode });
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
+
+            const meetLink = req.body.meetLink;
+            if(!meetLink){
+                return res.status(404).json({ message: 'Meet link not found' });
+            }
+            if(classroom.meetLink){
+                return res.status(404).json({ message: 'Meet link already exists' });
+            }
+            classroom.meetLink = meetLink;
+            await classroom.save();
+
+
+            res.status(200).json({meetLink});
+        }catch(error){
+            console.log(error);
+            res.status(500).json({ message: 'Server error', error });
+        }
+    },
+    endMeet: async (req,res) => {
+        try{
+            const {classCode} = req.params;
+            const classroom = await Classroom.findOne({ code: classCode });
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
+            if(!classroom.meetLink){
+                return res.status(404).json({ message: 'Meet link not found' });
+            }
+            classroom.meetLink = null;
+            await classroom.save();
+            res.status(200).json({message: 'Meet link deleted successfully'});
+        }catch(error){
+            console.log(error);
+            res.status(500).json({ message: 'Server error', error });
+        }
+    }
+    
 
     updateEvaluation: async (req, res) => {
         const session = await mongoose.startSession();

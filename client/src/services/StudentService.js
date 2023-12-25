@@ -206,3 +206,12 @@ export const givefeedback = async (classCode, feedback) => {
   }
 
 }
+export const getMeetLink = async (classCode) => {
+  const response = await axios.get(`${BASE_URL}/student/classes/${classCode}/getMeet`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    withCredentials: true,
+  });
+  return handleResponse(response);
+}

@@ -38,10 +38,22 @@ const AssignCourses = () => {
     setCourses(c);
     const t = await viewAllTeachers();
     setTeachers(t);
-    console.log(t);
+    Teachers.forEach((teacher) => {
+      teacher.courses.forEach((course) => {
+       
+        setSelectedTeachers((prevSelectedTeachers) => ({
+          ...prevSelectedTeachers,
+          [course.courseId.courseCode]: teacher,
+        }));
+      }
+      );
+
+      });
+    
   }, []);
 
   const handleAssignCourse = async (course) => {
+    console.log(course);
     const teacherId = selectedTeachers[course.courseCode]._id;
     const courseId = course._id;
     const resp = await assignCourse({

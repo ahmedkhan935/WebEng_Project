@@ -298,7 +298,7 @@ const deleteCourse = async (req, res) => {
 
 const viewAllTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find();
+    const teachers = await Teacher.find().populate("courses.courseId", "courseCode");
     res.status(200).json(teachers);
   } catch (error) {
     console.error(error);
@@ -669,6 +669,15 @@ const getDegreeCourses = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+const getDegrees = async (req, res) => {
+  try {
+    const degrees = await Degree.find({}).select("name abbreviation");
+    res.status(200).json(degrees);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ errorMessage: "Internal server error" });
+  }
+};
 
 module.exports = {
   createSemester,
@@ -701,6 +710,7 @@ module.exports = {
   deanslist,
   rectorslist,
   medalHolderslist,
+  getDegrees,
   saveSemesterCourses,
   getDegreeCourses,
 };

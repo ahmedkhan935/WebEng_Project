@@ -28,4 +28,7 @@ router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherControlle
 router.put('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.updateEvaluation);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
+router.post("/classes/:classCode/startMeeting", Auth, AuthTeacher, teacherController.startMeet);
+router.post("/classes/:classCode/endMeeting", Auth, AuthTeacher, teacherController.endMeet);
+
 module.exports = router;
