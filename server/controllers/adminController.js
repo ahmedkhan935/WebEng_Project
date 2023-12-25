@@ -461,6 +461,26 @@ const assignCourse = async (req, res) => {
     const courseExists = teacher.courses.some(
       (course) => course.courseId.toString() === courseId.toString()
     );
+    if(!courseExists){
+        return res.json({message:"Course already assigned to the teacher"});
+    }
+    //check if assigned course is already assigned to another teacher
+    const teacheralr = await Teacher.findOne({
+      "courses.courseId": courseId,
+    }).exec();
+    if (teacheralr) {
+      //pop the course from the teacher
+      const courseIndex = teacheralr.courses.findIndex(
+        (course) => course.courseId.toString() === courseId.toString()
+      );
+      teacheralr.courses.splice(courseIndex, 1);
+      await teacheralr.save();
+    }
+
+
+
+
+
 
     if (!courseExists) {
       // Add the new course ID to the courses array
