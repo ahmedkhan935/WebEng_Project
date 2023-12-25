@@ -41,6 +41,7 @@ import AddDegree from "./pages/AddDegree";
 import ViewDegrees from "./pages/ViewDegrees";
 import ViewAttendance from "./pages/ViewAttendance";
 import ViewEvaluations from "./pages/ViewEvaluations";
+import ViewAllAttendance from "./pages/ViewAllAttendance";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
 
@@ -75,6 +76,7 @@ function App() {
               <Route path="evaluations" element={<ViewEvaluations />}></Route>
             </Route>
             <Route path="threads" element={<Threads />}></Route>
+            <Route path="attendance" element={<ViewAllAttendance />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="todos" element={<Thread />}></Route>
             <Route path="settings" element={<Settings />}></Route>
