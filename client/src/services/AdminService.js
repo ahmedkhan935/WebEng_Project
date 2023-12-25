@@ -229,32 +229,6 @@ export async function getDegreeCourses(DegreeSemestersData) {
   return handleResponse(response);
 }
 
-export const addCoursesToSemestersofDegree = async (DegreeSemestersData) => {
-  console.log(DegreeSemestersData);
-  const response = await fetch(`${BASE_URL}/admin/saveSemesterCourses`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify(DegreeSemestersData),
-  });
-  return handleResponse(response);
-};
-
-export async function getDegreeCourses(DegreeSemestersData) {
-  console.log(DegreeSemestersData);
-  const response = await fetch(`${BASE_URL}/admin/getDegreeCourses`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    credentials: "include",
-    body: JSON.stringify(DegreeSemestersData),
-  });
-  return handleResponse(response);
-}
-
 export async function getDegrees() {
   return await fetch(`${BASE_URL}/admin/degrees`, {
     method: "GET",

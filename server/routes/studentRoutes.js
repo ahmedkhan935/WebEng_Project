@@ -23,5 +23,6 @@ router.get("/evaluations/:classCode", Auth, AuthStudent, studentController.getEv
 router.post("/classes/:classCode/:announcementId/comment", Auth, AuthStudent, teacherStudentController.comment);
 router.post("/classes/:classCode/assignments/:title", Auth, AuthStudent, studentController.submitAssignment);
 router.post("/class/:classCode/feedback", Auth, AuthStudent, studentController.givefeedback);
+router.get("/classes/:classCode/getMeet", Auth, AuthStudent, studentController.getMeetLink);
 
 module.exports = router;

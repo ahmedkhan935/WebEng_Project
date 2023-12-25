@@ -8,7 +8,8 @@ import { useParams, useLocation } from "react-router-dom";
 const VideoCall = () => {
   const [loading, setLoading] = useState(false);
   const [meetingStarted, setMeetingStarted] = useState(false); // Track if the meeting has started
-  const classCode = useParams();
+  const {classCode} = useParams();
+const [meetingEnded, setMeetingEnded] = useState(false); // Track if the meeting has ended
   const location = useLocation();
   const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
 
@@ -20,15 +21,20 @@ const VideoCall = () => {
       setMeetingStarted(true); // Set meetingStarted to true when the meeting starts
     }, 2000);
   };
+  const endMeeting = () => {
+    setMeetingEnded(true);
+    setMeetingStarted(false);
+  }
+
 
   return (
     <NavBar>
       <Container>
         <Typography variant="h5">Welcome to Video Call</Typography>
 
-        {meetingStarted ? (
+        {meetingStarted && !meetingEnded ? (
           // Render Jitsi Meet component when the meeting has started
-          <JitsiMeetComponent roomNames={classCode} displayName="Teacher" />
+          <JitsiMeetComponent roomName={classCode} displayName="Teacher" />
         ) : (
           // Render the start meeting button and image
           <Box
@@ -79,6 +85,9 @@ const VideoCall = () => {
             }
           </Box>
         )}
+        {meetingStarted && (
+        <Button onClick={endMeeting}>End Call</Button>
+      )}
       </Container>
     </NavBar>
   );

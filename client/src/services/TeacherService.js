@@ -258,3 +258,21 @@ export const addEvaluation = async (classCode, title, evaluations) => {
     );
     return handleResponse(response);
 };
+export const StartMeet = async (classCode) => { 
+    const response = await axios.get(`${BASE_URL}/teacher/classes/${classCode}/startMeet`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+}
+export const endMeet = async (classCode) => { 
+    const response = await axios.post(`${BASE_URL}/teacher/classes/${classCode}/endMeet`, {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        withCredentials: true
+    });
+    return handleResponse(response);
+}
