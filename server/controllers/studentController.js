@@ -317,7 +317,7 @@ const studentController = {
       const link = classroom.meetLink;
       if(!link)
       {
-        return res.status(404).json({ error: "Class is not live yet" });
+        return res.status(201).json({ error: "Class is not live yet" });
       }
       return res.status(201).json({ link: link });
 

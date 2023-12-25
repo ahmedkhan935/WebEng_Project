@@ -11,7 +11,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Input,
 } from "@mui/material";
 import NavBar from "../components/Navbar";
 
@@ -133,7 +132,7 @@ const AdminThread = () => {
         email: row.email,
         _id: row._id,
       }));
-      console.log(rows);
+
       setRows(rows);
     });
 
@@ -227,9 +226,7 @@ const AdminThread = () => {
       </Dialog>
       {/* Dialog for Make Post */}
       <Dialog open={formOpen} onClose={handleFormClose}>
-        <DialogTitle color="primary" sx={{ fontWeight: "bold" }}>
-          Make Post
-        </DialogTitle>
+        <DialogTitle>Make Post</DialogTitle>
         <DialogContent>
           <TextField
             label="Title"
@@ -249,16 +246,14 @@ const AdminThread = () => {
             onChange={(e) => setContent(e.target.value)}
             style={{ marginBottom: "10px" }}
           />
-          <Input
+          <input
             type="file"
             onChange={(e) => setfile(e.target.files[0])}
             style={{ margin: "10px 0" }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormClose} color="secondary">
-            Cancel
-          </Button>
+          <Button onClick={handleFormClose}>Cancel</Button>
           <Button onClick={handleAnnounce} variant="contained">
             Post
           </Button>

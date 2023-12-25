@@ -37,6 +37,8 @@ import {
   VpnKey as VpnKeyIcon,
   Checklist as ChecklistIcon,
 } from "@mui/icons-material";
+import BottomNavigation from '@mui/material/BottomNavigation';
+import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 
 //zustand
 import useStore from "../store/store";
@@ -72,6 +74,34 @@ const Footer = () => {
     </Box>
   );
 };
+// const Footer = () => {
+//   const [value, setValue] = React.useState(0);
+//   const theme = useTheme();
+//   return (
+//     <BottomNavigation
+//       value={value}
+//       onChange={(event, newValue) => {
+//         setValue(newValue);
+//       }}
+
+//       showLabels
+//       sx={{ 
+//         justifyContent: 'center',
+//         alignItems: 'center',
+//         padding: '20px',
+//         paddingTop: '40px',
+//         paddingBottom: '40px',
+//         backgroundColor: alpha(theme.palette.primary.main, 0.1),
+//         marginTop: 'auto',
+//         fontSize: '10px',
+//       }}
+//     >
+//       <BottomNavigationAction label="" icon={<img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />} />
+//       <BottomNavigationAction label="© 2023 Clean Slate Inc." icon={<Typography variant="body1" sx={{ color: theme.palette.primary.main }} />} />
+//       <BottomNavigationAction label="github.com/cleanSlate" icon={<Typography variant="subtitle1" color="text.secondary" />} />
+//     </BottomNavigation>
+//   );
+// };
 
 const adminOptions = [
   {
@@ -141,11 +171,7 @@ export default function NavBar({ children }) {
   const logouts = () => {
     setDarkMode(false);
     logout();
-  }
-
-
-    
- 
+  };
 
   const standardOptions = [
     {
@@ -175,7 +201,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", minHeight:'100vh' }}>
       <CssBaseline />
 
       {/* Navbar (Top bar) with button to open drawer */}
@@ -283,7 +309,7 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
         {isAdmin && (
           <>
             <Divider />
@@ -321,8 +347,8 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
-        {isTeacher &&(
+        )}
+        {isTeacher && (
           <>
             <Divider />
             <List>
@@ -359,19 +385,16 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1,minHeight:'' }}>
     <DrawerHeader />
-        <Box sx={{ p: 3 }}>
+        <Box sx={{ p: 3,minHeight:'100%' }}>
           {children}
           {/* This is where the content of the page will be rendered */}
         </Box>
-        <Footer />
+      <Footer  />
       </Box>
-     
     </Box>
   );
 }
-
-

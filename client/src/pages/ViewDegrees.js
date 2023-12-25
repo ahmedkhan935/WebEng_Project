@@ -29,7 +29,6 @@ const ViewDegrees = () => {
   useEffect(async () => {
     viewDegrees().then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setRows(data);
       });
     });

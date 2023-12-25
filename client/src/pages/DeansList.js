@@ -42,7 +42,6 @@ const DeansList = () => {
             selectedDegree === "" ||
             row.degreeName === selectedDegree
         );
-        console.log(filtered);
         setFilteredRows(filtered);
       });
     });

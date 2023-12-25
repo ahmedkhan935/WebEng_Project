@@ -105,7 +105,7 @@ function ClassroomStreamCard({ card }) {
 
     const handleClick = (event) => {
         event.stopPropagation();
-        console.log("Three dots clicked")
+       
         setAnchorEl(event.currentTarget);
     };
 

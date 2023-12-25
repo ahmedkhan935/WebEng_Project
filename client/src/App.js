@@ -49,18 +49,25 @@ function App() {
     <CSThemesProvider>
       <Router>
         <Routes>
-          { /* Login Routes */ }
+          {/* Login Routes */}
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
-      
-          { /* Student Routes */ }
+
+          {/* Student Routes */}
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode">
-              <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider> }></Route>
+              <Route
+                index
+                element={
+                  <ClassroomProvider>
+                    <Classroom />
+                  </ClassroomProvider>
+                }
+              ></Route>
               <Route path="videoCall" element={<VideoCall />}></Route>
               <Route path="attendance" element={<ViewAttendance />}></Route>
               <Route path="feedback" element={<GiveFeedback />}></Route>
@@ -73,14 +80,21 @@ function App() {
             <Route path="settings" element={<Settings />}></Route>
           </Route>
 
-          { /* Teacher Routes */ }
+          {/* Teacher Routes */}
           <Route path="teacher">
             <Route index element={<UserLandingPage role={"teacher"} />}></Route>
             <Route path="threads" element={<Threads />}></Route>
             <Route path="threads/:id" element={<Thread />}></Route>
             <Route path="classes" element={<Classes />}></Route>
             <Route path="classes/:classCode">
-              <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider> }></Route>
+              <Route
+                index
+                element={
+                  <ClassroomProvider>
+                    <Classroom />
+                  </ClassroomProvider>
+                }
+              ></Route>
               <Route path="videoCall" element={<VideoCall />}></Route>
               <Route path="attendance" element={<Attendance />}></Route>
               <Route path="feedback" element={<TeacherFeedback />}></Route>
@@ -89,7 +103,7 @@ function App() {
             <Route path="settings" element={<Settings />}></Route>
           </Route>
 
-          { /* Admin Routes */ }
+          {/* Admin Routes */}
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="settings" element={<Settings />}></Route>
@@ -99,8 +113,14 @@ function App() {
             <Route path="addStudent" element={<AddStudentForm />}></Route>
             <Route path="viewTeachers" element={<ViewTeachers />}></Route>
             <Route path="viewStudents" element={<ViewStudents />}></Route>
-            <Route path="updateStudent/:id" element={<UpdateStudentForm />}></Route>
-            <Route path="updateTeacher/:id" element={<UpdateTeacherForm />} ></Route>
+            <Route
+              path="updateStudent/:id"
+              element={<UpdateStudentForm />}
+            ></Route>
+            <Route
+              path="updateTeacher/:id"
+              element={<UpdateTeacherForm />}
+            ></Route>
             <Route path="createCourse" element={<CreateCourseForm />}></Route>
             <Route path="searchCourses" element={<SearchCourses />}></Route>
             <Route
@@ -129,9 +149,8 @@ function App() {
             </Route>
           </Route>
 
-          { /* Page Not Found */ }
+          {/* Page Not Found */}
           <Route path="*" element={<PageNotFound />} />
-          
         </Routes>
       </Router>
     </CSThemesProvider>

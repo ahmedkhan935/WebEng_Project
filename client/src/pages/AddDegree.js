@@ -46,7 +46,6 @@ const AddDegree = () => {
     });
 
     if (resp.error) {
-      console.log(resp);
       setFormSubmitted(true);
       setstatus(false);
       setsubmitmsg("Degree not Added!");

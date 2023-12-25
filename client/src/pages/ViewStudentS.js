@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import PersonAddAltTwoToneIcon from "@mui/icons-material/PersonAddAltTwoTone";
 import {
   Table,
   TableBody,
@@ -44,11 +44,10 @@ const ViewStudents = () => {
   useEffect(() => {
     viewDegrees().then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setDegrees(data);
       });
     });
-    console.log(degrees);
+
     viewAllStudents().then((res) => {
       const rows = res.map((row) => ({
         studentId: row.rollNumber,
@@ -62,9 +61,7 @@ const ViewStudents = () => {
   }, []);
 
   const handleDelete = (studentId) => {
-    console.log(`Deleting student with ID: ${studentId}`);
     deleteStudent(studentId).then((res) => {
-      console.log(res);
       if (!res.errorMessage) {
         alert("Student deleted successfully");
         window.location.reload();
@@ -74,7 +71,6 @@ const ViewStudents = () => {
     });
   };
   const handleUpdate = (studentId) => {
-    console.log(`Updating student with ID: ${studentId}`);
     navigate(`/admin/updateStudent/${studentId}`);
   };
 
@@ -120,6 +116,7 @@ const ViewStudents = () => {
             onClick={handleaddstudent}
             variant="outlined"
             color="primary"
+            startIcon={<PersonAddAltTwoToneIcon />}
             style={{
               zIndex: 2000,
               width: "150px",
@@ -207,10 +204,10 @@ const ViewStudents = () => {
                   <TableCell>{row.degree}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleUpdate(row._id)}>
-                      <EditIcon />
+                      <EditIcon color="secondary" />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(row._id)}>
-                      <DeleteIcon />
+                      <DeleteIcon color="secondary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>
