@@ -2,7 +2,13 @@ import React, { useState,useEffect } from "react";
 import NavBar from "../components/Navbar";
 import VideoCallImg from "../assets/images/vid.gif";
 import JitsiMeetComponent from "../components/JitsiMeetComponent"; // Import the JitsiMeetComponent
-import { Button, Typography, Box, CircularProgress, Container } from "@mui/material";
+import {
+  Button,
+  Typography,
+  Box,
+  CircularProgress,
+  Container,
+} from "@mui/material";
 import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
@@ -92,7 +98,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
                 }}
               />
             </div>
-            {userRole == "teacher" &&
+            {userRole == "teacher" && (
               <Button
                 variant="outlined"
                 color="primary"
@@ -102,10 +108,10 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
               >
                 {loading && (
                   <CircularProgress size={24} style={{ marginRight: "10px" }} />
-                ) }
+                )}
                 Start Meeting
               </Button>
-            }
+            )}
           </Box>
         )}
         {meetingStarted && (
