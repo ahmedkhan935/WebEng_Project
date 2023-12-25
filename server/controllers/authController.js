@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Logs = require("../models/Logs");
+const Admin = require("../models/Admin");
 require("dotenv").config();
 
 const registerStudent = async (req, res) => {
@@ -243,6 +244,51 @@ const loginTeacher = async (req, res) => {
   }
 };
 
+const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    // Validation
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ errorMessage: "Please enter all required fields." });
+    }
+
+    const existingAdmin = await Admin.findOne({ email });
+    if (!existingAdmin) {
+      return res.status(401).json({ errorMessage: "Wrong email or password." });
+    }
+
+    if (existingAdmin.password !== password) {
+      return res.status(401).json({ errorMessage: "Wrong email or password." });
+    }
+
+    // Sign the token
+    const token = jwt.sign(
+      {
+        user: existingAdmin._id,
+        email: existingAdmin.email,
+        role: "admin",
+      },
+      process.env.JWT_SECRET
+    );
+    // const logs = new Logs({
+    //   userId: existingAdmin._id,
+    //   email: existingAdmin.email,
+    //   action: "login",
+    //   role: "admin",
+    //   date: new Date(),
+    // });
+    // const savedLogs = await logs.save();
+
+    // Send the token in an HTTP-only cookie
+    res.status(200).send({ role: "admin" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+};
+
 const logout = async (req, res) => {
   //store in logs
   console.log(req.user);
@@ -267,4 +313,11 @@ const logout = async (req, res) => {
     })
     .send();
 };
-module.exports = { registerStudent, registerTeacher, loginStudent, loginTeacher, logout };
+module.exports = {
+  registerStudent,
+  registerTeacher,
+  loginStudent,
+  loginTeacher,
+  loginAdmin,
+  logout,
+};

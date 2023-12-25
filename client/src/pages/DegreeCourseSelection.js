@@ -47,13 +47,9 @@ function DegreeCourseSelection() {
           : semester;
       })
     );
-
-    console.log(semesters);
   }, []);
 
   const handleSave = async () => {
-    console.log("degree" + degreeId);
-    // Log all semesters and their courses
     const resp = await addCoursesToSemestersofDegree({ degreeId, semesters });
     if (resp.error) {
       alert("save not successfull");
@@ -78,7 +74,6 @@ function DegreeCourseSelection() {
         items.splice(destination.index, 0, reorderedItem);
 
         setCourses(items);
-        console.log(`Course ${reorderedItem.courseCode} added to Courses list`);
       } else {
         const semester = semesters.find(
           (semester) => semester.semester === source.droppableId
@@ -93,9 +88,6 @@ function DegreeCourseSelection() {
               ? { ...semester, courses: items }
               : semester
           )
-        );
-        console.log(
-          `Course ${reorderedItem.courseCode} added to Semester ${destination.droppableId}`
         );
       }
     } else {
@@ -118,9 +110,6 @@ function DegreeCourseSelection() {
               ? { ...semester, courses: destinationItems }
               : semester
           )
-        );
-        console.log(
-          `Course ${removed.courseCode} moved from Courses list to Semester ${destination.droppableId}`
         );
       } else {
         const sourceSemester = semesters.find(
@@ -146,18 +135,11 @@ function DegreeCourseSelection() {
             }
           })
         );
-        console.log(
-          `Course ${removed.courseCode} moved from Semester ${source.droppableId} to Semester ${destination.droppableId}`
-        );
       }
     }
-
-    console.log("SEMESTERS");
-    console.log(semesters);
   };
 
   const handleRemoveFromSemester = (courseCode, semesterName) => {
-    console.log(courseCode, semesterName);
     const semester = semesters.find(
       (semester) => semester.semester == semesterName
     );

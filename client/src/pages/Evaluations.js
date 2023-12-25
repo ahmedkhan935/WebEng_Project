@@ -1,15 +1,18 @@
-import React, { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment, useEffect, useRef } from 'react';
 import {
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
-    Chip, Paper, DialogActions
+    Chip, Paper, DialogActions, ButtonGroup,Menu, MenuItem, ListItemIcon, ListItemText
 } from "@mui/material";
 import NavBar from '../components/Navbar';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
+import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
-import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation, addAnnouncement } from '../services/TeacherService';
+import { read, utils } from 'xlsx';
+import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
@@ -47,6 +50,16 @@ function Evaluations() {
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
+
+    const fileInput = useRef();
+
+    //states for editing evaluation
+    const [editEvalTitle, setEditEvalTitle] = useState("");
+    const [editEvalContent, setEditEvalContent] = useState(null);
+    const [editEvalWeightage, setEditEvalWeightage] = useState(null);
+    const [editEvalTotalMarks, setEditEvalTotalMarks] = useState(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         getStudents(classCode).then((data) => {
@@ -138,6 +151,10 @@ function Evaluations() {
         setEditMode(true);
     };
 
+    //Edit evaluation button clicked
+    const handleEditEvaluation = () => {
+    }
+
     //Editing in process - updating student marks & validating
     const handleMarksChange = (event, evalIndex, subIndex) => {
         const value = event.target.value;
@@ -158,18 +175,24 @@ function Evaluations() {
     };
 
     //Saving evaluation marks after editing
-    const handleSave = (evaluationTitle) => {
+    const handleSave = async (evalIndex) => {
         setEvaluations(tempEvaluations);
-        addEvaluation(classCode, evaluationTitle, evaluations)
-            .then((data) => { console.log("DATA", data) });
 
+        const evaluation = tempEvaluations[evalIndex];
+        console.log("EVAL", evaluation);
+        const marks = evaluation.submissions.map((submission) => ({ rollNumber: submission.rollNumber, obtainedMarks: submission.obtainedMarks }));
+
+        // To do haadiya add loading
+        const data = await updateMarks(classCode, evaluation.title, marks);
+        //end loading here
+
+        populateMarks(evalIndex);
         setCreateEvalTitle("");
         setCreateEvalContent(null);
         setCreateEvalWeightage(null);
         setCreateEvalTotalMarks(null);
         setCreateEvalOpenSubmission(false);
         setEditMode(false);
-
     };
 
     //Cancel during editing
@@ -183,7 +206,76 @@ function Evaluations() {
         setTempEvaluations(evaluations);
     };
 
-    const handleImportMarks = () => {
+    const handleFileUpload = () => {
+        fileInput.current.click();
+    }
+
+    const handleImportMarks = (event, evalIndex) => {
+        console.log('Starting file upload...');
+        const fileTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+        const file = event.target.files[0];
+
+        if(!file){
+            return;
+        }
+
+        if (fileTypes.indexOf(file.type) === -1) {
+            console.log('Invalid file type');
+            alert('Invalid file type. Please select an excel file.');
+            // setDialogMessage('Invalid file type. Please select an excel file.');
+            // setDialogOpen(true);
+            return;
+        }
+        console.log('File type is valid');
+
+        setEditMode(true);
+
+        const fileReader = new FileReader();
+        fileReader.onload = (fileLoadedEvent) => {
+            console.log('File loaded');
+            /* Parse data */
+            const binaryString = fileLoadedEvent.target.result;
+            const workbook = read(binaryString, { type: 'binary' });
+            /* Get first worksheet */
+            const firstWorksheetName = workbook.SheetNames[0];
+            const firstWorksheet = workbook.Sheets[firstWorksheetName];
+            /* Check headings */
+            const headings = utils.sheet_to_json(firstWorksheet, { header: 1, range: 'A1:C1' })[0];
+            if (!headings || headings.length !== 3 || headings[0] !== 'Rno' || headings[1] !== 'Name' || headings[2] !== 'Marks') {
+                console.log('Invalid headings');
+                alert('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
+                // setDialogMessage('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
+                // setDialogOpen(true);
+                return;
+            }
+            console.log('Headings are valid');
+            /* Convert array of arrays, ignoring header row */
+            const dataFromExcel = utils.sheet_to_json(firstWorksheet, { header: 1, range: 1 });
+
+            /* Update state */
+            const updatedEvaluations = produce(evaluations, draft => {
+                let evaluation = draft[evalIndex];
+
+                dataFromExcel.forEach((row) => {
+                    const rollNumber = row[0];
+                    const obtainedMarks = row[2];
+
+                    const submission = evaluation.submissions.find((submission) => submission.rollNumber == rollNumber);
+                    if (submission) {
+                        submission.obtainedMarks = obtainedMarks;
+                    }
+                });
+            });
+
+            setTempEvaluations(updatedEvaluations);
+
+            console.log('Attendance imported');
+            alert('Attendance imported successfully');
+            // setDialogMessage('Attendance imported successfully');
+            // setDialogOpen(true);
+        };
+        console.log('Reading file...');
+        fileReader.readAsBinaryString(file);
     }
 
     //Open and close form to create new evaluation
@@ -193,6 +285,15 @@ function Evaluations() {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    };
+
+    //handle evaluation edit buttons
+    const handleEvalEditClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleEvalEditClose = () => {
+        setAnchorEl(null);
     };
 
     //Add new evaluation
@@ -280,7 +381,14 @@ function Evaluations() {
                                                             :
                                                             null
                                                     }
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleImportMarks} startIcon={<FileUploadIcon />}> Import Marks </Button>
+                                                    <input
+                                                        type="file"
+                                                        accept=".xlsx,.xls"
+                                                        onChange={(event) => handleImportMarks(event, evalIndex)}
+                                                        style={{ display: 'none' }}
+                                                        ref={fileInput}
+                                                    />
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleFileUpload} startIcon={<FileUploadIcon />}> Import Marks </Button>
                                                     <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={handleEditMarks} startIcon={<EditIcon />}> Add/Edit Marks </Button>
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
@@ -354,7 +462,7 @@ function Evaluations() {
                                                     {editMode && (
                                                         <Box display="flex" justifyContent="flex-end" mt={2}>
                                                             <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
-                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evaluation.title)} disabled={editMarksError}>Save</Button>
+                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evalIndex)} disabled={editMarksError}>Save</Button>
                                                         </Box>
                                                     )}
                                                 </Box>
@@ -367,15 +475,17 @@ function Evaluations() {
                     </Table>
                 </TableContainer>
 
+                { /* Adding new evaluation */}
                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle sx={{ pb: 0 }}>
                         <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
                             Add Evaluation
                         </Typography>
                     </DialogTitle>
+                    
                     <DialogContent>
                         <TextField
-                            label="Title"
+                            label="Title" 
                             value={createEvalTitle}
                             onChange={handleTitleChange}
                             fullWidth
@@ -457,6 +567,7 @@ function Evaluations() {
                         </DialogActions>
                     </DialogContent>
                 </Dialog>
+                
             </Container>
         </NavBar>
     );

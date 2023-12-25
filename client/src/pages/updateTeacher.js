@@ -12,7 +12,7 @@ import Modal from "@mui/material/Modal";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
 import { useParams } from "react-router-dom";
 
-import {viewTeacher,updateTeacher} from "../services/AdminService";
+import { viewTeacher, updateTeacher } from "../services/AdminService";
 const UpdateTeacherForm = () => {
   const [teacherName, setTeacherName] = useState("");
   const [teacherEmail, setTeacherEmail] = useState("");
@@ -23,7 +23,7 @@ const UpdateTeacherForm = () => {
   const [isFormSubmitted, setFormSubmitted] = useState(false);
   const [submitmsg, setsubmitmsg] = useState("");
   const [status, setstatus] = useState(false);
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     // Fetch countries from the API
@@ -36,10 +36,8 @@ const UpdateTeacherForm = () => {
       } catch (error) {
         console.error("Error fetching countries:", error);
       }
-
     };
     viewTeacher(id).then((res) => {
-      console.log(res);
       setTeacherName(res.name);
       setTeacherEmail(res.email);
       setCnic(res.CNIC);
@@ -47,12 +45,7 @@ const UpdateTeacherForm = () => {
       setHomePhonePermanent(res.contactNumber);
     });
 
-
-
-
-
     fetchCountries();
-
   }, []);
 
   const handleAddTeacher = async (event) => {
@@ -67,7 +60,6 @@ const UpdateTeacherForm = () => {
       setstatus(false);
       setFormSubmitted(true);
     } else {
-      console.log(resp);
       setstatus(true);
       setsubmitmsg("  Teacher successfully Updated!");
       setFormSubmitted(true);
@@ -167,7 +159,6 @@ const UpdateTeacherForm = () => {
             {/* Personal Information */}
             <h3>Personal Information</h3>
             <Container style={styles.formGroup}>
-              
               <TextField
                 label="CNIC"
                 variant="outlined"
@@ -176,7 +167,6 @@ const UpdateTeacherForm = () => {
                 style={styles.roundedInput}
                 disabled
               />
-              
             </Container>
 
             <h3>Contact Information</h3>
@@ -195,7 +185,7 @@ const UpdateTeacherForm = () => {
                 onChange={(e) => setHomePhonePermanent(e.target.value)}
                 style={styles.roundedInput}
               />
-                         </Container>
+            </Container>
 
             <Button
               type="submit"

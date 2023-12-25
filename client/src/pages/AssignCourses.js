@@ -40,21 +40,19 @@ const AssignCourses = () => {
     setTeachers(t);
     for (let i = 0; i < t.length; i++) {
       console.log(t[i]);
-      if(!t[i].courses)
-        continue;
+      if (!t[i].courses) continue;
 
-      for(let j=0;j<t[i].courses.length;j++){
+      for (let j = 0; j < t[i].courses.length; j++) {
         setSelectedTeachers((prevSelectedTeachers) => ({
           ...prevSelectedTeachers,
           [t[i].courses[j].courseId.courseCode]: t[i],
         }));
       }
     }
-    
   }, []);
 
   // const handleAssignCourse = async (course) => {
-    
+
   //   const teacherId = selectedTeachers[course.courseCode]._id;
   //   const courseId = course._id;
   //   const resp = await assignCourse({
@@ -75,31 +73,31 @@ const AssignCourses = () => {
   //   }
   // };
   // Initialize a state variable to keep track of the currently saving courses
-const [savingCourses, setSavingCourses] = useState({});
+  const [savingCourses, setSavingCourses] = useState({});
 
-const handleAssignCourse = async (course) => {
-  // Set the currently saving course ID
-  setSavingCourses(prevCourses => ({ ...prevCourses, [course._id]: true }));
+  const handleAssignCourse = async (course) => {
+    // Set the currently saving course ID
+    setSavingCourses((prevCourses) => ({ ...prevCourses, [course._id]: true }));
 
-  const teacherId = selectedTeachers[course.courseCode]._id;
-  const courseId = course._id;
-  const resp = await assignCourse({
-    teacherId,
-    courseId,
-  });
+    const teacherId = selectedTeachers[course.courseCode]._id;
+    const courseId = course._id;
+    const resp = await assignCourse({
+      teacherId,
+      courseId,
+    });
 
-  if (resp.error) {
-    setstatus(false);
-    setsubmitmsg(resp.error);
-  }
+    if (resp.error) {
+      setstatus(false);
+      setsubmitmsg(resp.error);
+    }
 
-  // Reset the currently saving course ID
-  setSavingCourses(prevCourses => {
-    const newCourses = { ...prevCourses };
-    delete newCourses[course._id];
-    return newCourses;
-  });
-};
+    // Reset the currently saving course ID
+    setSavingCourses((prevCourses) => {
+      const newCourses = { ...prevCourses };
+      delete newCourses[course._id];
+      return newCourses;
+    });
+  };
 
   const handleTeacherChange = (courseCode, selectedTeacher) => {
     setSelectedTeachers((prevSelectedTeachers) => ({
@@ -168,7 +166,7 @@ const handleAssignCourse = async (course) => {
                     color="primary"
                     onClick={() => handleAssignCourse(course)}
                   >
-                    {savingCourses[course._id] ?(
+                    {savingCourses[course._id] ? (
                       <CircularProgress
                         size={24}
                         style={{ marginRight: "10px" }}

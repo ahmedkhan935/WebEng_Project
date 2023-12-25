@@ -53,8 +53,6 @@ export const getClasses = async () => {
 };
 
 export const getClass = async (classCode) => {
-  console.log(classCode);
-  console.log("GOING TO CLASS ", classCode);
   const response = await axios.get(`${BASE_URL}/student/classes/${classCode}`, {
     headers: {
       "Content-Type": "application/json",
@@ -75,12 +73,15 @@ export const getAllEvaluations = async () => {
 };
 
 export const getEvaluations = async (classCode) => {
-  const response = await axios.get(`${BASE_URL}/student/evaluations/${classCode}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+  const response = await axios.get(
+    `${BASE_URL}/student/evaluations/${classCode}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
   return handleResponse(response);
 };
 
@@ -145,12 +146,15 @@ export const getAllAttendance = async () => {
 };
 
 export const getAttendance = async (classCode) => {
-  const response = await axios.get(`${BASE_URL}/student/attendance/${classCode}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+  const response = await axios.get(
+    `${BASE_URL}/student/attendance/${classCode}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
   return handleResponse(response);
 };
 
@@ -182,7 +186,7 @@ export const submitAssignment = async (classCode, title, formData) => {
     }
   );
   return handleResponse(response);
-}
+};
 
 export const givefeedback = async (classCode, feedback) => {
   try {
@@ -196,22 +200,22 @@ export const givefeedback = async (classCode, feedback) => {
           "Content-Type": "application/json",
         },
         withCredentials: true,
-      });
+      }
+    );
     return handleResponse(response);
-
-  }
-  catch (err) {
-    console.log(err);
+  } catch (err) {
     return { error: err.message };
   }
-
-}
+};
 export const getMeetLink = async (classCode) => {
-  const response = await axios.get(`${BASE_URL}/student/classes/${classCode}/getMeet`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    withCredentials: true,
-  });
+  const response = await axios.get(
+    `${BASE_URL}/student/classes/${classCode}/getMeet`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
   return handleResponse(response);
-}
+};

@@ -94,7 +94,6 @@ const AdminThreads = () => {
 
   //handle delete
   const handleDelete = (thread) => {
-    console.log(thread._id);
     deleteThread(thread._id).then((res) => {
       if (res.status === 200) {
         setThreads(threads.filter((t) => t._id !== thread._id));

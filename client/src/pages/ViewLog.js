@@ -25,7 +25,6 @@ const ViewLogs = () => {
   useEffect(() => {
     getLogs().then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setRows(data);
       });
     });

@@ -132,7 +132,7 @@ const AdminThread = () => {
         email: row.email,
         _id: row._id,
       }));
-      console.log(rows);
+
       setRows(rows);
     });
 
@@ -166,24 +166,30 @@ const AdminThread = () => {
             Posts from this thread:
           </Typography>
 
-          <CardContent>
-            {posts.map((post) => (
-              <div style={{ marginTop: "20px" }}>
-                {post.attachments.originalName}
-                <MakeAnnouncementCard
-                  key={post._id}
-                  title={post.title}
-                  content={post.content}
-                  date={new Date(post.date).toLocaleDateString()}
-                  creator="Amir Rehman"
-                  file={post.attachments ? post.attachments.orignalName : null}
-                  downloadname={post.attachments ? post.attachments.name : null}
-                  handleEdit={() => handleEditpost(post)}
-                  handleDelete={() => handleDeletepost(post)}
-                />
-              </div>
-            ))}
-          </CardContent>
+          {posts.length > 0 && (
+            <CardContent>
+              {posts.map((post) => (
+                <div style={{ marginTop: "20px" }}>
+                  {post.attachments.originalName}
+                  <MakeAnnouncementCard
+                    key={post._id}
+                    title={post.title}
+                    content={post.content}
+                    date={new Date(post.date).toLocaleDateString()}
+                    creator="Amir Rehman"
+                    file={
+                      post.attachments ? post.attachments.orignalName : null
+                    }
+                    downloadname={
+                      post.attachments ? post.attachments.name : null
+                    }
+                    handleEdit={() => handleEditpost(post)}
+                    handleDelete={() => handleDeletepost(post)}
+                  />
+                </div>
+              ))}
+            </CardContent>
+          )}
         </div>
       </div>
 

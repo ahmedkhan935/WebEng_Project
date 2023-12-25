@@ -263,7 +263,6 @@ const updateCourse = async (req, res) => {
         if (course2.prereq) {
           for (const coursePrereq of course2.prereq) {
             if (coursePrereq.courseCode === course.courseCode) {
-              console.log(coursePrereq.courseCode);
               return res
                 .status(400)
                 .json({ errorMessage: "Circular Prerequisite" });
@@ -298,7 +297,10 @@ const deleteCourse = async (req, res) => {
 
 const viewAllTeachers = async (req, res) => {
   try {
-    const teachers = await Teacher.find().populate("courses.courseId", "courseCode");
+    const teachers = await Teacher.find().populate(
+      "courses.courseId",
+      "courseCode"
+    );
     res.status(200).json(teachers);
   } catch (error) {
     console.error(error);
@@ -406,7 +408,7 @@ const addDegree = async (req, res) => {
 const ViewAllDegrees = async (req, res) => {
   try {
     const degrees = await Degree.find({}).exec();
-    console.log(degrees);
+
     res.status(200).json(degrees);
   } catch (error) {
     console.error(error);
@@ -447,7 +449,6 @@ const getCoursename = async (req, res) => {
 const assignCourse = async (req, res) => {
   try {
     const { teacherId, courseId } = req.body;
-    console.log(teacherId, courseId);
 
     // Find the teacher by ID
     const teacher = await Teacher.findById(teacherId);
@@ -460,8 +461,8 @@ const assignCourse = async (req, res) => {
     const courseExists = teacher.courses.some(
       (course) => course.courseId.toString() === courseId.toString()
     );
-    if(!courseExists){
-        return res.json({message:"Course already assigned to the teacher"});
+    if (!courseExists) {
+      return res.json({ message: "Course already assigned to the teacher" });
     }
     //check if assigned course is already assigned to another teacher
     const teacheralr = await Teacher.findOne({
@@ -475,11 +476,6 @@ const assignCourse = async (req, res) => {
       teacheralr.courses.splice(courseIndex, 1);
       await teacheralr.save();
     }
-
-
-
-
-
 
     if (!courseExists) {
       // Add the new course ID to the courses array
@@ -502,7 +498,7 @@ const assignCourse = async (req, res) => {
 const deanslist = async (req, res) => {
   try {
     const students = await Student.find({
-      "semesters.cgpa": { $gte: 3.5 },
+      "semesters.sgpa": { $gte: 3.5 },
     });
 
     res.json(students);
@@ -515,7 +511,7 @@ const deanslist = async (req, res) => {
 const rectorslist = async (req, res) => {
   try {
     const students = await Student.find({
-      "semesters.cgpa": { $eq: 4 },
+      "semesters.sgpa": { $eq: 4 },
     });
 
     res.json(students);
@@ -573,17 +569,17 @@ const getStudentsWithLowAttendance = async (req, res) => {
   }
 };
 
-//rectors list
+//medals list
 const medalHolderslist = async (req, res) => {
   try {
     const medalTypes = ["gold", "silver", "bronze"];
 
     const students = await Student.find({}).sort({
-      "semesters.sgpa": -1,
+      "semesters.sgpa": -1, //descending
     });
 
     const medalHoldersList = students.reduce((result, student) => {
-      student.semesters.sort((a, b) => b.sgpa - a.sgpa);
+      student.semesters.sort((a, b) => b.sgpa - a.sgpa); //sort descending
 
       const degree = student.degreeName;
 
@@ -599,17 +595,30 @@ const medalHolderslist = async (req, res) => {
           studentName: student.name,
           batch: student.batch,
           degree: student.degreeName,
-          maxSgpa: semester.sgpa,
+          sgpa: semester.sgpa,
           medalType: semester.sgpa < 2 ? "None" : medalTypes[index],
         }));
 
-      // Concatenate the topStudents to the corresponding degree in the result object
+      //concatenating the top students to the corresponding degree in the result object
       result[degree] = result[degree].concat(topStudents);
 
       return result;
     }, {});
 
-    res.json(medalHoldersList);
+    //converting the object into an array of medal holders for each degree
+    const finalMedalHoldersList = Object.values(medalHoldersList).reduce(
+      (acc, degreeArray) => {
+        // Assign medal types based on the position in the sorted array
+        degreeArray.forEach((student, index) => {
+          student.medalType = medalTypes[index];
+        });
+
+        return acc.concat(degreeArray);
+      },
+      []
+    );
+
+    res.json(finalMedalHoldersList);
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });

@@ -43,7 +43,7 @@ const DebarList = () => {
             selectedDegree === "" ||
             row.degree === selectedDegree
         );
-        console.log(filtered);
+
         setFilteredRows(filtered);
       });
     });

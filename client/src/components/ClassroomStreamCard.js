@@ -1,6 +1,7 @@
 import React from 'react';
 import { useEffect, useState, useContext } from 'react';
-import { Alert, Card, Collapse, CardContent, CircularProgress,
+import {
+    Alert, Card, Collapse, CardContent, CircularProgress,
     Box, Typography, alpha, Dialog, DialogTitle, DialogContent, DialogActions, Button,
     IconButton, Menu, MenuItem, Avatar, TextField, Tooltip
 } from '@mui/material';
@@ -16,7 +17,7 @@ import { useParams } from 'react-router-dom';
 import { postComment, submitAssignment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
-import { deleteAnnouncement } from '../services/TeacherService';
+import { deleteAnnouncement, editAnnouncement } from '../services/TeacherService';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
 
@@ -48,6 +49,11 @@ function ClassroomStreamCard({ card }) {
     const [submitDialogOpen, setSubmitDialogOpen] = useState(false);
     const [attachments, setAttachments] = useState(null);
     const [downloading, setDownloading] = useState(false);
+
+    //FOR DEALING WIth editing
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [editedTitle, setEditedTitle] = useState('');
+    const [editedContent, setEditedContent] = useState('');
 
 
     useEffect(() => {
@@ -108,8 +114,24 @@ function ClassroomStreamCard({ card }) {
     };
 
     const handleEdit = () => {
-       
+        setEditedTitle(card.title);
+        setEditedContent(card.content);
+        setEditDialogOpen(true);
         handleClose();
+    }
+    const handleSave = async () => {
+        const newAnnouncement = { title: editedTitle,
+                                  content: editedContent };
+        editAnnouncement(classCode, cardId, newAnnouncement);
+        setClassroomAnnouncements(classroomAnnouncements.map((announcement) => {
+            if (announcement._id === cardId) {
+                return { ...announcement, title: editedTitle, content: editedContent };
+            } else {
+                return announcement;
+            }
+        }));
+
+        setEditDialogOpen(false);
     }
 
     const confirmDelete = () => {
@@ -243,7 +265,9 @@ function ClassroomStreamCard({ card }) {
                             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
-                            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+
+                            { card.type == "Announcement" &&  
+                            <MenuItem onClick={handleEdit}>Edit</MenuItem> }
                             <MenuItem onClick={handleDelete}>Delete</MenuItem>
                         </Menu>
                     </>)
@@ -419,8 +443,35 @@ function ClassroomStreamCard({ card }) {
                 <Dialog open={downloading}>
                     <Box sx={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '48px' }}>
                         <DialogTitle>Downloading file, please wait...</DialogTitle>
-                        <CircularProgress color="secondary"/>
+                        <CircularProgress color="secondary" />
                     </Box>
+                </Dialog>
+
+                <Dialog open={editDialogOpen} onClose={() => setEditDialogOpen(false)}>
+                    <DialogTitle>Edit Card</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            autoFocus
+                            margin="dense"
+                            label="Title"
+                            type="text"
+                            fullWidth
+                            value={editedTitle}
+                            onChange={e => setEditedTitle(e.target.value)}
+                        />
+                        <TextField
+                            margin="dense"
+                            label="Content"
+                            type="text"
+                            fullWidth
+                            value={editedContent}
+                            onChange={e => setEditedContent(e.target.value)}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setEditDialogOpen(false)}>Cancel</Button>
+                        <Button onClick={handleSave}>Save</Button>
+                    </DialogActions>
                 </Dialog>
             </CardContent>
         </Card>

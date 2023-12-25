@@ -204,7 +204,6 @@ export async function viewMedalHoldersList() {
 }
 
 export const addCoursesToSemestersofDegree = async (DegreeSemestersData) => {
-  console.log(DegreeSemestersData);
   const response = await fetch(`${BASE_URL}/admin/saveSemesterCourses`, {
     method: "POST",
     headers: {
@@ -217,7 +216,6 @@ export const addCoursesToSemestersofDegree = async (DegreeSemestersData) => {
 };
 
 export async function getDegreeCourses(DegreeSemestersData) {
-  console.log(DegreeSemestersData);
   const response = await fetch(`${BASE_URL}/admin/getDegreeCourses`, {
     method: "POST",
     headers: {
