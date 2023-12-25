@@ -42,6 +42,7 @@ import ViewDegrees from "./pages/ViewDegrees";
 import ViewAttendance from "./pages/ViewAttendance";
 import ViewEvaluations from "./pages/ViewEvaluations";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
+import AdminLoginPage from "./pages/AdminLogin";
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
           <Route path="/" element={<MainPage />}></Route>
           <Route path="/login/student" element={<LoginPage />}></Route>
           <Route path="/login/teacher" element={<LoginPage />}></Route>
+          <Route path="/login/admin" element={<AdminLoginPage />}></Route>
           <Route path="/login" element={<LoginPage />}></Route>
 
           {/* Student Routes */}
