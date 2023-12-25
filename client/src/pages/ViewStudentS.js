@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import PersonAddAltTwoToneIcon from "@mui/icons-material/PersonAddAltTwoTone";
 import {
   Table,
   TableBody,
@@ -120,6 +120,7 @@ const ViewStudents = () => {
             onClick={handleaddstudent}
             variant="outlined"
             color="primary"
+            startIcon={<PersonAddAltTwoToneIcon />}
             style={{
               zIndex: 2000,
               width: "150px",
@@ -207,10 +208,10 @@ const ViewStudents = () => {
                   <TableCell>{row.degree}</TableCell>
                   <TableCell>
                     <IconButton onClick={() => handleUpdate(row._id)}>
-                      <EditIcon />
+                      <EditIcon color="secondary" />
                     </IconButton>
                     <IconButton onClick={() => handleDelete(row._id)}>
-                      <DeleteIcon />
+                      <DeleteIcon color="secondary" />
                     </IconButton>
                   </TableCell>
                 </TableRow>

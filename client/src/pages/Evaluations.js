@@ -70,7 +70,7 @@ function Evaluations() {
     }, []);
 
     useEffect(() => {
-        console.log("EVALUATIONS CHANGED", evaluations);
+        setTempEvaluations(evaluations);
     }, [evaluations]);
 
     //Clicking a particular evaluation to display info
@@ -102,9 +102,8 @@ function Evaluations() {
                 draft[index].maxMarks = Math.max(...marks.map((submission) => submission.obtainedMarks));
                 draft[index].averageMarks = marks.length > 0 ? marks.reduce((sum, submission) => sum + submission.obtainedMarks, 0) / marks.length : 0;
             });
+
             setEvaluations(updatedEvaluations);
-            setTempEvaluations(evaluations);
-            console.log("UPDATEDEVALUATIONS ", updatedEvaluations);
         });
     };
 
@@ -295,7 +294,7 @@ function Evaluations() {
                                                             </TableRow>
                                                         </TableHead>
                                                         <TableBody>
-                                                            {evaluation.submissions.map((submission, subIndex) => {
+                                                            {evaluation.submissions?.map((submission, subIndex) => {
                                                                 const obtainedWeightage = (submission.obtainedMarks / evaluation.totalMarks) * evaluation.weightage;
                                                                 return (
                                                                     <TableRow key={subIndex}>

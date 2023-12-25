@@ -167,11 +167,7 @@ export default function NavBar({ children }) {
   const logouts = () => {
     setDarkMode(false);
     logout();
-  }
-
-
-    
- 
+  };
 
   const standardOptions = [
     {
@@ -309,7 +305,7 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
         {isAdmin && (
           <>
             <Divider />
@@ -347,8 +343,8 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
-        {isTeacher &&(
+        )}
+        {isTeacher && (
           <>
             <Divider />
             <List>
@@ -385,7 +381,7 @@ export default function NavBar({ children }) {
               ))}
             </List>
           </>
-        ) }
+        )}
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1,minHeight:'' }}>
     <DrawerHeader />
@@ -395,9 +391,6 @@ export default function NavBar({ children }) {
         </Box>
       <Footer  />
       </Box>
-     
     </Box>
   );
 }
-
-

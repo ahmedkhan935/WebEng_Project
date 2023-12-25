@@ -25,6 +25,7 @@ router.post('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacher
 
 router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.editAnnouncement);
 router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);
+router.put('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.updateEvaluation);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
 router.post("/classes/:classCode/startMeeting", Auth, AuthTeacher, teacherController.startMeet);

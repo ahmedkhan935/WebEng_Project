@@ -14,7 +14,7 @@ import {
   Input,
 } from "@mui/material";
 import NavBar from "../components/Navbar";
-
+import PostAddTwoToneIcon from "@mui/icons-material/PostAddTwoTone";
 import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
 import {
   addAnnouncement,
@@ -150,6 +150,7 @@ const AdminThread = () => {
         variant="outlined"
         onClick={() => handlePostToThread()}
         style={{ float: "right", marginRight: "20px" }}
+        startIcon={<PostAddTwoToneIcon />}
       >
         Post to thread
       </Button>
@@ -167,24 +168,30 @@ const AdminThread = () => {
             Posts from this thread:
           </Typography>
 
-          <CardContent>
-            {posts.map((post) => (
-              <div style={{ marginTop: "20px" }}>
-                {post.attachments.originalName}
-                <MakeAnnouncementCard
-                  key={post._id}
-                  title={post.title}
-                  content={post.content}
-                  date={new Date(post.date).toLocaleDateString()}
-                  creator="Amir Rehman"
-                  file={post.attachments ? post.attachments.orignalName : null}
-                  downloadname={post.attachments ? post.attachments.name : null}
-                  handleEdit={() => handleEditpost(post)}
-                  handleDelete={() => handleDeletepost(post)}
-                />
-              </div>
-            ))}
-          </CardContent>
+          {posts.length > 0 && (
+            <CardContent>
+              {posts.map((post) => (
+                <div style={{ marginTop: "20px" }}>
+                  {post.attachments.originalName}
+                  <MakeAnnouncementCard
+                    key={post._id}
+                    title={post.title}
+                    content={post.content}
+                    date={new Date(post.date).toLocaleDateString()}
+                    creator="Amir Rehman"
+                    file={
+                      post.attachments ? post.attachments.orignalName : null
+                    }
+                    downloadname={
+                      post.attachments ? post.attachments.name : null
+                    }
+                    handleEdit={() => handleEditpost(post)}
+                    handleDelete={() => handleDeletepost(post)}
+                  />
+                </div>
+              ))}
+            </CardContent>
+          )}
         </div>
       </div>
 

@@ -180,6 +180,24 @@ export const editAnnouncement = async (classCode, announcementId, announcement) 
     }
 };
 
+export const updateEvaluation = async (classCode, title, data) => {
+    const response = await axios.put(`${BASE_URL}/teacher/classes/${classCode}/evaluations/${title}`,
+        {
+            title: data.title,
+            weightage: data.weightage,
+            totalMarks: data.totalMarks,
+            dueDate: data.dueDate
+        },
+        {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            withCredentials: true
+        }
+    );
+    return handleResponse(response);
+};
+
 export const updateAttendance = async (classCode, date, duration, attendance) => {
     const response = await axios.put(`${BASE_URL}/teacher/classes/${classCode}/attendance`,
         {
