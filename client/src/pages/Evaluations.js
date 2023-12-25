@@ -1,8 +1,11 @@
 import React, { useState, Fragment, useEffect } from 'react';
-import { alpha, Alert,AlertTitle, Typography, Dialog, DialogTitle, DialogContent, Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box, Chip, Paper, DialogActions } from "@mui/material";
-import { AttachFile } from '@mui/icons-material';
+import {
+    alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
+    Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
+    TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
+    Chip, Paper, DialogActions
+} from "@mui/material";
 import NavBar from '../components/Navbar';
-import { styled } from '@mui/system';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import AttachmentIcon from '@mui/icons-material/Attachment';
@@ -10,53 +13,29 @@ import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation, addA
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
-
-
-const TableHeaderCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: theme.palette.primary.main,
-    fontWeight: 'bold',
-    color: theme.palette.common.white,
-}));
-
-const TableSubHeaderCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: alpha(theme.palette.primary.main, 0.6),
-    color: theme.palette.common.white,
-    cursor: 'pointer',
-}));
-
-const SmallTableHeaderCell = styled(TableCell)(({ theme }) => ({
-    backgroundColor: alpha(theme.palette.secondary.main, 0.8),
-    color: theme.palette.common.white,
-}));
-
+import { TableHeaderCell, TableSubHeaderCell, SmallTableHeaderCell } from '../assets/theme/StyledComponents';
 
 function Evaluations() {
     const [evaluations, setEvaluations] = useState([
         // {
+        //sample obj looks like this.
         //     title: "Assignemnt 1", weightage: 5, totalMarks: 10, averageMarks: 5.5, minMarks: 0, maxMarks: 10, dueDate: "12/12/2021",
         //     submissions: [
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: { name: "attachment.png", url: "example.com" } },
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: { name: "attachment.png", url: "example.com" } },
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: null },
-        //     ]
-        // },
-        // {
-        //     title: "Assignemnt 2", weightage: 5, totalMarks: 10, averageMarks: 5.5, minMarks: 0, maxMarks: 10, dueDate: "12/12/2021",
-        //     submissions: [
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: { name: "attachment.png", url: "example.com" } },
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: null },
-        //         { rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: { name: "attachment.png", url: "example.com" } }
+        //         { studentId: "* mongoose obj id *", rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: { name: "attachment.png", url: "example.com" } },
+        //         { studentId: "* mongoose obj id *", rollNum: "i231216", name: "diya", obtainedMarks: 5.5, attachment: null },
+        //        
         //     ]
         // },
 
     ])
     const { classCode } = useParams();
-    const [tempEvaluations, setTempEvaluations] = useState(evaluations); //for updating text fields and dealig with cancel, we use this
-    const [open, setOpen] = useState([]);
-    const [editMode, setEditMode] = useState(false);
+    const [open, setOpen] = useState([]);//Array to keep track of multiple open/closed collapses
     const [students, setStudents] = useState([]);
-    const [editMarksError, setEditMarksError] = useState(false);
 
+    //States for editing marks
+    const [tempEvaluations, setTempEvaluations] = useState(evaluations); //for updating text fields and dealig with cancel, we use this
+    const [editMode, setEditMode] = useState(false);
+    const [editMarksError, setEditMarksError] = useState(false);
 
     //States For adding new evaluation
     const [createEvalTitle, setCreateEvalTitle] = useState("");
@@ -69,50 +48,47 @@ function Evaluations() {
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
 
-    const handleEditMarks = () => {
-        setTempEvaluations([...evaluations]);
-        setEditMode(true);
+    useEffect(() => {
+        getStudents(classCode).then((data) => {
+            console.log("GET STUDENTS", data.data);
+            if (data.error) {
+                return;
+            }
+            setStudents(data.data);
+        })
+        getAllEvaluations(classCode).then((data) => {
+            if (data.error) {
+                return;
+            }
+            const newEvaluations = data.data;
+            setEvaluations(newEvaluations);
+            const updatedEvaluations = newEvaluations.map((evaluation) => ({ ...evaluation, submissions: [] }));
+            setEvaluations(updatedEvaluations);
+            setTempEvaluations(updatedEvaluations);
+            setOpen(new Array(newEvaluations.length).fill(false)); //all will be closed by default
+        })
+    }, []);
+
+    useEffect(() => {
+        console.log("EVALUATIONS CHANGED", evaluations);
+    }, [evaluations]);
+
+    //Clicking a particular evaluation to display info
+    const handleClick = (index) => {
+        setOpen(prevOpen => {
+            const newOpen = [...prevOpen];
+            newOpen[index] = !newOpen[index];
+            return newOpen;
+        });
+
+        populateMarks(index);
     };
 
-    const handleSave = (evaluationTitle) => {
-        setEvaluations(tempEvaluations);
-        addEvaluation(classCode, evaluationTitle, evaluations)
-            .then((data) => { console.log("DATA", data) });
-
-        setCreateEvalTitle("");
-        setCreateEvalContent(null);
-        setCreateEvalWeightage(null);
-        setCreateEvalTotalMarks(null);
-        setCreateEvalOpenSubmission(false);
-        setEditMode(false);
-
-    };
-
-    const handleCancel = () => {
-        setEditMode(false);
-        setCreateEvalTitle("");
-        setCreateEvalContent(null);
-        setCreateEvalWeightage(null);
-        setCreateEvalTotalMarks(null);
-        setCreateEvalOpenSubmission(false);
-        setTempEvaluations(evaluations);
-    };
-
-    const handleMarksChange = (event, evalIndex, subIndex) => {
-        const value = event.target.value;
-        setEditMarksError(event.target.error);
-        const error = value > evaluations[evalIndex].totalMarks || value < 0;
-        setEditMarksError(error);
-        setTempEvaluations(produce(tempEvaluations, draft => {
-            draft[evalIndex].submissions[subIndex].obtainedMarks = event.target.value;
-        }));
-
-    };
-
+    //populate marks of an evaluation when evaluation selected
     const populateMarks = (index) => {
         const evaluation = evaluations[index];
         const title = evaluation.title;
-        
+
         let data = getEvaluationMarks(classCode, title).then((data) => {
             if (data.error) {
                 console.log("ERROR", data.error);
@@ -131,31 +107,96 @@ function Evaluations() {
             console.log("UPDATEDEVALUATIONS ", updatedEvaluations);
         });
     };
-    
-    useEffect(() => {
-        console.log("EVALUATIONS CHANGED", evaluations);
-    }, [evaluations]);
 
-    const handleClick = (index) => {
-        setOpen(prevOpen => {
-            const newOpen = [...prevOpen];
-            newOpen[index] = !newOpen[index];
-            return newOpen;
-        });
+    //to download student submission on clicked
+    const downloadSubmission = async (name, originalName) => {
+        setDownloading(true);
+        try {
+            const response = await downloadFile(name);
+            if (!response.ok) {
+                throw new Error("HTTP error " + response.status);
+            }
 
-        populateMarks(index);
-    };
-
-
-    const handleImportMarks = () => {
+            const blob = await response.blob();
+            console.log(blob);
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = originalName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.error("Fetch error: ", error);
+        } finally {
+            setDownloading(false);
+        }
     }
 
+    //Edit marks button clicked
+    const handleEditMarks = () => {
+        setTempEvaluations([...evaluations]);
+        setEditMode(true);
+    };
+
+    //Editing in process - updating student marks & validating
+    const handleMarksChange = (event, evalIndex, subIndex) => {
+        const value = event.target.value;
+        setEditMarksError(event.target.error);
+        const error = value > evaluations[evalIndex].totalMarks || value < 0;
+        setEditMarksError(error);
+        setTempEvaluations(produce(tempEvaluations, draft => {
+            draft[evalIndex].submissions[subIndex].obtainedMarks = event.target.value;
+        }));
+
+    };
+
+    //Editing in process - updating student marks & validating
     const handleTitleChange = (e) => {
         const title = e.target.value;
         setCreateEvalTitle(title);
         setTitleError(evaluations.some(evaluation => evaluation.title === title));
     };
 
+    //Saving evaluation marks after editing
+    const handleSave = (evaluationTitle) => {
+        setEvaluations(tempEvaluations);
+        addEvaluation(classCode, evaluationTitle, evaluations)
+            .then((data) => { console.log("DATA", data) });
+
+        setCreateEvalTitle("");
+        setCreateEvalContent(null);
+        setCreateEvalWeightage(null);
+        setCreateEvalTotalMarks(null);
+        setCreateEvalOpenSubmission(false);
+        setEditMode(false);
+
+    };
+
+    //Cancel during editing
+    const handleCancel = () => {
+        setEditMode(false);
+        setCreateEvalTitle("");
+        setCreateEvalContent(null);
+        setCreateEvalWeightage(null);
+        setCreateEvalTotalMarks(null);
+        setCreateEvalOpenSubmission(false);
+        setTempEvaluations(evaluations);
+    };
+
+    const handleImportMarks = () => {
+    }
+
+    //Open and close form to create new evaluation
+    const handleOpenDialog = () => {
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
+
+    //Add new evaluation
     const addEvaluation = () => {
         const evaluation = { //formdata
             type: createEvalOpenSubmission ? "Assignment" : "Other",
@@ -183,65 +224,6 @@ function Evaluations() {
         setOpenDialog(false);
     };
 
-    const handleOpenDialog = () => {
-        setOpenDialog(true);
-    };
-
-    const handleCloseDialog = () => {
-        setOpenDialog(false);
-    };
-
-    useEffect(() => {
-        getStudents(classCode).then((data) => {
-            console.log("GET STUDENTS", data.data);
-            if (data.error) {
-                return;
-            }
-            setStudents(data.data);
-        })
-        getAllEvaluations(classCode).then((data) => {
-            console.log("GET ALL EVALS", data)
-            if (data.error) {
-                return;
-            }
-            const newEvaluations = data.data;
-            setEvaluations(newEvaluations);
-            console.log("DATA ", newEvaluations)
-            console.log("EVALUATIONS ", newEvaluations)
-
-            const updatedEvaluations = newEvaluations.map((evaluation) => ({ ...evaluation, submissions: [] }));
-            setEvaluations(updatedEvaluations);
-            console.log("EVALUATIONS AFTER MAP", updatedEvaluations)
-            setTempEvaluations(updatedEvaluations);
-            setOpen(new Array(newEvaluations.length).fill(false)); //all will be closed by default
-        })
-    }, []);
-
-        //to download student submission
-        const downloadSubmission = async (name, originalName) => {
-            setDownloading(true);
-            try {
-                const response = await downloadFile(name);
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-    
-                const blob = await response.blob();
-                console.log(blob);
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = originalName;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            } catch (error) {
-                console.error("Fetch error: ", error);
-            } finally {
-                setDownloading(false);
-            }
-        }
-    
 
     return (
         <NavBar>
@@ -325,21 +307,21 @@ function Evaluations() {
                                                                         <TableCell align="left">
                                                                             {submission.submission &&
                                                                                 <Chip
-                                                                                icon={<AttachmentIcon />}
-                                                                                label={submission.submission.originalName.length > 30 //trim if too many chars
-                                                                                    ? `${submission.submission.originalName.substring(0, 30)}...` 
-                                                                                    : submission.submission.originalName}
-                                                                                clickable
-                                                                                component="a"
-                                                                                target="_blank"
-                                                                                rel="noopener noreferrer"
-                                                                                variant="outlined"
-                                                                                sx={{
-                                                                                    margin: "5px",
-                                                                                    backgroundColor: (theme) =>
-                                                                                        `${theme.palette.secondary.main}1A`,
-                                                                                }}
-                                                                                onClick={() => downloadSubmission(submission.submission.name, submission.submission.originalName)}
+                                                                                    icon={<AttachmentIcon />}
+                                                                                    label={submission.submission.originalName.length > 30 //trim if too many chars
+                                                                                        ? `${submission.submission.originalName.substring(0, 30)}...`
+                                                                                        : submission.submission.originalName}
+                                                                                    clickable
+                                                                                    component="a"
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                    variant="outlined"
+                                                                                    sx={{
+                                                                                        margin: "5px",
+                                                                                        backgroundColor: (theme) =>
+                                                                                            `${theme.palette.primary.main}1A`,
+                                                                                    }}
+                                                                                    onClick={() => downloadSubmission(submission.submission.name, submission.submission.originalName)}
                                                                                 />
                                                                             }
                                                                         </TableCell>
@@ -352,10 +334,10 @@ function Evaluations() {
                                                                                     type="number"
                                                                                     error={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0}
                                                                                     helperText={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0 ? "Marks should be between 0 and " + evaluation.totalMarks : ""}
-                                                                                    onChange={(event) => { 
+                                                                                    onChange={(event) => {
                                                                                         setEditMarksError(submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0);
                                                                                         handleMarksChange(event, evalIndex, subIndex);
-                                                                                     }}
+                                                                                    }}
                                                                                     style={{ maxWidth: '80px' }}
                                                                                     variant="standard"
                                                                                     size="small"
@@ -373,7 +355,7 @@ function Evaluations() {
                                                     {editMode && (
                                                         <Box display="flex" justifyContent="flex-end" mt={2}>
                                                             <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
-                                                            <Button variant="contained" color="primary" onClick={()=> handleSave(evaluation.title)} disabled={editMarksError}>Save</Button>
+                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evaluation.title)} disabled={editMarksError}>Save</Button>
                                                         </Box>
                                                     )}
                                                 </Box>
