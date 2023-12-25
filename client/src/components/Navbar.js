@@ -45,9 +45,22 @@ const drawerWidth = 240;
 const Footer = () => {
   const theme = useTheme();
   return (
-    <Box sx={{ display: 'flex',flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', paddingTop: '40px', paddingBottom: '40px', backgroundColor: alpha(theme.palette.primary.main, 0.1), marginTop: 'auto' }}>
+    <Box sx={{
+      position: 'static',
+      bottom: 0,
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: '20px',
+      paddingTop: '40px',
+      paddingBottom: '40px',
+      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+      marginTop: 'auto'
+    }}>
       <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />
-      <Typography variant="body1" sx={{color: theme.palette.primary.main}}>
+      <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
         © 2023 Clean Slate Inc.
       </Typography>
       <Typography variant="subtitle1" color="text.secondary" >

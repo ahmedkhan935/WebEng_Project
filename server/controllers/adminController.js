@@ -521,7 +521,7 @@ const getStudentsWithLowAttendance = async (req, res) => {
 
     for (const studentEval of studentsEval) {
       var student = await Student.findById(studentEval.studentId);
-      console.log(studentEval.studentId.classes);
+
       for (const classObj of student.classes) {
         const classroom = await Classroom.findOne({ code: classObj.classCode })
           .populate({
@@ -545,7 +545,7 @@ const getStudentsWithLowAttendance = async (req, res) => {
         }
       }
     }
-    console.log(formattedStudents);
+
     res.status(200).json(formattedStudents);
   } catch (error) {
     console.error(error);
@@ -595,6 +595,80 @@ const medalHolderslist = async (req, res) => {
     res.status(500).json({ errorMessage: "Internal server error" });
   }
 };
+
+//drag and drop add courses to semesters in a particular degree
+const saveSemesterCourses = async (req, res) => {
+  try {
+    const { degreeId, semesters } = req.body;
+    console.log(degreeId, semesters);
+
+    const degree = await Degree.findById(degreeId);
+
+    if (!degree) {
+      return res.status(404).json({ error: "Degree not found" });
+    }
+
+    semesters.forEach((semester) => {
+      const existingSemester = degree.semCourses.find((s) => {
+        if (s.semNumber == semester.semester) {
+          return s;
+        }
+      });
+      console.log(existingSemester + "existing");
+      if (existingSemester) {
+        console.log(existingSemester + "exists for " + semester.semester);
+        existingSemester.courses = semester.courses;
+        console.log(existingSemester.courses + " courses added");
+      } else {
+        // Semester doesn't exist, add a new entry (store course IDs)
+        degree.semCourses.push({
+          semNumber: semester.semester,
+          courses: semester.courses.map((course) => ({ courseId: course._id })),
+        });
+      }
+    });
+
+    await degree.save();
+
+    res.status(200).json({ message: "Changes saved successfully!" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+const getDegreeCourses = async (req, res) => {
+  try {
+    const { degreeId } = req.body;
+
+    // Find the degree by ID
+    const degree = await Degree.findById(degreeId);
+
+    if (!degree) {
+      return res.status(404).json({ error: "Degree not found" });
+    }
+
+    // Extract course IDs for each semester
+    const coursesBySemester = degree.semCourses.map((semester) => {
+      const courseIds = semester.courses.map((course) => course._id);
+      return { semester: semester.semNumber, courseIds };
+    });
+
+    console.log(coursesBySemester);
+    // Fetch course details for each course ID
+    const coursesDetails = await Promise.all(
+      coursesBySemester.map(async (semester) => {
+        const courses = await Course.find({ _id: { $in: semester.courseIds } });
+        return { semester: semester.semester, courses };
+      })
+    );
+
+    res.status(200).json(coursesDetails);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 const getDegrees = async (req, res) => {
   try {
     const degrees = await Degree.find({}).select("name abbreviation");
@@ -637,4 +711,6 @@ module.exports = {
   rectorslist,
   medalHolderslist,
   getDegrees,
+  saveSemesterCourses,
+  getDegreeCourses,
 };

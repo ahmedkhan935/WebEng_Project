@@ -2,6 +2,7 @@ const Classroom = require('../models/Classroom');
 const Thread = require('../models/Thread');
 const Teacher = require('../models/Teacher');
 const StudentEval = require('../models/StudentEval');
+const Student = require('../models/Student');
 const CourseEval = require('../models/CourseEval');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -554,15 +555,27 @@ const teacherController = {
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
+             //haadiya bongi start ----
+            const studentIds = studentEvals.map(eval => eval.studentId);
+            const students = await Student.find({ _id: { $in: studentIds } }).select('rollNumber name');
 
+            studentEvals.forEach(eval => {
+                const student = students.find(student => student._id.toString() === eval.studentId.toString());
+                if (student) {
+                    eval.studentRollNumber = student.rollNumber;
+                    eval.studentName = student.name;
+                }
+            });
+            //haadiya= bongi end-----
+           
             let data = studentEvals.map(studentEval => {
                 const eval = studentEval.evaluations.find(eval => eval.title == evaluation.title);
                 const obtainedMarks = eval ? eval.obtainedMarks : 0;
                 const obtainedWeightage = eval ? eval.obtainedWeightage : 0;
                 return {
                     studentId: studentEval.studentId,
-                    // rollNumber: studentEval.studentId.rollNumber,
-                    // name: studentEval.studentId.name,
+                    rollNumber: studentEval.studentRollNumber,
+                    name: studentEval.studentName,
                     obtainedMarks,
                     obtainedWeightage
                 };
@@ -622,8 +635,22 @@ const teacherController = {
             if (!evaluation) {
                 return res.status(404).json({ message: 'Evaluation not found' });
             }
+            
+            //------hadiya bongi starts
+            let studentEvals = await StudentEval.find({ classCode })
+                .populate({
+                    path: 'studentId',
+                    select: 'rollNumber'
+                });
 
-            evaluation.evaluations = evaluations;
+            console.log("eval: ", studentEvals);
+
+            if (!studentEvals) {
+                return res.status(404).json({ message: 'No student evals found' });
+            }
+            //-------haadiya bongi ends 
+
+           // evaluation.evaluations = evaluations;
 
             await session.commitTransaction();
             res.status(200).json({ message: 'Assignment marked successfully' });
@@ -635,6 +662,7 @@ const teacherController = {
             session.endSession();
         }
     },
+
 };
 
 module.exports = teacherController;

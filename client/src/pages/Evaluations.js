@@ -1,13 +1,16 @@
 import React, { useState, Fragment, useEffect } from 'react';
-import { alpha, Typography, Dialog, DialogTitle, DialogContent, Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box, Chip, Paper, DialogActions } from "@mui/material";
+import { alpha, Alert,AlertTitle, Typography, Dialog, DialogTitle, DialogContent, Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box, Chip, Paper, DialogActions } from "@mui/material";
 import { AttachFile } from '@mui/icons-material';
 import NavBar from '../components/Navbar';
 import { styled } from '@mui/system';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import EditIcon from '@mui/icons-material/Edit';
-import { getStudents, getAllEvaluations, getEvaluationMarks, addAnnouncement } from '../services/TeacherService';
+import AttachmentIcon from '@mui/icons-material/Attachment';
+import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation, addAnnouncement } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
+import { downloadFile } from '../services/ThreadService';
+
 
 const TableHeaderCell = styled(TableCell)(({ theme }) => ({
     backgroundColor: theme.palette.primary.main,
@@ -52,6 +55,8 @@ function Evaluations() {
     const [open, setOpen] = useState([]);
     const [editMode, setEditMode] = useState(false);
     const [students, setStudents] = useState([]);
+    const [editMarksError, setEditMarksError] = useState(false);
+
 
     //States For adding new evaluation
     const [createEvalTitle, setCreateEvalTitle] = useState("");
@@ -62,14 +67,18 @@ function Evaluations() {
     const [createEvalDueDate, setCreateEvalDueDate] = useState(new Date());
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
+    const [downloading, setDownloading] = useState(false);
 
     const handleEditMarks = () => {
         setTempEvaluations([...evaluations]);
         setEditMode(true);
     };
 
-    const handleSave = () => {
+    const handleSave = (evaluationTitle) => {
         setEvaluations(tempEvaluations);
+        addEvaluation(classCode, evaluationTitle, evaluations)
+            .then((data) => { console.log("DATA", data) });
+
         setCreateEvalTitle("");
         setCreateEvalContent(null);
         setCreateEvalWeightage(null);
@@ -90,9 +99,14 @@ function Evaluations() {
     };
 
     const handleMarksChange = (event, evalIndex, subIndex) => {
+        const value = event.target.value;
+        setEditMarksError(event.target.error);
+        const error = value > evaluations[evalIndex].totalMarks || value < 0;
+        setEditMarksError(error);
         setTempEvaluations(produce(tempEvaluations, draft => {
             draft[evalIndex].submissions[subIndex].obtainedMarks = event.target.value;
         }));
+
     };
 
     const populateMarks = (index) => {
@@ -100,7 +114,6 @@ function Evaluations() {
         const title = evaluation.title;
         
         let data = getEvaluationMarks(classCode, title).then((data) => {
-            console.log("GET EVALUATION MARKS", data);
             if (data.error) {
                 console.log("ERROR", data.error);
                 return;
@@ -114,9 +127,14 @@ function Evaluations() {
                 draft[index].averageMarks = marks.length > 0 ? marks.reduce((sum, submission) => sum + submission.obtainedMarks, 0) / marks.length : 0;
             });
             setEvaluations(updatedEvaluations);
+            setTempEvaluations(evaluations);
+            console.log("UPDATEDEVALUATIONS ", updatedEvaluations);
         });
     };
-
+    
+    useEffect(() => {
+        console.log("EVALUATIONS CHANGED", evaluations);
+    }, [evaluations]);
 
     const handleClick = (index) => {
         setOpen(prevOpen => {
@@ -161,8 +179,6 @@ function Evaluations() {
             setTempEvaluations(evaluations);
         });
 
-
-
         // Add the evaluation to your state or database here
         setOpenDialog(false);
     };
@@ -200,6 +216,32 @@ function Evaluations() {
             setOpen(new Array(newEvaluations.length).fill(false)); //all will be closed by default
         })
     }, []);
+
+        //to download student submission
+        const downloadSubmission = async (name, originalName) => {
+            setDownloading(true);
+            try {
+                const response = await downloadFile(name);
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+    
+                const blob = await response.blob();
+                console.log(blob);
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = originalName;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch (error) {
+                console.error("Fetch error: ", error);
+            } finally {
+                setDownloading(false);
+            }
+        }
+    
 
     return (
         <NavBar>
@@ -248,9 +290,17 @@ function Evaluations() {
                                         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
                                             <Collapse in={open[evalIndex]} timeout="auto" unmountOnExit>
                                                 <Box margin={1}>
+                                                    {
+                                                        evaluation.dueDate && evaluation.dueDate > new Date().toISOString() ?
+                                                            <Alert severity="warning">
+                                                                <AlertTitle>Due date has not passed.</AlertTitle>
+                                                                Some students may not have submitted their work yet.
+                                                            </Alert>
+                                                            :
+                                                            null
+                                                    }
                                                     <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleImportMarks} startIcon={<FileUploadIcon />}> Import Marks </Button>
                                                     <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={handleEditMarks} startIcon={<EditIcon />}> Add/Edit Marks </Button>
-
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
                                                             <TableRow>
@@ -258,7 +308,7 @@ function Evaluations() {
                                                                 <SmallTableHeaderCell>Roll Number</SmallTableHeaderCell>
                                                                 <SmallTableHeaderCell>Name</SmallTableHeaderCell>
                                                                 <SmallTableHeaderCell align="left">Attachment</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell align="left">Obtained Weightage</SmallTableHeaderCell>
+                                                                <SmallTableHeaderCell align="right">Obtained Weightage</SmallTableHeaderCell>
                                                                 <SmallTableHeaderCell align="right">Obtained Marks</SmallTableHeaderCell>
                                                             </TableRow>
                                                         </TableHead>
@@ -269,19 +319,27 @@ function Evaluations() {
                                                                     <TableRow key={subIndex}>
                                                                         <TableCell>{subIndex + 1}</TableCell>
                                                                         <TableCell component="th" scope="row">
-                                                                            {submission.rollNum}
+                                                                            {submission.rollNumber}
                                                                         </TableCell>
                                                                         <TableCell>{submission.name}</TableCell>
                                                                         <TableCell align="left">
-                                                                            {submission.attachment &&
+                                                                            {submission.submission &&
                                                                                 <Chip
-                                                                                    icon={<AttachFile />}
-                                                                                    label={submission.attachment.name}
-                                                                                    clickable
-                                                                                    component="a"
-                                                                                    href={submission.attachment.url}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
+                                                                                icon={<AttachmentIcon />}
+                                                                                label={submission.submission.originalName.length > 30 //trim if too many chars
+                                                                                    ? `${submission.submission.originalName.substring(0, 30)}...` 
+                                                                                    : submission.submission.originalName}
+                                                                                clickable
+                                                                                component="a"
+                                                                                target="_blank"
+                                                                                rel="noopener noreferrer"
+                                                                                variant="outlined"
+                                                                                sx={{
+                                                                                    margin: "5px",
+                                                                                    backgroundColor: (theme) =>
+                                                                                        `${theme.palette.secondary.main}1A`,
+                                                                                }}
+                                                                                onClick={() => downloadSubmission(submission.submission.name, submission.submission.originalName)}
                                                                                 />
                                                                             }
                                                                         </TableCell>
@@ -290,7 +348,14 @@ function Evaluations() {
                                                                             {editMode ? (
                                                                                 <TextField
                                                                                     value={submission.obtainedMarks}
-                                                                                    onChange={(event) => handleMarksChange(event, evalIndex, subIndex)}
+                                                                                    inputProps={{ min: 0, max: evaluation.totalMarks }}
+                                                                                    type="number"
+                                                                                    error={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0}
+                                                                                    helperText={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0 ? "Marks should be between 0 and " + evaluation.totalMarks : ""}
+                                                                                    onChange={(event) => { 
+                                                                                        setEditMarksError(submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0);
+                                                                                        handleMarksChange(event, evalIndex, subIndex);
+                                                                                     }}
                                                                                     style={{ maxWidth: '80px' }}
                                                                                     variant="standard"
                                                                                     size="small"
@@ -308,7 +373,7 @@ function Evaluations() {
                                                     {editMode && (
                                                         <Box display="flex" justifyContent="flex-end" mt={2}>
                                                             <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
-                                                            <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+                                                            <Button variant="contained" color="primary" onClick={()=> handleSave(evaluation.title)} disabled={editMarksError}>Save</Button>
                                                         </Box>
                                                     )}
                                                 </Box>
