@@ -31,9 +31,7 @@ const ViewTeachers = () => {
   const [rows, setRows] = useState([]); // Contains the rows to be displayed on the current page
   const navigate = useNavigate();
   const handleDelete = (teacherId) => {
-    console.log(`Deleting teacher with ID: ${teacherId}`);
     deleteTeacher(teacherId).then((res) => {
-      console.log(res);
       if (res.status === 200) {
         alert("Teacher deleted successfully");
         window.location.reload();
@@ -55,7 +53,6 @@ const ViewTeachers = () => {
   }, []);
 
   const handleUpdate = (teacherId) => {
-    console.log(`Updating teacher with ID: ${teacherId}`);
     navigate(`/admin/updateTeacher/${teacherId}`);
   };
 

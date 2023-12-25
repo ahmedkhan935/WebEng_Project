@@ -2,6 +2,7 @@ const Thread = require("../models/Thread");
 const Student = require("../models/Student");
 const bucket = require("../firebase_init");
 const path = require('path');
+const Teacher   = require("../models/Teacher");
 const addThread = async (req, res) => {
     if (!req.body.title) {
         {
@@ -14,10 +15,23 @@ const addThread = async (req, res) => {
         title: req.body.title,
 
     });
+    const students=await Student.find();
+    for (let i = 0; i < students.length; i++) {
+        const student = students[i];
+        student.threads.push({threadId:thread._id});
+        await student.save();
+    }
+    const teacher = await Teacher.find();
+    for (let i = 0; i < teacher.length; i++) {
+
+        teacher[i].threads.push({threadId:thread._id});
+        await teacher[i].save();
+        }
     try {
         const savedThread = await thread.save();
-        res.json(savedThread);
-    } catch (err) {
+        res.status(200).json(savedThread);
+    }
+    catch (err) {
         res.json({ message: err });
     }
 }
@@ -60,6 +74,14 @@ const deleteThread = async (req, res) => {
             student.threads.pull(req.params.threadId);
             await student.save();
         }
+        //remove this thread from all teachers
+        const teachers = await Teacher.find({ threads: { $in: req.params.threadId } });
+        for (let i = 0; i < teachers.length; i++) {
+            const teacher = teachers[i];
+            teacher.threads.pull(req.params.threadId);
+            await teacher.save();
+        }
+
 
         res.status(200).json({ message: "Thread deleted successfully!" });
     } catch (err) {

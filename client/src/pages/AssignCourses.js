@@ -38,22 +38,47 @@ const AssignCourses = () => {
     setCourses(c);
     const t = await viewAllTeachers();
     setTeachers(t);
-    Teachers.forEach((teacher) => {
-      teacher.courses.forEach((course) => {
-       
+    for (let i = 0; i < t.length; i++) {
+      console.log(t[i]);
+      if (!t[i].courses) continue;
+
+      for (let j = 0; j < t[i].courses.length; j++) {
         setSelectedTeachers((prevSelectedTeachers) => ({
           ...prevSelectedTeachers,
-          [course.courseId.courseCode]: teacher,
+          [t[i].courses[j].courseId.courseCode]: t[i],
         }));
       }
-      );
-
-      });
-    
+    }
   }, []);
 
+  // const handleAssignCourse = async (course) => {
+
+  //   const teacherId = selectedTeachers[course.courseCode]._id;
+  //   const courseId = course._id;
+  //   const resp = await assignCourse({
+  //     teacherId,
+  //     courseId,
+  //   });
+
+  //   if (resp.error) {
+  //     setstatus(false);
+  //     setsubmitmsg(resp.error);
+  //   } else {
+  //     setstatus(true);
+  //     setsubmitmsg(resp.message);
+  //     setLoading(true);
+  //     setTimeout(() => {
+  //       setLoading(false);
+  //     }, 2000);
+  //   }
+  // };
+  // Initialize a state variable to keep track of the currently saving courses
+  const [savingCourses, setSavingCourses] = useState({});
+
   const handleAssignCourse = async (course) => {
-    console.log(course);
+    // Set the currently saving course ID
+    setSavingCourses((prevCourses) => ({ ...prevCourses, [course._id]: true }));
+
     const teacherId = selectedTeachers[course.courseCode]._id;
     const courseId = course._id;
     const resp = await assignCourse({
@@ -64,14 +89,14 @@ const AssignCourses = () => {
     if (resp.error) {
       setstatus(false);
       setsubmitmsg(resp.error);
-    } else {
-      setstatus(true);
-      setsubmitmsg(resp.message);
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-      }, 2000);
     }
+
+    // Reset the currently saving course ID
+    setSavingCourses((prevCourses) => {
+      const newCourses = { ...prevCourses };
+      delete newCourses[course._id];
+      return newCourses;
+    });
   };
 
   const handleTeacherChange = (courseCode, selectedTeacher) => {
@@ -141,7 +166,7 @@ const AssignCourses = () => {
                     color="primary"
                     onClick={() => handleAssignCourse(course)}
                   >
-                    {loading ? (
+                    {savingCourses[course._id] ? (
                       <CircularProgress
                         size={24}
                         style={{ marginRight: "10px" }}

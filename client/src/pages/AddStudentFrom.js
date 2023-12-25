@@ -33,7 +33,6 @@ const AddStudentForm = () => {
   useEffect(() => {
     viewDegrees().then((res) => {
       res.json().then((data) => {
-        console.log(data);
         setDegrees(data);
       });
     });
@@ -69,7 +68,6 @@ const AddStudentForm = () => {
       setstatus(false);
       setFormSubmitted(true);
     } else {
-      console.log(resp);
       setstatus(true);
       setsubmitmsg("  Student successfully added!");
       setFormSubmitted(true);

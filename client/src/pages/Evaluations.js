@@ -3,11 +3,13 @@ import {
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
-    Chip, Paper, DialogActions
+    Chip, Paper, DialogActions, ButtonGroup,Menu, MenuItem, ListItemIcon, ListItemText
 } from "@mui/material";
 import NavBar from '../components/Navbar';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
+import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
+import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import { read, utils } from 'xlsx';
 import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement } from '../services/TeacherService';
@@ -50,6 +52,14 @@ function Evaluations() {
     const [downloading, setDownloading] = useState(false);
 
     const fileInput = useRef();
+
+    //states for editing evaluation
+    const [editEvalTitle, setEditEvalTitle] = useState("");
+    const [editEvalContent, setEditEvalContent] = useState(null);
+    const [editEvalWeightage, setEditEvalWeightage] = useState(null);
+    const [editEvalTotalMarks, setEditEvalTotalMarks] = useState(null);
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
 
     useEffect(() => {
         getStudents(classCode).then((data) => {
@@ -140,6 +150,10 @@ function Evaluations() {
         setTempEvaluations([...evaluations]);
         setEditMode(true);
     };
+
+    //Edit evaluation button clicked
+    const handleEditEvaluation = () => {
+    }
 
     //Editing in process - updating student marks & validating
     const handleMarksChange = (event, evalIndex, subIndex) => {
@@ -271,6 +285,15 @@ function Evaluations() {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+    };
+
+    //handle evaluation edit buttons
+    const handleEvalEditClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleEvalEditClose = () => {
+        setAnchorEl(null);
     };
 
     //Add new evaluation
@@ -452,15 +475,17 @@ function Evaluations() {
                     </Table>
                 </TableContainer>
 
+                { /* Adding new evaluation */}
                 <Dialog open={openDialog} onClose={handleCloseDialog}>
                     <DialogTitle sx={{ pb: 0 }}>
                         <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
                             Add Evaluation
                         </Typography>
                     </DialogTitle>
+                    
                     <DialogContent>
                         <TextField
-                            label="Title"
+                            label="Title" 
                             value={createEvalTitle}
                             onChange={handleTitleChange}
                             fullWidth
@@ -542,6 +567,7 @@ function Evaluations() {
                         </DialogActions>
                     </DialogContent>
                 </Dialog>
+                
             </Container>
         </NavBar>
     );

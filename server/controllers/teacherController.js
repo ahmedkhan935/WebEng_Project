@@ -236,7 +236,7 @@ const teacherController = {
     editAnnouncement: async (req, res) => {
         try {
             const { classCode, announcementId } = req.params;
-            const { title, content, dueDate } = req.body;
+            const { title, content } = req.body;
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
@@ -250,7 +250,6 @@ const teacherController = {
 
             announcement.title = title;
             announcement.content = content;
-            announcement.dueDate = dueDate;
 
             await classroom.save();
 

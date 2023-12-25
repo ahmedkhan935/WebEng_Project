@@ -61,7 +61,6 @@ const TeacherFeedback = () => {
 
   useEffect(() => {
     getFeedback(classCode).then((res) => {
-      console.log(res);
       setRows(res.data);
     });
   }, []);

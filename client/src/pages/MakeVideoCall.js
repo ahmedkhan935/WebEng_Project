@@ -36,6 +36,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
 
   const handleStartMeeting = () => {
     setLoading(true);
+    setMeetingEnded(false);
 
     setTimeout(async () => {
       await StartMeet(classCode, `https://meet.jit.si/${classCode}`);
