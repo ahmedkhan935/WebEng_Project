@@ -120,7 +120,7 @@ function App() {
               element={<UpdateCourseForm />}
             ></Route>
             <Route
-              path="addDegree/:degreeid/selectCourses"
+              path="viewDegrees/addDegree/:degreeId/selectCourses"
               element={<DegreeCourseSelection />}
             ></Route>
 
