@@ -282,7 +282,12 @@ function DegreeCourseSelection() {
                       <Stack direction="column" spacing={1}>
                         {courses.map(
                           (
-                            { courseCode, courseName, courseType, crdHrs },
+                            {
+                              courseCode,
+                              courseName,
+                              courseType,
+                              courseCredits,
+                            },
                             index
                           ) => (
                             <Draggable
@@ -300,7 +305,8 @@ function DegreeCourseSelection() {
                                       <strong>
                                         {courseCode} {courseName}
                                       </strong>{" "}
-                                      | Type: {courseType} | CrdHrs: {crdHrs}
+                                      | Type: {courseType} | CrdHrs:{" "}
+                                      {courseCredits}
                                     </div>
                                   }
                                   variant="filled"
