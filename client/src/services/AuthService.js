@@ -97,3 +97,12 @@ export async function logout() {
     credentials: "include",
   });
 }
+export async function getRole() {
+  return await fetch(`${BASE_URL}/auth/role`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
+}

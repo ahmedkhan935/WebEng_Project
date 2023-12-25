@@ -40,7 +40,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
     setMeetingEnded(false);
 
     setTimeout(async () => {
-      await StartMeet(classCode, `https://8x8.vc/${classCode}`);
+      await StartMeet(classCode, `https://meet.jit.si/${classCode}`);
       setLoading(false);
       setMeetingStarted(true); // Set meetingStarted to true when the meeting starts
     }, 2000);

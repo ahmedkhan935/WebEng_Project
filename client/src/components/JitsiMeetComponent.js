@@ -5,7 +5,7 @@ const JitsiMeetComponent = ({ roomName, displayName }) => {
   const jitsiContainerRef = useRef(null);
   console.log(roomName);
   useEffect(() => {
-    const domain = "8x8.vc";
+    const domain = "meet.jit.si";
     const options = {
       roomName: roomName,
       width: "100%",
