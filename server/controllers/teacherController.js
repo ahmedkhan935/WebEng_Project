@@ -592,14 +592,14 @@ const teacherController = {
                     return res.status(404).json({ message: 'Assignment not found' });
                 }
 
-                //console.log(assignment);
+                console.log(assignment);
                 const submissions = assignment.submissions? assignment.submissions: [];
-                //console.log("SUBBB", submissions);
+                console.log("SUBBB", submissions);
 
                 data = data.map(student => {
-                    //console.log("STUDENT id", student.studentId);
+                    console.log("STUDENT id", student.studentId);
                     const submission = submissions.find(submission => submission.studentId.toString() == student.studentId.toString());
-                    //console.log("SUBMISSION", submission);
+                    console.log("SUBMISSION", submission);
                     if (submission) {
                         student.submission = submission.attachment;
                     }else{
@@ -643,15 +643,14 @@ const teacherController = {
                     select: 'rollNumber'
                 });
 
+            console.log("eval: ", studentEvals);
+
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
-
-            console.log("student eval: ", studentEvals);
-            console.log("evaluations: ", evaluation);
             //-------haadiya bongi ends 
 
-            //evaluation.evaluations = evaluations;
+           // evaluation.evaluations = evaluations;
 
             await session.commitTransaction();
             res.status(200).json({ message: 'Assignment marked successfully' });
