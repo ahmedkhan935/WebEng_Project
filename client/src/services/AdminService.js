@@ -202,3 +202,10 @@ export async function viewMedalHoldersList() {
     credentials: "include",
   });
 }
+
+export async function getDegrees() {
+  return await fetch(`${BASE_URL}/admin/degrees`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

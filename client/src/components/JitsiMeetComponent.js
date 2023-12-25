@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from "react";
+import {JitsiMeeting} from "@jitsi/react-sdk";
 
 const JitsiMeetComponent = ({ roomName, displayName }) => {
   const jitsiContainerRef = useRef(null);
@@ -16,6 +17,7 @@ const JitsiMeetComponent = ({ roomName, displayName }) => {
     };
 
     const api = new window.JitsiMeetExternalAPI(domain, options);
+  
 
     //get link 
     api.addEventListener("videoConferenceJoined", () => {
