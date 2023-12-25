@@ -8,7 +8,10 @@ const mongoose = require('mongoose');
 const path = require('path');
 const bucket = require('../firebase_init');
 
+var cache = {};
+
 const teacherController = {
+
     getClasses: async (req, res) => {
         // try {
         //     console.log("entered getClasses")
@@ -539,6 +542,11 @@ const teacherController = {
             let { classCode, title } = req.params;
             title = title.replace(/~/g, ' ');
 
+            const cacheKey = `${classCode}-${title}`;
+            if (cache[cacheKey]) {
+                return res.status(200).json(cache[cacheKey]);
+            }
+
             const courseEval = await CourseEval.findOne({ classCode });
             if (!courseEval) {
                 return res.status(404).json({ message: 'Course eval not found' });
@@ -612,6 +620,7 @@ const teacherController = {
                 });
             }
 
+            cache[cacheKey] = data;
             res.status(200).json(data);
 
         } catch (error) {
@@ -676,6 +685,7 @@ const teacherController = {
             session.endSession();
         }
     },
+    
     startMeet : async (req,res) => {
         try{
             const {classCode} = req.params;
@@ -701,6 +711,7 @@ const teacherController = {
             res.status(500).json({ message: 'Server error', error });
         }
     },
+
     endMeet: async (req,res) => {
         try{
             const {classCode} = req.params;
@@ -718,8 +729,7 @@ const teacherController = {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
-    }
-    
+    },
 
     updateEvaluation: async (req, res) => {
         const session = await mongoose.startSession();
