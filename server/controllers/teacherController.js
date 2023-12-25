@@ -213,7 +213,7 @@ const teacherController = {
 
                 // (courseEval.evaluations)? courseEval.evaluations.push(evaluation): courseEval.evaluations = [evaluation];
                 courseEval.evaluations.push(evaluation)
-                await courseEval.save({session});
+                await courseEval.save({ session });
             }
 
             const authorName = await Teacher.findById(req.user).select('name');
@@ -558,7 +558,7 @@ const teacherController = {
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
             }
-             //haadiya bongi start ----
+            //haadiya bongi start ----
             const studentIds = studentEvals.map(eval => eval.studentId);
             const students = await Student.find({ _id: { $in: studentIds } }).select('rollNumber name');
 
@@ -570,7 +570,7 @@ const teacherController = {
                 }
             });
             //haadiya= bongi end-----
-           
+
             let data = studentEvals.map(studentEval => {
                 const eval = studentEval.evaluations.find(eval => eval.title == evaluation.title);
                 const obtainedMarks = eval ? eval.obtainedMarks : 0;
@@ -596,7 +596,7 @@ const teacherController = {
                 }
 
                 console.log(assignment);
-                const submissions = assignment.submissions? assignment.submissions: [];
+                const submissions = assignment.submissions ? assignment.submissions : [];
                 console.log("SUBBB", submissions);
 
                 data = data.map(student => {
@@ -605,7 +605,7 @@ const teacherController = {
                     console.log("SUBMISSION", submission);
                     if (submission) {
                         student.submission = submission.attachment;
-                    }else{
+                    } else {
                         student.submission = null;
                     }
                     return student;
@@ -680,7 +680,7 @@ const teacherController = {
     updateEvaluation: async (req, res) => {
         const session = await mongoose.startSession();
         session.startTransaction();
-        try{
+        try {
             let { classCode, oldTitle } = req.params;
             let { title, weightage, totalMarks, dueDate } = req.body;
 
@@ -716,35 +716,36 @@ const teacherController = {
                     const eval = studentEval.evaluations.find(eval => eval.title == oldTitle);
                     if (eval) {
 
-                        if(title){eval.title = title;}
-                        if(weightage){eval.obtainedWeightage = eval.obtainedMarks * weightage / oldTotalMarks;}
-                        if(totalMarks){eval.obtainedMarks = 0; eval.obtainedWeightage = 0;}
-                        if(dueDate)eval.dueDate = dueDate;}
-
-                        await studentEval.save({ session });
+                        if (title) { eval.title = title; }
+                        if (weightage) { eval.obtainedWeightage = eval.obtainedMarks * weightage / oldTotalMarks; }
+                        if (totalMarks) { eval.obtainedMarks = 0; eval.obtainedWeightage = 0; }
+                        if (dueDate) eval.dueDate = dueDate;
                     }
+
+                    await studentEval.save({ session });
                 }
             }
 
-            if(title){evaluation.title = title; announcement.title = title;}
-            if(dueDate){evaluation.dueDate = dueDate; announcement.dueDate = dueDate;}
-            if(weightage){evaluation.weightage = weightage;}
-            if(totalMarks){evaluation.totalMarks = totalMarks;}
+
+            if (title) { evaluation.title = title; announcement.title = title; }
+            if (dueDate) { evaluation.dueDate = dueDate; announcement.dueDate = dueDate; }
+            if (weightage) { evaluation.weightage = weightage; }
+            if (totalMarks) { evaluation.totalMarks = totalMarks; }
 
             await courseEval.save({ session });
             await classroom.save({ session });
 
             await session.commitTransaction();
             res.status(200).json({ message: 'Assignment updated successfully' });
-            
+
         } catch (error) {
+            await session.abortTransaction();
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         } finally {
             session.endSession();
         }
     },
-
 };
 
 module.exports = teacherController;
