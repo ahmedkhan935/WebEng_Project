@@ -129,6 +129,21 @@ export const postComment = async (classCode, announcementId, content) => {
   );
   return handleResponse(response);
 };
+
+export const submitAssignment = async (classCode, title, formData) => {
+  const response = await axios.post(
+    `${BASE_URL}/student/classes/${classCode}/assignments/${title}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    }
+  );
+  return handleResponse(response);
+}
+
 export const givefeedback = async (classCode, feedback) => {
   try
   {

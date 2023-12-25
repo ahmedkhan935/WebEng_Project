@@ -131,8 +131,7 @@ const teacherController = {
         session.startTransaction();
         try {
             const { classCode } = req.params;
-            let { type, title, content, dueDate } = req.body;
-            let { weightage, totalMarks } = req.body;
+            let { type, title, content, dueDate, weightage, totalMarks } = req.body;
 
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
