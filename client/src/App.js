@@ -83,8 +83,8 @@ function App() {
               <Route path="attendance" element={<Attendance />}></Route>
               <Route path="feedback" element={<TeacherFeedback />}></Route>
               <Route path="evaluations" element={<Evaluations />}></Route>
-              <Route path="settings" element={<Settings />}></Route>
             </Route>
+            <Route path="settings" element={<Settings />}></Route>
           </Route>
 
           { /* Admin Routes */ }
