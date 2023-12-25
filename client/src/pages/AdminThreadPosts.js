@@ -11,10 +11,9 @@ import {
   Card,
   CardContent,
   Typography,
-  Input,
 } from "@mui/material";
 import NavBar from "../components/Navbar";
-import PostAddTwoToneIcon from "@mui/icons-material/PostAddTwoTone";
+
 import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
 import {
   addAnnouncement,
@@ -150,7 +149,6 @@ const AdminThread = () => {
         variant="outlined"
         onClick={() => handlePostToThread()}
         style={{ float: "right", marginRight: "20px" }}
-        startIcon={<PostAddTwoToneIcon />}
       >
         Post to thread
       </Button>
@@ -168,30 +166,24 @@ const AdminThread = () => {
             Posts from this thread:
           </Typography>
 
-          {posts.length > 0 && (
-            <CardContent>
-              {posts.map((post) => (
-                <div style={{ marginTop: "20px" }}>
-                  {post.attachments.originalName}
-                  <MakeAnnouncementCard
-                    key={post._id}
-                    title={post.title}
-                    content={post.content}
-                    date={new Date(post.date).toLocaleDateString()}
-                    creator="Amir Rehman"
-                    file={
-                      post.attachments ? post.attachments.orignalName : null
-                    }
-                    downloadname={
-                      post.attachments ? post.attachments.name : null
-                    }
-                    handleEdit={() => handleEditpost(post)}
-                    handleDelete={() => handleDeletepost(post)}
-                  />
-                </div>
-              ))}
-            </CardContent>
-          )}
+          <CardContent>
+            {posts.map((post) => (
+              <div style={{ marginTop: "20px" }}>
+                {post.attachments.originalName}
+                <MakeAnnouncementCard
+                  key={post._id}
+                  title={post.title}
+                  content={post.content}
+                  date={new Date(post.date).toLocaleDateString()}
+                  creator="Amir Rehman"
+                  file={post.attachments ? post.attachments.orignalName : null}
+                  downloadname={post.attachments ? post.attachments.name : null}
+                  handleEdit={() => handleEditpost(post)}
+                  handleDelete={() => handleDeletepost(post)}
+                />
+              </div>
+            ))}
+          </CardContent>
         </div>
       </div>
 
@@ -234,9 +226,7 @@ const AdminThread = () => {
       </Dialog>
       {/* Dialog for Make Post */}
       <Dialog open={formOpen} onClose={handleFormClose}>
-        <DialogTitle color="primary" sx={{ fontWeight: "bold" }}>
-          Make Post
-        </DialogTitle>
+        <DialogTitle>Make Post</DialogTitle>
         <DialogContent>
           <TextField
             label="Title"
@@ -256,16 +246,14 @@ const AdminThread = () => {
             onChange={(e) => setContent(e.target.value)}
             style={{ marginBottom: "10px" }}
           />
-          <Input
+          <input
             type="file"
             onChange={(e) => setfile(e.target.files[0])}
             style={{ margin: "10px 0" }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormClose} color="secondary">
-            Cancel
-          </Button>
+          <Button onClick={handleFormClose}>Cancel</Button>
           <Button onClick={handleAnnounce} variant="contained">
             Post
           </Button>

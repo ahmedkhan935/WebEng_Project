@@ -26,7 +26,6 @@ function MakeAnnouncementCard({
   handleEdit,
   handleDelete,
 }) {
-  
   const [expanded, setExpanded] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -53,26 +52,24 @@ function MakeAnnouncementCard({
   };
   const handleDownload = async () => {
     try {
-     
       const response = await downloadFile(downloadname);
       if (!response.ok) {
-          throw new Error("HTTP error " + response.status);
+        throw new Error("HTTP error " + response.status);
       }
-      
+
       const blob = await response.blob();
       console.log(blob);
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
       link.download = file;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-  } catch (error) {
+    } catch (error) {
       console.error("Fetch error: ", error);
-  }
-  }
-
+    }
+  };
 
   return (
     <Card sx={{ marginBottom: "10px" }}>
@@ -154,9 +151,7 @@ function MakeAnnouncementCard({
                         `${theme.palette.secondary.main}1A`,
                     }}
                     onClick={() => handleDownload(file)}
-
                   />
-
                 </Box>
               </div>
             )}
