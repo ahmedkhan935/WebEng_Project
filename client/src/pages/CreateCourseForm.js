@@ -176,29 +176,7 @@ const CreateCourseForm = () => {
           <MenuItem value="Theory">Theory</MenuItem>
         </TextField>
 
-        <FormControl style={styles.formControl} sx={{ marginTop: "10px" }}>
-          <InputLabel id="select-degrees-label">
-            Select Degree/Degrees
-          </InputLabel>
-          <Select
-            margin="normal"
-            labelId="select-degrees-label"
-            id="select-degrees"
-            multiple
-            value={selectedDegrees}
-            onChange={(e) => setSelectedDegrees(e.target.value)}
-            label="Select Degree/Degrees"
-            renderValue={(selected) => selected.join(", ")}
-          >
-            {degrees.map((degree) => (
-              <MenuItem key={degree} value={degree}>
-                <Checkbox checked={selectedDegrees.indexOf(degree) > -1} />
-                {degree}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
+        
         <FormControl style={styles.formControl}>
           <InputLabel id="prerequisite-label">Select Prerequisite</InputLabel>
           <Select
