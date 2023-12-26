@@ -835,7 +835,7 @@ const startSemester = async (req, res) => {
 
     const students = await Student.find({});
 
-    students.forEach(async (student) => {
+    students.forEach((student) => {
       const studentDegree = student.degreeName;
 
       // Find the degreeId from the Degree schema based on the degree name
@@ -851,7 +851,6 @@ const startSemester = async (req, res) => {
           }
         });
       }
-      await student.save();
     });
 
     // this function creates classrooms for this semester
