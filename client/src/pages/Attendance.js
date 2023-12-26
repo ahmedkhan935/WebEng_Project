@@ -21,9 +21,12 @@ function Attendance() {
     const { classCode } = useParams();
     const [open, setOpen] = useState(false);
     const [students, setStudents] = useState([]);
+
+    //States for adding new attendance
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
     const [duration, setDuration] = useState(1.5);
     const fileInput = useRef(null);
+
     const [page, setPage] = useState(0);
     const [rows, setRows] = useState([]);
     const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -31,6 +34,7 @@ function Attendance() {
     const [buttonLabel, setButtonLabel] = useState('Save New Record');
     const [dialogMessage, setDialogMessage] = useState('');
     const [dialogOpen, setDialogOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
 
 
     useEffect(() => {
@@ -58,7 +62,7 @@ function Attendance() {
                 }
             });
 
-            // can call get attendance here for the changed date on in a new useEffect
+            setLoading(false);
 
         } catch (err) {
             console.log(err);
@@ -193,6 +197,7 @@ function Attendance() {
                 <Typography variant="h5" sx={{ width: '100%', marginBottom: '10px' }}>
                     Attendance for this class
                 </Typography>
+                
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
