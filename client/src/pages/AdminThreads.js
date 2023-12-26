@@ -110,6 +110,7 @@ const AdminThreads = () => {
     addThread(threadtitle).then((res) => {
       if (res.status === 200) {
         res.json().then((data) => {
+          console.log(data);
           setThreads([data, ...threads]);
         });
       }

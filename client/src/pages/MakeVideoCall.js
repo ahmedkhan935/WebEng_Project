@@ -118,7 +118,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
             )}
           </Box>
         )}
-        {meetingStarted && (
+        {meetingStarted && userRole=="teacher" (
         <Button onClick={endMeeting}>End Call</Button>
       )}
       
