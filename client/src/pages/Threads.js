@@ -15,9 +15,10 @@ import { useLocation } from 'react-router-dom';
 function ThreadCard({ thread }) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
-
+    
     const location = useLocation();
     const userRole = location.pathname.split('/')[1];
+    if(!thread) return (<></>);
 
     const url = "/" + userRole + "/threads/" + thread._id;
 
