@@ -591,11 +591,12 @@ const medalHolderslist = async (req, res) => {
         .slice(0, 3)
         .map((semester, index) => ({
           studentId: student._id,
+          rollNo: student.rollNumber,
           studentName: student.name,
           batch: student.batch,
           degree: student.degreeName,
           sgpa: semester.sgpa,
-          medalType: semester.sgpa < 2 ? "None" : medalTypes[index],
+          medalType: semester.sgpa < 1 ? "None" : medalTypes[index],
         }));
 
       //concatenating the top students to the corresponding degree in the result object
@@ -611,12 +612,13 @@ const medalHolderslist = async (req, res) => {
         degreeArray.forEach((student, index) => {
           student.medalType = medalTypes[index];
         });
+        const arr = degreeArray.slice(0, 3);
 
-        return acc.concat(degreeArray);
+        return acc.concat(arr);
       },
       []
     );
-
+    console.log(finalMedalHoldersList);
     res.json(finalMedalHoldersList);
   } catch (error) {
     console.error(error);
@@ -884,6 +886,32 @@ const startSemester = async (req, res) => {
           }
         });
       });
+
+      // Find the last semester of the student
+      const lastSemester =
+        student.semesters.length > 0
+          ? student.semesters[student.semesters.length - 1]
+          : null;
+
+      // Check if there is room for a new semester (semester number less than 8)
+      if (!lastSemester || lastSemester.semesterNumber < 8) {
+        // Increment the semester number
+        const nextSemesterNumber = lastSemester
+          ? lastSemester.semesterNumber + 1
+          : 1;
+
+        // Add a new semester to the student's semesters array
+        student.semesters.push({
+          semesterNumber: nextSemesterNumber,
+          semesterId: newSemester._id,
+          totalAttempted: 0,
+          totalEarned: 0,
+          sgpa: 0.0,
+          cgpa: 0.0,
+          courses: [],
+        });
+        console.log(student.semesters);
+      }
       await student.save();
     });
 
