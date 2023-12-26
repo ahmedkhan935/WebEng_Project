@@ -17,7 +17,7 @@ import { useParams } from 'react-router-dom';
 import { postComment, submitAssignment } from '../services/StudentService';
 import { useTheme } from '@mui/material/styles';
 import { useLocation } from 'react-router-dom';
-import { deleteAnnouncement, editAnnouncement } from '../services/TeacherService';
+import { deleteAnnouncement, editAnnouncement, deleteEvaluation } from '../services/TeacherService';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
 
@@ -105,7 +105,7 @@ function ClassroomStreamCard({ card }) {
 
     const handleClick = (event) => {
         event.stopPropagation();
-       
+
         setAnchorEl(event.currentTarget);
     };
 
@@ -120,8 +120,10 @@ function ClassroomStreamCard({ card }) {
         handleClose();
     }
     const handleSave = async () => {
-        const newAnnouncement = { title: editedTitle,
-                                  content: editedContent };
+        const newAnnouncement = {
+            title: editedTitle,
+            content: editedContent
+        };
         editAnnouncement(classCode, cardId, newAnnouncement);
         setClassroomAnnouncements(classroomAnnouncements.map((announcement) => {
             if (announcement._id === cardId) {
@@ -135,18 +137,44 @@ function ClassroomStreamCard({ card }) {
     }
 
     const confirmDelete = () => {
-        deleteAnnouncement(classCode, cardId)
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        try {
+            deleteAnnouncement(classCode, cardId)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                    throw new Error(err);
+                });
 
-        //update announcements state according to delete
-        setClassroomAnnouncements(classroomAnnouncements.filter((announcement) => announcement._id !== cardId));
-        handleClose();
-        setDeleteDialogOpen(false);
+            //update announcements state according to delete
+            setClassroomAnnouncements(classroomAnnouncements.filter((announcement) => announcement._id !== cardId));
+            handleClose();
+            setDeleteDialogOpen(false);
+        } catch (error) {
+            console.error('Error deleting announcement:', error);
+        }
+    };
+
+    const confirmEvalDelete = () => {
+        try {
+            let title = card.title;
+            title = title.replace(/ /g, '~');
+            deleteEvaluation(classCode, title)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            //update announcements state according to delete
+            setClassroomAnnouncements(classroomAnnouncements.filter((announcement) => announcement._id !== cardId));
+            handleClose();
+            setDeleteDialogOpen(false);
+        } catch (error) {
+            console.error('Error deleting announcement:', error);
+        }
     };
 
     const handleAssignmentSubmit = async () => {
@@ -266,8 +294,8 @@ function ClassroomStreamCard({ card }) {
                             transformOrigin={{ vertical: 'top', horizontal: 'right' }}
                         >
 
-                            { card.type == "Announcement" &&  
-                            <MenuItem onClick={handleEdit}>Edit</MenuItem> }
+                            {card.type == "Announcement" &&
+                                <MenuItem onClick={handleEdit}>Edit</MenuItem>}
                             <MenuItem onClick={handleDelete}>Delete</MenuItem>
                         </Menu>
                     </>)
@@ -414,7 +442,7 @@ function ClassroomStreamCard({ card }) {
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={() => setDeleteDialogOpen(false)}>Cancel</Button>
-                        <Button onClick={confirmDelete}>Delete</Button>
+                        <Button onClick={card.type == 'Announcement' ? confirmDelete : confirmEvalDelete}>Delete</Button>
                     </DialogActions>
                 </Dialog>
                 <Dialog open={submitDialogOpen} onClose={() => setSubmitDialogOpen(false)} sx={{ padding: '24px' }}>
