@@ -320,6 +320,18 @@ const logout = async (req, res) => {
     })
     .send();
 };
+const getRole = async (req, res) => {
+  try {
+    if (req.user) {
+      res.status(200).send({ role: req.role });
+    } else {
+      res.status(200).send({ role: "guest" });
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+};
 module.exports = {
   registerStudent,
   registerTeacher,
@@ -327,4 +339,5 @@ module.exports = {
   loginTeacher,
   loginAdmin,
   logout,
+  getRole,
 };

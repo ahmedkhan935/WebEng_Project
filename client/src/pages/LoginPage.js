@@ -7,7 +7,7 @@ import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { studentlogin, teacherLogin } from "../services/AuthService.js";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import useStore from "../store/store";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -17,6 +17,8 @@ const LoginPage = () => {
   const [ErrorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const {userRole,setUserRole}=useStore();
+  
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -41,8 +43,17 @@ const LoginPage = () => {
     if (resp.status === 200) {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
-      if (student) navigate("/student");
-      else navigate("/teacher");
+      if (student)
+      {
+        console.log(userRole);
+        setUserRole("student");
+        console.log(userRole);
+        navigate("/student");
+      }
+      else{
+         setUserRole("teacher");
+        navigate("/teacher");
+      }
     } else if (resp.status === 200 && !student) {
       //navigate to teacher page
     } else {

@@ -10,5 +10,6 @@ authRouter.post("/login/student", authController.loginStudent);
 authRouter.post("/login/teacher", authController.loginTeacher);
 authRouter.post("/login/admin", authController.loginAdmin);
 authRouter.post("/logout", Auth, authController.logout);
+authRouter.get("/role", Auth, authController.getRole);
 
 module.exports = authRouter;

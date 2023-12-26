@@ -44,6 +44,7 @@ import ViewEvaluations from "./pages/ViewEvaluations";
 import ViewAllAttendance from "./pages/ViewAllAttendance";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -58,6 +59,7 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
 
           {/* Student Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>
@@ -81,8 +83,10 @@ function App() {
             <Route path="todos" element={<Thread />}></Route>
             <Route path="settings" element={<Settings />}></Route>
           </Route>
+          </Route>
 
           {/* Teacher Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
           <Route path="teacher">
             <Route index element={<UserLandingPage role={"teacher"} />}></Route>
             <Route path="threads" element={<Threads />}></Route>
@@ -104,8 +108,10 @@ function App() {
             </Route>
             <Route path="settings" element={<Settings />}></Route>
           </Route>
+          </Route>
 
           {/* Admin Routes */}
+          <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
           <Route path="/admin">
             <Route index element={<LandingPage />}></Route>
             <Route path="settings" element={<Settings />}></Route>
@@ -149,6 +155,7 @@ function App() {
               <Route path="teachers" element={<ViewTeachers />}></Route>
               <Route path="students" element={<ViewStudents />}></Route>
             </Route>
+          </Route>
           </Route>
 
           {/* Page Not Found */}

@@ -4,6 +4,7 @@ const Classroom = require("../models/Classroom");
 const Semester = require("../models/Semester");
 const Degree = require("../models/Degree");
 const Thread = require("../models/Thread");
+const CourseEval = require("../models/CourseEval");
 const Teacher = require("../models/Teacher");
 const StudentEval = require("../models/StudentEval");
 const path = require("path");
@@ -100,7 +101,35 @@ const studentController = {
       if (!studentEval) {
         return res.status(404).json({ error: "Student Eval not found" });
       }
-      res.status(201).json(studentEval.evaluations);
+
+      //-------haadiya bongi starts---------
+
+      let responseEvaluations = studentEval.evaluations;
+      let updatedEvaluations = []; // New array to store the updated evaluations
+      const courseEval = await CourseEval.findOne({ classCode: classCode });
+      
+      for (let evaluation of responseEvaluations) {
+          let evalRequired = courseEval.evaluations.find((courseEval) => {
+              return courseEval.title == evaluation.title;
+          });
+      
+          //Create a new object with the updated properties
+          let updatedEvaluation = {
+              ...evaluation._doc, // Spread the properties of the original evaluation
+              totalWeightage: evalRequired.weightage,
+              totalMarks: evalRequired.totalMarks,
+              averageMarks: evalRequired.averageMarks,
+              minMarks: evalRequired.minMarks,
+              maxMarks: evalRequired.maxMarks
+          };
+      
+          updatedEvaluations.push(updatedEvaluation); // Push the updated evaluation into the new array
+      }
+
+      //-------haadiya bongi ends---------
+      //res.status(201).json(studentEval.evaluations); //uncomment to undo haadiya bongi
+      res.status(201).json(updatedEvaluations); // Send the updated evaluations
+
     } catch (err) {
       console.log(err);
       res.status(500).json({ error: err.message });

@@ -10,12 +10,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import useStore from "../store/store";
 
 const AdminLoginPage = () => {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
   const [ErrorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
+  const { setUserRole } = useStore();
   const location = useLocation();
 
   const handlePasswordChange = (event) => {
@@ -29,8 +31,7 @@ const AdminLoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log("Email:", email);
-    console.log("Password:", password);
+
 
     event.preventDefault();
     let resp;
@@ -40,6 +41,9 @@ const AdminLoginPage = () => {
 
     if (resp.status === 200) {
       console.log("Login Successful");
+      setUserRole("admin");
+
+      
       if (admin) navigate("/admin");
     } else {
       const data = await resp.json();

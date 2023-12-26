@@ -27,6 +27,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
       { 
         if(res.data.link){
           setMeetingStarted(true);
+          setMeetingEnded(false);
         }
 
       })
