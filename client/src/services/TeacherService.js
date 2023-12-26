@@ -211,10 +211,24 @@ export const updateEvaluation = async (classCode, title, data) => {
     `${BASE_URL}/teacher/classes/${classCode}/evaluations/${title}`,
     {
       title: data.title,
+      content: data.content,
       weightage: data.weightage,
       totalMarks: data.totalMarks,
       dueDate: data.dueDate,
     },
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+      withCredentials: true,
+    }
+  );
+  return handleResponse(response);
+};
+
+export const deleteEvaluation = async (classCode, title) => {
+  const response = await axios.delete(
+    `${BASE_URL}/teacher/classes/${classCode}/evaluations/${title}`,
     {
       headers: {
         "Content-Type": "application/json",
