@@ -9,6 +9,7 @@ import {
   Typography,
   Box,
   Link,
+  Container,
   CardActionArea,
   CardActions,
   CardMedia,
@@ -152,6 +153,7 @@ const LandingPage = () => {
 
   return (
     <NavBar>
+      <Container>
       <div
         style={{
           position: "fixed",
@@ -166,14 +168,14 @@ const LandingPage = () => {
           <img
             src={autumn}
             alt="Fall"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover", zIndex: 2 }}
           />
         )}
         {showspring && (
           <img
             src={spring}
             alt="Spring"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            style={{ width: "100%", height: "100%", objectFit: "cover",zIndex: 2  }}
           />
         )}
       </div>
@@ -363,6 +365,7 @@ const LandingPage = () => {
           <Button onClick={handleSemesterModalClose}>Close</Button>
         </DialogActions>
       </Dialog>
+      </Container>
       <Dialog open={downloading}>
         <Box
           sx={{

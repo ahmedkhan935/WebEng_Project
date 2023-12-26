@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Container,
   IconButton,
   FormControl,
   TextField,
@@ -78,8 +79,8 @@ const ViewLogs = () => {
   };
 
   return (
-    <div>
       <NavBar>
+        <Container>
         <h1 style={styles.h2}>Session Log</h1>
 
         <div
@@ -154,8 +155,9 @@ const ViewLogs = () => {
             variant="outlined"
           />
         </div>
+        </Container>
       </NavBar>
-    </div>
+
   );
 };
 

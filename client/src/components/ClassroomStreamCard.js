@@ -73,7 +73,7 @@ function ClassroomStreamCard({ card }) {
 
         setCardId(card._id);
         setComments(card.comments);
-        console.log("CARD", card);
+       // console.log("CARD", card);
     }, [card]);
 
 

@@ -128,8 +128,8 @@ const UpdateStudentForm = () => {
   // ... styles object ...
 
   return (
-    <>
-      <NavBar>
+    <NavBar>
+      <Container>
         <h1 style={styles.h2}>Update Student</h1>
         <Container style={styles.addForm}>
           <form onSubmit={handleUpdateStudent}>
@@ -215,8 +215,8 @@ const UpdateStudentForm = () => {
             </Button>
           </form>
         </Container>
-      </NavBar>
-    </>
+      </Container>
+    </NavBar>
   );
 };
 
