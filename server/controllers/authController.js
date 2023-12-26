@@ -4,6 +4,7 @@ const Student = require("../models/Student");
 const Teacher = require("../models/Teacher");
 const Logs = require("../models/Logs");
 const Admin = require("../models/Admin");
+const Semester = require("../models/Semester");
 require("dotenv").config();
 
 const registerStudent = async (req, res) => {
@@ -22,19 +23,7 @@ const registerStudent = async (req, res) => {
       threads,
     } = req.body;
 
-    console.log(
-      email,
-      password,
-      name,
-      rollNumber,
-      degreeName,
-      CNIC,
-      contactNumber,
-      address,
-      semesters,
-      classes,
-      threads
-    );
+    
     // Validation
     if (!email || !password || !name || !rollNumber || !degreeName) {
       return res
@@ -54,6 +43,9 @@ const registerStudent = async (req, res) => {
         .status(400)
         .json({ errorMessage: "An account with this email already exists." });
     }
+    const currentSem=await Semester.findOne({current:true});
+    const year=currentSem?currentSem.year:"2023";
+
 
     // Hash the password
     const salt = await bcrypt.genSalt();
@@ -72,6 +64,7 @@ const registerStudent = async (req, res) => {
       semesters: semesters,
       classes: classes,
       threads: threads,
+      batch: year,
     });
     const savedStudent = await newStudent.save();
 
