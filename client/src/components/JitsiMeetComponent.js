@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import {JitsiMeeting} from "@jitsi/react-sdk";
 
-const JitsiMeetComponent = ({ roomName, displayName }) => {
+const JitsiMeetComponent = ({ roomName, displayName,apikey }) => {
   const jitsiContainerRef = useRef(null);
   console.log(roomName);
   useEffect(() => {
-    const domain = "meet.jit.si";
+    const domain = "8x8.vc";
     const options = {
-      roomName: roomName,
+      roomName: `${apikey}/${roomName}`,
       width: "100%",
       height: "100vh",
       parentNode: jitsiContainerRef.current,

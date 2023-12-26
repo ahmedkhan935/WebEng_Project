@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.js": "/static/js/main.919ad195.js",
+    "static/media/animatedHomepage.gif": "/static/media/animatedHomepage.4e2a08b4e421f672a1e6.gif",
+    "static/media/vid.gif": "/static/media/vid.c4b4c3682e5a042069e3.gif",
+    "static/media/pagenotfound.gif": "/static/media/pagenotfound.e07952f7c8c6d8a22df9.gif",
+    "static/media/classroomHeader.jpg": "/static/media/classroomHeader.ae025cf0c76bdd39ef30.jpg",
+    "static/media/MainPage.png": "/static/media/MainPage.6390225c94635419719d.png",
+    "static/media/logo.png": "/static/media/logo.e783f2adc8c4df8cb4dc.png",
+    "static/media/Hat.png": "/static/media/Hat.ee344625473e088756f3.png",
+    "index.html": "/index.html",
+    "main.919ad195.js.map": "/static/js/main.919ad195.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.919ad195.js"
+  ]
+}

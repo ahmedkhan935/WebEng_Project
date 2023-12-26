@@ -141,21 +141,30 @@ const studentController = {
       const student = await Student.findById(req.user);
       const classCodes = student.classes.map(
         (classroom) => classroom.classCode
-      ); // Get the class codes of all classes
+      ); //get the class codes of all classes
       const classes = await Classroom.find({ code: { $in: classCodes } });
 
       let todos = [];
+      ////-----------------------------------
+      
+      //-------------------------------------
       classes.forEach((classroom) => {
         classroom.announcements.forEach((announcement) => {
-          if (
-            (announcement.type == "Assignment" ||
-              announcement.type == "Quiz") &&
-            new Date(announcement.dueDate) > new Date()
-          ) {
-            todos.push(announcement);
+          if (announcement.dueDate &&  new Date(announcement.dueDate) > new Date()  ) {
+            let todoDone = false;
+            announcement.submissions.forEach((submission) => {
+              if(submission.studentId == req.user) {
+                todoDone =true;
+              }
+            })
+            todos.push({
+              ...announcement._doc, //include the additional properties and methods provided by Mongoose, and use
+              classCode: classroom.code, //add the class code
+              done: todoDone,
+            });
           }
         });
-      }); // Get the todos of all classes
+      }); //get the todos of all classes
 
       res.status(201).json(todos);
     } catch (err) {

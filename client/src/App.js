@@ -1,6 +1,7 @@
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
 import { ClassroomProvider } from "./context/ClassroomContext";
+import { useEffect } from "react";
 
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
@@ -44,9 +45,27 @@ import ViewEvaluations from "./pages/ViewEvaluations";
 import ViewAllAttendance from "./pages/ViewAllAttendance";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
+import StudentSchedule from './pages/StudentSchedule';
 import ProtectedRoute from "./components/ProtectedRoute";
+import useStore from "./store/store";
 
 function App() {
+  
+  const {userRole} = useStore();
+  console.log(userRole);
+
+  useEffect(() => {
+    const handlebeforeunload = () => {
+      localStorage.setItem("role", userRole);
+    }
+    window.addEventListener("beforeunload", handlebeforeunload);
+    
+
+    return () => {
+      window.removeEventListener("beforeunload", handlebeforeunload);
+      
+    };
+  }, [userRole]);
   return (
     <CSThemesProvider>
       <Router>
@@ -59,103 +78,97 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
 
           {/* Student Routes */}
-          <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
-          <Route path="student">
-            <Route index element={<UserLandingPage role={"student"} />}></Route>
-            <Route path="classes" element={<Classes />}></Route>
-            <Route path="classes/:classCode">
-              <Route
-                index
-                element={
-                  <ClassroomProvider>
-                    <Classroom />
-                  </ClassroomProvider>
-                }
-              ></Route>
-              <Route path="videoCall" element={<VideoCall />}></Route>
-              <Route path="attendance" element={<ViewAttendance />}></Route>
-              <Route path="feedback" element={<GiveFeedback />}></Route>
-              <Route path="evaluations" element={<ViewEvaluations />}></Route>
+           <Route element={<ProtectedRoute allowedRoles={["student"]} />}> 
+            <Route path="student">
+              <Route index element={<UserLandingPage role={"student"} />}></Route>
+              <Route path="classes" element={<Classes />}></Route>
+              <Route path="classes/:classCode">
+                <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider>}></Route>
+                <Route path="videoCall" element={<VideoCall />}></Route>
+                <Route path="attendance" element={<ViewAttendance />}></Route>
+                <Route path="feedback" element={<GiveFeedback />}></Route>
+                <Route path="evaluations" element={<ViewEvaluations />}></Route>
+              </Route>
+              <Route path="schedule" element={<StudentSchedule />}></Route>
+              <Route path="threads" element={<Threads />}></Route>
+              <Route path="attendance" element={<ViewAllAttendance />}></Route>
+              <Route path="threads/:id" element={<Thread />}></Route>
+              <Route path="todos" element={<Thread />}></Route>
+              <Route path="settings" element={<Settings />}></Route>
             </Route>
-            <Route path="threads" element={<Threads />}></Route>
-            <Route path="attendance" element={<ViewAllAttendance />}></Route>
-            <Route path="threads/:id" element={<Thread />}></Route>
-            <Route path="todos" element={<Thread />}></Route>
-            <Route path="settings" element={<Settings />}></Route>
-          </Route>
           </Route>
 
           {/* Teacher Routes */}
           <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
-          <Route path="teacher">
-            <Route index element={<UserLandingPage role={"teacher"} />}></Route>
-            <Route path="threads" element={<Threads />}></Route>
-            <Route path="threads/:id" element={<Thread />}></Route>
-            <Route path="classes" element={<Classes />}></Route>
-            <Route path="classes/:classCode">
-              <Route
-                index
-                element={
-                  <ClassroomProvider>
-                    <Classroom />
-                  </ClassroomProvider>
-                }
-              ></Route>
-              <Route path="videoCall" element={<VideoCall />}></Route>
-              <Route path="attendance" element={<Attendance />}></Route>
-              <Route path="feedback" element={<TeacherFeedback />}></Route>
-              <Route path="evaluations" element={<Evaluations />}></Route>
+            <Route path="teacher">
+              <Route index element={<UserLandingPage role={"teacher"} />}></Route>
+              <Route path="threads" element={<Threads />}></Route>
+              <Route path="threads/:id" element={<Thread />}></Route>
+              <Route path="classes" element={<Classes />}></Route>
+              <Route path="classes/:classCode">
+                <Route
+                  index
+                  element={
+                    <ClassroomProvider>
+                      <Classroom />
+                    </ClassroomProvider>
+                  }
+                ></Route>
+                <Route path="videoCall" element={<VideoCall />}></Route>
+                <Route path="attendance" element={<Attendance />}></Route>
+                <Route path="feedback" element={<TeacherFeedback />}></Route>
+                <Route path="evaluations" element={<Evaluations />}></Route>
+              </Route>
+              <Route path="settings" element={<Settings />}></Route>
             </Route>
-            <Route path="settings" element={<Settings />}></Route>
-          </Route>
           </Route>
 
           {/* Admin Routes */}
           <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
-          <Route path="/admin">
-            <Route index element={<LandingPage />}></Route>
-            <Route path="settings" element={<Settings />}></Route>
-            <Route path="threads" element={<AdminThreads />}></Route>
-            <Route path="threads/:id" element={<AdminThread />}></Route>
-            <Route path="addTeacher" element={<AddTeacherForm />}></Route>
-            <Route path="addStudent" element={<AddStudentForm />}></Route>
-            <Route path="viewTeachers" element={<ViewTeachers />}></Route>
-            <Route path="viewStudents" element={<ViewStudents />}></Route>
-            <Route
-              path="updateStudent/:id"
-              element={<UpdateStudentForm />}
-            ></Route>
-            <Route
-              path="updateTeacher/:id"
-              element={<UpdateTeacherForm />}
-            ></Route>
-            <Route path="createCourse" element={<CreateCourseForm />}></Route>
-            <Route path="searchCourses" element={<SearchCourses />}></Route>
-            <Route
-              path="updateCourse/:id"
-              element={<UpdateCourseForm />}
-            ></Route>
-            <Route
-              path="viewDegrees/addDegree/:degreeId/selectCourses"
-              element={<DegreeCourseSelection />}
-            ></Route>
+            <Route path="/admin">
+              <Route index element={<LandingPage />}></Route>
+              <Route path="settings" element={<Settings />}></Route>
+              <Route path="threads" element={<AdminThreads />}></Route>
+              <Route path="threads/:id" element={<AdminThread />}></Route>
+              <Route path="addTeacher" element={<AddTeacherForm />}></Route>
+              <Route path="addStudent" element={<AddStudentForm />}></Route>
+              <Route path="viewTeachers" element={<ViewTeachers />}></Route>
+              <Route path="viewStudents" element={<ViewStudents />}></Route>
+              <Route
+                path="updateStudent/:id"
+                element={<UpdateStudentForm />}
+              ></Route>
+              <Route
+                path="updateTeacher/:id"
+                element={<UpdateTeacherForm />}
+              ></Route>
+              <Route path="createCourse" element={<CreateCourseForm />}></Route>
+              <Route path="searchCourses" element={<SearchCourses />}></Route>
+              <Route
+                path="updateCourse/:id"
+                element={<UpdateCourseForm />}
+              ></Route>
+              <Route
+                path="viewDegrees/addDegree/:degreeId/selectCourses"
+                element={<DegreeCourseSelection />}
+              ></Route>
 
-            <Route path="viewLogs" element={<ViewLogs />}></Route>
-            <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
-            <Route path="assignCourses" element={<AssignCourses />}></Route>
-            <Route path="addDegree" element={<AddDegree />}></Route>
-            <Route path="viewDegrees" element={<ViewDegrees />}></Route>
-            <Route path="lists" element={<AdminLists />}></Route>
-            <Route path="list">
-              <Route path="debar" element={<DebarList />}></Route>
-              <Route path="warning" element={<WarningList />}></Route>
-              <Route path="deans" element={<DeansList />}></Route>
-              <Route path="rectors" element={<RectorsList />}></Route>
-              <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
-              <Route path="teachers" element={<ViewTeachers />}></Route>
-              <Route path="students" element={<ViewStudents />}></Route>
+              <Route path="viewLogs" element={<ViewLogs />}></Route>
+              <Route path="viewFeedbacks" element={<ViewFeedback />}></Route>
+              <Route path="assignCourses" element={<AssignCourses />}></Route>
+              <Route path="addDegree" element={<AddDegree />}></Route>
+              <Route path="viewDegrees" element={<ViewDegrees />}></Route>
+              <Route path="lists" element={<AdminLists />}></Route>
+              <Route path="list">
+                <Route path="debar" element={<DebarList />}></Route>
+                <Route path="warning" element={<WarningList />}></Route>
+                <Route path="deans" element={<DeansList />}></Route>
+                <Route path="rectors" element={<RectorsList />}></Route>
+                <Route path="medalHolders" element={<MedalHoldersPage />}></Route>
+                <Route path="teachers" element={<ViewTeachers />}></Route>
+                <Route path="students" element={<ViewStudents />}></Route>
+              </Route>
             </Route>
-          </Route>
           </Route>
 
           {/* Page Not Found */}
