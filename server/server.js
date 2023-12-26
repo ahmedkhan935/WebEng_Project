@@ -7,7 +7,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const bucket = require("./firebase_init");
-const serverless = require("serverless-http");
+
 
 require("dotenv").config();
 
