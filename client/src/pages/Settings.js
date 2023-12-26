@@ -1,4 +1,4 @@
-import { Card, Switch, FormControlLabel, Typography } from '@mui/material';
+import { Card, Switch, Container, FormControlLabel, Typography } from '@mui/material';
 import useStore from '../store/store'; //zustand store for darkmode
 import NavBar from '../components/Navbar';
 
@@ -11,16 +11,18 @@ function Settings() {
 
     return (
         <NavBar>
-            <Card sx={{ padding: '20px' }}>
-                <Typography variant="h4" component="div" gutterBottom>
-                    Settings
-                </Typography>
-                <FormControlLabel
-                    control={<Switch checked={darkMode} onChange={handleThemeChange} />}
-                    label="Dark Mode"
-                />
-                {/* Add other settings here */}
-            </Card>
+            <Container>
+                <Card  sx={{ padding: '20px',marginTop:'20px' }}>
+                    <Typography variant="h4" component="div" gutterBottom>
+                        Settings
+                    </Typography>
+                    <FormControlLabel
+                        control={<Switch checked={darkMode} onChange={handleThemeChange} />}
+                        label="Dark Mode"
+                    />
+                    {/* Add other settings here */}
+                </Card>
+            </Container>
         </NavBar>
     );
 }
