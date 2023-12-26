@@ -16,7 +16,7 @@ import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation as up
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
-import { TableHeaderCell, TableSubHeaderCell, SmallTableHeaderCell } from '../assets/theme/StyledComponents';
+import { TableHeaderCell, TableSubHeaderCell, SmallTableHeaderCell } from '../temp/theme/StyledComponents';
 
 function Evaluations() {
     const [evaluations, setEvaluations] = useState([

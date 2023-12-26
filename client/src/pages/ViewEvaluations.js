@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { getEvaluations } from "../services/StudentService";
-import { TableHeaderCell } from '../assets/theme/StyledComponents';
+import { TableHeaderCell } from '../temp/theme/StyledComponents';
 
 function ViewEvaluations() {
   const { classCode } = useParams();

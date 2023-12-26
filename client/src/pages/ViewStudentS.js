@@ -30,7 +30,7 @@ import {
   deleteStudent,
   viewDegrees,
 } from "../services/AdminService";
-import theme from "../assets/theme/theme";
+import theme from "../temp/theme/theme";
 const ViewStudents = () => {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [filterBatch, setFilterBatch] = useState("");

@@ -1,5 +1,5 @@
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
-import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
+import { CSThemesProvider } from "./temp/theme/CSThemesProvider"; //Custom Clean Slate theme provider
 import { ClassroomProvider } from "./context/ClassroomContext";
 
 import MainPage from "./pages/MainPage";
@@ -60,6 +60,7 @@ function App() {
 
           {/* Student Routes */}
           <Route element={<ProtectedRoute allowedRoles={["student"]} />}>
+          
           <Route path="student">
             <Route index element={<UserLandingPage role={"student"} />}></Route>
             <Route path="classes" element={<Classes />}></Route>

@@ -21,7 +21,7 @@ import NavBar from "../components/Navbar";
 import Pagination from "@mui/material/Pagination";
 import { viewAllTeachers, deleteTeacher } from "../services/AdminService";
 import { useNavigate } from "react-router-dom";
-import theme from "../assets/theme/theme";
+import theme from "../temp/theme/theme";
 
 const ViewTeachers = () => {
   const [searchKeyword, setSearchKeyword] = useState("");

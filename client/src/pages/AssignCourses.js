@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import theme from "../assets/theme/theme";
+import theme from "../temp/theme/theme";
 import NavBar from "../components/Navbar";
 import { CircularProgress, FormControl, InputLabel } from "@mui/material";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
