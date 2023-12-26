@@ -8,7 +8,7 @@ import { viewDegrees, viewMedalHoldersList } from "../services/AdminService.js";
 
 //the column names must be in camel case notation
 const columns = [
-  "studentId",
+  "rollNo",
   "studentName",
   "medalType",
   "sgpa",

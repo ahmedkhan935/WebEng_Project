@@ -15,6 +15,10 @@ const studentSchema = new mongoose.Schema({
     //Semester array For students
     type: [
       {
+        semesterNumber: {
+          type: Number,
+          default: 1,
+        },
         //Structure of each object in semesters array
         semesterId: { type: mongoose.Schema.Types.ObjectId, ref: "Semester" }, //Id of the semester as foreign key
         totalAttempted: { type: Number, default: 0 }, //Total credits attempted in this semester
