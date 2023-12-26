@@ -113,9 +113,7 @@ adminRouter.get(
 
   adminController.startSemester
 );
-adminRouter.post(
-  "/endSemester",
+adminRouter.post("/endSemester", Auth, AuthAdmin, adminController.endSemester);
+// adminRouter.post("/send-email", adminController.sendEmail);
 
-  adminController.endSemester
-);
 module.exports = adminRouter;

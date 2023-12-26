@@ -8,7 +8,6 @@ const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const bucket = require("./firebase_init");
 
-
 require("dotenv").config();
 
 mongoose
@@ -35,7 +34,7 @@ app.use(express.json());
 app.use(fileUpload());
 app.use(
   cors({
-    origin:["http://localhost:5000","https://web-eng-project.vercel.app"],
+    origin: ["http://localhost:5000", "https://web-eng-project.vercel.app"],
     credentials: true, // include credentials
   })
 );
