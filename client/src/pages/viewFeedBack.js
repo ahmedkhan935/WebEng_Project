@@ -7,6 +7,7 @@ import {
   TableHead,
   TableRow,
   Paper,
+  Container,
   FormControl,
   TextField,
   InputAdornment,
@@ -99,8 +100,8 @@ const ViewFeedback = () => {
   const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
 
   return (
-    <div>
-      <NavBar>
+    <NavBar>
+      <Container>
         <h1 style={styles.h2}>Courses Feebacks</h1>
         <br />
         <br />
@@ -194,8 +195,8 @@ const ViewFeedback = () => {
             variant="outlined"
           />
         </div>
-      </NavBar>
-    </div>
+      </Container>
+    </NavBar>
   );
 };
 

@@ -132,8 +132,8 @@ const UpdateTeacherForm = () => {
   };
 
   return (
-    <>
-      <NavBar>
+    <NavBar>
+      <Container>
         <h1 style={styles.h2}>Update Teacher Form</h1>
         <Container style={styles.addForm}>
           <form onSubmit={handleAddTeacher} style={styles.form}>
@@ -234,8 +234,8 @@ const UpdateTeacherForm = () => {
             </Box>
           </Modal>
         )}
-      </NavBar>
-    </>
+      </Container>
+    </NavBar>
   );
 };
 

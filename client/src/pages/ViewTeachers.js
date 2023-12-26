@@ -13,6 +13,7 @@ import {
   IconButton,
   Button,
   Link,
+  Container,
 } from "@mui/material";
 import GroupAddTwoToneIcon from "@mui/icons-material/GroupAddTwoTone";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -101,6 +102,7 @@ const ViewTeachers = () => {
 
   return (
     <NavBar>
+      <Container>
       <h1 style={styles.h2}>Teachers</h1>
       <div
         style={{
@@ -189,6 +191,7 @@ const ViewTeachers = () => {
           variant="outlined"
         />
       </div>
+      </Container>
     </NavBar>
   );
 };

@@ -172,6 +172,8 @@ export default function NavBar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const logouts = () => {
+    let confirm = window.confirm("Are you sure you want to logout?");
+    if (!confirm) return;
     setUserRole(null);
     localStorage.removeItem('role');
     setDarkMode(false);
