@@ -20,10 +20,20 @@ function TeacherClassroomBtns({ classCode }) {
     const [content, setContent] = useState('');
     const [attachments, setAttachments] = useState(null);
     const { classroomAnnouncements, setClassroomAnnouncements } = useContext(ClassroomContext);
+    // const [contentSuggestions, setContentSuggestions] = useState(null);
 
     const handleClickOpen = () => {
         setOpen(true);
     };
+
+    // const spellingSuggestions = (text) => {
+    //     checkSpelling(text).then((data) => {
+    //         setContentSuggestions(data);
+    //     })
+    //     .catch((err) => {
+    //         console.log(err);
+    //     })  
+    // }
 
     const handleClose = () => {
         setTitle('');
@@ -110,16 +120,24 @@ function TeacherClassroomBtns({ classCode }) {
             </Tooltip>
 
             <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-                <DialogTitle sx={{ color: "primary" }}>Announce something to your class</DialogTitle>
-                <DialogContent>
-                    <TextField autoFocus margin="dense" id="title" label="Title" type="text" fullWidth value={title} onChange={e => setTitle(e.target.value)} />
-                    <TextField margin="dense" id="content" label="Content" type="text" fullWidth multiline rows={4} value={content} onChange={e => setContent(e.target.value)} />
-                    <TextField margin="dense" id="attachments" label="Attachments" type="file" fullWidth InputLabelProps={{ shrink: true }} onChange={e => setAttachments(e.target.files[0])} />
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="outlined" color="secondary" onClick={handleClose} sx={{ marginBottom: '10px', marginRight: '5px' }}>Cancel</Button>
-                    <Button variant="contained" color="primary" onClick={handleAnnouncementPost} sx={{ marginBottom: '10px', marginRight: '15px' }}>Post</Button>
-                </DialogActions>
+                <Box p={2}>
+                    <DialogTitle sx={{ color: "primary" }}>
+                        <Typography variant="h5" color="primary" display="inline-block">
+                            Announce something to your class
+                        </Typography>
+                    </DialogTitle>
+                    <DialogContent>
+                        <TextField autoFocus margin="dense" spellCheck="true" id="title" label="Title" type="text" fullWidth value={title} onChange={e => setTitle(e.target.value)} />
+                        <TextField margin="dense" spellCheck="true" id="content" label="Content" type="text" fullWidth multiline rows={7} value={content} onChange={e => setContent(e.target.value)} />
+                        {/* <TextField margin="dense" id="content" label="Content" type="text" fullWidth multiline rows={7} value={content} onChange={e => { setContent(e.target.value); spellingSuggestions(e.target.value); }} />
+                        {contentSuggestions && <div>{contentSuggestions}</div>}
+                        <TextField margin="dense" id="attachments" label="Attachments" type="file" fullWidth InputLabelProps={{ shrink: true }} onChange={e => setAttachments(e.target.files[0])} /> */}
+                    </DialogContent>
+                    <DialogActions>
+                        <Button variant="outlined" color="secondary" onClick={handleClose} sx={{ marginBottom: '10px', marginRight: '5px' }}>Cancel</Button>
+                        <Button variant="contained" color="primary" onClick={handleAnnouncementPost} sx={{ marginBottom: '10px', marginRight: '15px' }}>Post</Button>
+                    </DialogActions>
+                </Box>
             </Dialog>
 
             <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)}>

@@ -78,8 +78,8 @@ function AnnouncementList({ isFullList, thread }) {
                         <Typography variant="subtitle" sx={{ width: '100%', marginBottom: '10px', color: 'red' }}>
                             No announcements found.
                         </Typography> :
-                    announcements.map(announcement =>
-                        <AnnouncementCard key={announcement._id} announcement={announcement}></AnnouncementCard>
+                    announcements.map(post =>
+                        <AnnouncementCard key={post._id} post={post}></AnnouncementCard>
                     )
                 }
                 {!isFullList &&
