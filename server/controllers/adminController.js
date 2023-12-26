@@ -7,6 +7,7 @@ const Degree = require("../models/Degree");
 const Classroom = require("../models/Classroom");
 const StudentEval = require("../models/StudentEval");
 const CourseEval = require("../models/CourseEval");
+const Thread = require("../models/Thread");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -451,46 +452,41 @@ const assignCourse = async (req, res) => {
   try {
     const { teacherId, courseId } = req.body;
 
-    // Find the teacher by ID
+    // Finding the teacher by ID
     const teacher = await Teacher.findById(teacherId);
 
     if (!teacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
 
-    // Check if the course ID already exists in the courses array
+    // Checking if the course ID already exists in the courses array
     const courseExists = teacher.courses.some(
       (course) => course.courseId.toString() === courseId.toString()
     );
+
     if (courseExists) {
       return res.json({ message: "Course already assigned to the teacher" });
     }
-    //check if assigned course is already assigned to another teacher
-    // const teacheralr = await Teacher.findOne({
-    //   "courses._id": courseId,
-    // }).exec();
-    // console.log(teacheralr);
-    // if (teacheralr) {
-    //pop the course from the teacher
-    // const courseIndex = teacheralr.courses.findIndex(
-    //   (course) => course.courseId.toString() === courseId.toString()
-    // );
-    // console.log(courseIndex);
-    // teacheralr.courses.splice(courseIndex, 1);
-    // await teacheralr.save();
-    // }
 
-    if (!courseExists) {
-      // Add the new course ID to the courses array
-      teacher.courses.push({ courseId });
+    //Checking if the course is assigned to another teacher
+    const teacherWithCourse = await Teacher.findOne({
+      "courses.courseId": courseId,
+    });
 
-      await teacher.save();
-      return res.status(200).json({ message: "Course added successfully" });
-    } else {
-      return res
-        .status(400)
-        .json({ message: "Course already exists for the teacher" });
+    if (teacherWithCourse) {
+      //Removing the course from the other teacher
+      const index = teacherWithCourse.courses.findIndex(
+        (course) => course.courseId.toString() === courseId.toString()
+      );
+      teacherWithCourse.courses.splice(index, 1);
+      await teacherWithCourse.save();
     }
+
+    //Adding the new course ID to the courses array for the requested teacher
+    teacher.courses.push({ courseId });
+    await teacher.save();
+
+    return res.status(200).json({ message: "Course added successfully" });
   } catch (error) {
     console.error(error);
     res.status(500).json({ errorMessage: "Internal server error" });
@@ -715,40 +711,49 @@ const createClassrooms = async (newSemesterCourses) => {
   const classrooms = [];
 
   for (const semesterCourse of newSemesterCourses) {
-    const { degreeId, courseId, semesterId, teachers, students,degreeName,year } =
-      semesterCourse;
+    const {
+      degreeId,
+      courseId,
+      semesterId,
+      teachers,
+      students,
+      degreeName,
+      year,
+      semesterName,
+    } = semesterCourse;
     const teacherId = teachers[0].teacherId;
 
     const c = await Course.findById(courseId);
     // Create a new classroom
     const classroom = await Classroom.create({
       name: `${c.courseName}`,
-      code: `${c.courseCode}${degreeName}${year}`,
+      code: `${c.courseCode}${degreeName}${semesterName}${year}`,
       courseId,
       degreeId,
       semesterId,
       teachers,
       students,
       createdBy: teacherId,
+      announcements: [],
       status: "Ongoing",
     });
 
     classrooms.push(classroom);
-    const courseeval= await CourseEval.create(
-      {
-        classCode:classroom.code,
-        lecture:[],
-        evaluations:[],
-      }
-    );
-
+    const courseeval = await CourseEval.create({
+      classCode: classroom.code,
+      lecture: [],
+      evaluations: [],
+    });
   }
 
   return classrooms;
 };
 const startSemester = async (req, res) => {
   try {
-    const currentSemester = await Semester.findOne({ isCurrent: true });
+    const semesters = await Semester.find({});
+
+    const currentSemester =
+      semesters.length > 0 ? semesters[semesters.length - 1] : null;
 
     if (currentSemester) {
       await Semester.findByIdAndUpdate(currentSemester._id, {
@@ -759,13 +764,29 @@ const startSemester = async (req, res) => {
     // Find the next semester (Fall or Spring)
     const nextSemesterName =
       currentSemester && currentSemester.name === "Fall" ? "Spring" : "Fall";
-    const startDate = new Date().toISOString();
+    var startDate = null;
+    var year = null;
 
-    // Create a new semester with the next semester name
+    if (nextSemesterName == "Fall") {
+      if (currentSemester) {
+        year = currentSemester.year;
+      } else {
+        year = new Date().getFullYear();
+      }
+      startDate = `1 Sep ${year}`;
+    } else {
+      let date = new Date();
+      date.setFullYear(currentSemester.year + 1);
+      year = date.getFullYear();
+      startDate = `1 Feb ${year}`;
+    }
+
+    //create a new semester with the next semester name
     const newSemester = await Semester.create({
       name: nextSemesterName,
-      year: new Date().getFullYear(),
-      startDate,
+      year: year,
+      startDate: new Date(startDate),
+      isCurrent: true,
     });
 
     //setting the new semester as the current semester
@@ -786,11 +807,11 @@ const startSemester = async (req, res) => {
           courses.forEach((course) => {
             const courseInfo = {
               degreeId: degree._id,
-              degreeName:degree.abbreviation,
+              degreeName: degree.abbreviation,
               courseId: course._id,
               semesterNumber: semNumber,
               semesterName: nextSemesterName,
-              year:newSemester.year,
+              year: newSemester.year,
               semesterId: newSemester._id,
             };
 
@@ -801,7 +822,6 @@ const startSemester = async (req, res) => {
     });
     // Mapping teachers to the new semester courses
     const teachers = await Teacher.find({});
-
     teachers.forEach((teacher) => {
       teacher.courses.forEach((teacherCourse) => {
         newSemesterCourses.forEach((semesterCourse) => {
@@ -815,7 +835,7 @@ const startSemester = async (req, res) => {
 
     const students = await Student.find({});
 
-    students.forEach((student) => {
+    students.forEach(async (student) => {
       const studentDegree = student.degreeName;
 
       // Find the degreeId from the Degree schema based on the degree name
@@ -831,41 +851,41 @@ const startSemester = async (req, res) => {
           }
         });
       }
+      await student.save();
     });
 
     // this function creates classrooms for this semester
     const classrooms = await createClassrooms(newSemesterCourses);
 
-    teachers.forEach((teacher) => {
+    teachers.forEach(async (teacher) => {
       classrooms.forEach((classroom) => {
-        classroom.teachers.forEach(async (classroomTeacher) => {
+        classroom.teachers.forEach((classroomTeacher) => {
           if (classroomTeacher.teacherId.equals(teacher._id)) {
             teacher.classes = teacher.classes || [];
             teacher.classes.push({ classCode: classroom.code });
-            await teacher.save();
-            
           }
         });
       });
+      await teacher.save();
     });
 
-    students.forEach((student) => {
+    students.forEach(async (student) => {
       classrooms.forEach((classroom) => {
         classroom.students.forEach(async (classroomstudent) => {
           if (classroomstudent.studentId.equals(student._id)) {
             student.classes = student.classes || [];
             student.classes.push({ classCode: classroom.code });
-            await student.save();
-            const studenteval=await StudentEval.create({
-              classCode:classroom.code,
-              studentId:student._id,
-              evaluations:[],
-              lectures:[],
 
+            const studenteval = await StudentEval.create({
+              classCode: classroom.code,
+              studentId: student._id,
+              evaluations: [],
+              lectures: [],
             });
           }
         });
       });
+      await student.save();
     });
 
     res.json({
@@ -879,6 +899,41 @@ const startSemester = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+const endSemester = async (req, res) => {
+  try {
+    const currentSemester = await Semester.findOne({ isCurrent: true });
+
+    if (!currentSemester) {
+      return res
+        .status(500)
+        .json({ success: false, message: "No semester is in progress" });
+    }
+
+    await Semester.findByIdAndUpdate(currentSemester._id, {
+      isCurrent: false,
+    });
+
+    const classes = await Classroom.find({});
+    console.log(classes);
+
+    // Use forEach or for...of to iterate through the classes array
+    classes.forEach((c) => {
+      if (c.code !== "MET101") c.status = "Completed";
+    });
+    await Promise.all(classes.map((c) => c.save()));
+
+    res.json({
+      success: true,
+      classes,
+      semester: currentSemester,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
 module.exports = {
   createSemester,
   getAllSemesters,
@@ -914,4 +969,5 @@ module.exports = {
   saveSemesterCourses,
   getDegreeCourses,
   startSemester,
+  endSemester,
 };

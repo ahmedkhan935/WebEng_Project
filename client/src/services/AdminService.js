@@ -236,8 +236,18 @@ export async function getDegrees() {
 
 //start semester
 export async function startSemester() {
-  return await fetch(`${BASE_URL}/admin/startSemester`, {
+  const response = await fetch(`${BASE_URL}/admin/startSemester`, {
     method: "GET",
     credentials: "include",
   });
+  return handleResponse(response);
+}
+
+//end semester
+export async function endSemester() {
+  const response = await fetch(`${BASE_URL}/admin/endSemester`, {
+    method: "POST",
+    credentials: "include",
+  });
+  return handleResponse(response);
 }

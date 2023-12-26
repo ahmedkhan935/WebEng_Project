@@ -113,4 +113,9 @@ adminRouter.get(
 
   adminController.startSemester
 );
+adminRouter.post(
+  "/endSemester",
+
+  adminController.endSemester
+);
 module.exports = adminRouter;
