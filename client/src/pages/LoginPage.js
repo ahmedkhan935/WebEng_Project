@@ -41,14 +41,11 @@ const LoginPage = () => {
     if (resp.status === 200) {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
-      if (student)
-        navigate("/student");
-      else
-        navigate("/teacher");
+      if (student) navigate("/student");
+      else navigate("/teacher");
     } else if (resp.status === 200 && !student) {
       //navigate to teacher page
-    }
-    else {
+    } else {
       const data = await resp.json();
       setErrorMessage(data.errorMessage);
     }
@@ -91,7 +88,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 } }>
+    <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={0}>
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>

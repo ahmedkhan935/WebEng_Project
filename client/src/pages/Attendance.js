@@ -103,7 +103,7 @@ function Attendance() {
             setDialogOpen(true);
             return;
         }
-        if (buttonLabel == "Add New Record") {
+        if (buttonLabel == "Save New Record") {
             addAttendance(classCode, selectedDate, duration, students).then((data) => {
                 handleData(data);
 
