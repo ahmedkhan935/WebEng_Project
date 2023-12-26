@@ -51,53 +51,56 @@ function ViewEvaluations() {
             <CircularProgress />
           </Box>
           :
-          <>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableHeaderCell>Title</TableHeaderCell>
-                    <TableHeaderCell>Total Marks</TableHeaderCell>
-                    <TableHeaderCell>Obtained Marks</TableHeaderCell>
-                    <TableHeaderCell>Total Weightage</TableHeaderCell>
-                    <TableHeaderCell>Obt. Weightage</TableHeaderCell>
-                    <TableHeaderCell>Average</TableHeaderCell>
-                    <TableHeaderCell>Minimum</TableHeaderCell>
-                    <TableHeaderCell>Maximum</TableHeaderCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {evaluations.map((evaluation) => (
-                    <TableRow key={evaluation._id}>
-                      <TableCell>{evaluation.title}</TableCell>
-                      <TableCell>{evaluation.totalMarks}</TableCell>
-                      <TableCell>{evaluation.obtainedMarks}</TableCell>
-                      <TableCell>{evaluation.totalWeightage}</TableCell>
-                      <TableCell>{evaluation.obtainedWeightage}</TableCell>
-                      <TableCell>{evaluation.averageMarks}</TableCell>
-                      <TableCell>{evaluation.minMarks}</TableCell>
-                      <TableCell>{evaluation.maxMarks}</TableCell>
+          evaluations && evaluations.length === 0 ?
+            <Typography variant="body1" sx={{ marginBottom: '20px', color: 'red' }}>You have no evaluations in this class yet.</Typography>
+            :
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableHeaderCell>Title</TableHeaderCell>
+                      <TableHeaderCell>Total Marks</TableHeaderCell>
+                      <TableHeaderCell>Obtained Marks</TableHeaderCell>
+                      <TableHeaderCell>Total Weightage</TableHeaderCell>
+                      <TableHeaderCell>Obt. Weightage</TableHeaderCell>
+                      <TableHeaderCell>Average</TableHeaderCell>
+                      <TableHeaderCell>Minimum</TableHeaderCell>
+                      <TableHeaderCell>Maximum</TableHeaderCell>
                     </TableRow>
-                  ))}
-                  <TableRow sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.2) }}>
-                    <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}>Total</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{totalWeightage}</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }}>{totalObtainedWeightage}</TableCell>
-                    <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}></TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Typography variant="h5" sx={{ marginBottom: '20px', marginTop: '20px' }}>Performance Chart</Typography>
-            <ResponsiveContainer width="80%" height={300}>
-              <BarChart data={evaluations}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="title" />
-                <YAxis />
-                <Tooltip content={<BarchartTooltip />} />
-                <Bar dataKey="obtainedMarks" fill={`${theme.palette.secondary.main}66`} />              </BarChart>
-            </ResponsiveContainer>
-          </>
+                  </TableHead>
+                  <TableBody>
+                    {evaluations.map((evaluation) => (
+                      <TableRow key={evaluation._id}>
+                        <TableCell>{evaluation.title}</TableCell>
+                        <TableCell>{evaluation.totalMarks}</TableCell>
+                        <TableCell>{evaluation.obtainedMarks}</TableCell>
+                        <TableCell>{evaluation.totalWeightage}</TableCell>
+                        <TableCell>{evaluation.obtainedWeightage}</TableCell>
+                        <TableCell>{evaluation.averageMarks}</TableCell>
+                        <TableCell>{evaluation.minMarks}</TableCell>
+                        <TableCell>{evaluation.maxMarks}</TableCell>
+                      </TableRow>
+                    ))}
+                    <TableRow sx={{ backgroundColor: alpha(theme.palette.primary.main, 0.2) }}>
+                      <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}>Total</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{totalWeightage}</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }}>{totalObtainedWeightage}</TableCell>
+                      <TableCell sx={{ fontWeight: 'bold' }} colSpan={3}></TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Typography variant="h5" sx={{ marginBottom: '20px', marginTop: '20px' }}>Performance Chart</Typography>
+              <ResponsiveContainer width="80%" height={300}>
+                <BarChart data={evaluations}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="title" />
+                  <YAxis />
+                  <Tooltip content={<BarchartTooltip />} />
+                  <Bar dataKey="obtainedMarks" fill={`${theme.palette.secondary.main}66`} />              </BarChart>
+              </ResponsiveContainer>
+            </>
         }
       </Container>
     </NavBar>
