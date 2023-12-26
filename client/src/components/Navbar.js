@@ -45,7 +45,7 @@ import useStore from "../store/store";
 import { Link, useLocation } from "react-router-dom";
 import {logout} from '../services/AuthService';
 import LogoImage from '../assets/images/logo.png'
-import { DrawerHeader,AppBar, Drawer} from "../temp/theme/StyledComponents";
+import { DrawerHeader,AppBar, Drawer} from "../assets/theme/StyledComponents";
 
 const Footer = () => {
   const theme = useTheme();

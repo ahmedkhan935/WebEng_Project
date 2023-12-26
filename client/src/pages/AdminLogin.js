@@ -4,7 +4,7 @@ import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import mainPageImage from "../assets/images/MainPage.png";
 import cleanSlateImage from "../assets/images/Hat.png";
-import theme from "../temp/theme/theme.js";
+import theme from "../assets/theme/theme.js";
 import { adminlogin } from "../services/AuthService.js";
 import { useNavigate, useLocation } from "react-router-dom";
 

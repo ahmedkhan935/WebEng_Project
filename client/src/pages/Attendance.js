@@ -14,7 +14,7 @@ import { read, utils } from 'xlsx';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { TableHeaderCell } from '../temp/theme/StyledComponents';
+import { TableHeaderCell } from '../assets/theme/StyledComponents';
 
 
 function Attendance() {

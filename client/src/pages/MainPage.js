@@ -3,7 +3,7 @@ import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 //import mainPageImage from "../assets/images/MainPage.png";
 import mainPageImage from '../assets/images/animatedHomepage.gif'; //trying thiss
 import cleanSlateImage from "../assets/images/Hat.png";
-import theme from "../temp/theme/theme.js";
+import theme from "../assets/theme/theme.js";
 import { Link } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { logout } from "../services/AuthService.js";

@@ -6,7 +6,7 @@ import { Alert, Container,Box, Typography, TablePagination, Table, TableBody, Ta
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
-import { TableHeaderCell } from '../temp/theme/StyledComponents';
+import { TableHeaderCell } from '../assets/theme/StyledComponents';
 
 const ATTENDANCE_THRESHOLD = 80;
 
