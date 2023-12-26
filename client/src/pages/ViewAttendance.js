@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { getAttendance } from "../services/StudentService";
 import { useLocation, useParams } from "react-router";
 import NavBar from "../components/Navbar";
-import { Alert, Container,Box, Typography, TablePagination, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import { Alert, CircularProgress,Container, Box, Typography, TablePagination, Table, 
+        TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
@@ -22,13 +23,14 @@ function ViewAttendance() {
     const COLORS = ['#7cbf6b', '#b83d30'];
     const [piechartData, setPiechartData] = useState([]);
     const [bunkableClasses, setBunkableClasses] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         getAttendance(classCode).then((data) => {
             setAttendanceRecord(data.data);
             setRows(data.data); // set rows state variable
-
         });
+        setLoading(false);
     }, []);
 
     useEffect(() => {
@@ -58,82 +60,94 @@ function ViewAttendance() {
                 <Typography variant="h5" sx={{ marginTop: '20px', width: '100%', textAlign: 'center' }}>
                     Attendance Summary
                 </Typography>
+                {loading ?
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                        <CircularProgress />
+                    </Box>
+                    :
+                    attendanceRecord && attendanceRecord.length === 0 ?
+                        <Typography variant="body1" sx={{ marginBottom: '20px', color: 'red' }}>
+                            No attendance has been marked for this class yet. Contact your teacher if you think this is an issue.
+                        </Typography>
+                        :
+                        <>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <PieChart>
+                                    <Pie
+                                        data={piechartData}
+                                        cx="50%"
+                                        cy="50%"
+                                        labelLine={false}
+                                        outerRadius={100}
+                                        fill="#8884d8"
+                                        dataKey="value"
+                                        label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
+                                    >
+                                        {
+                                            piechartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                        }
+                                    </Pie>
+                                </PieChart>
+                            </ResponsiveContainer>
 
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={piechartData}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={100}
-                            fill="#8884d8"
-                            dataKey="value"
-                            label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                        >
-                            {
-                                piechartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
-                            }
-                        </Pie>
-                    </PieChart>
-                </ResponsiveContainer>
+                            {bunkableClasses > 0 ? (
+                                <Typography variant="body1" sx={{ marginTop: '20px' }}>
+                                    At the moment, you can bunk this class {bunkableClasses} more times before you get debarred.
+                                </Typography>
+                            ) : (
+                                <Alert severity="warning" sx={{ marginTop: '20px' }}>
+                                    If exams commence, you will be debarred from this class. Bunking is for the weak. And you are very weak.
+                                </Alert>
+                            )}
 
-                {bunkableClasses > 0 ? (
-                    <Typography variant="body1" sx={{ marginTop: '20px' }}>
-                       At the moment, you can bunk this class {bunkableClasses} more times before you get debarred.
-                    </Typography>
-                ) : (
-                    <Alert severity="warning" sx={{ marginTop: '20px' }}>
-                        If exams commence, you will be debarred from this class. Bunking is for the weak. And you are very weak.
-                    </Alert>
-                )}
+                            <hr></hr>
 
-                <hr></hr>
-
-                <Typography variant="h5" sx={{ marginTop: '20px', marginBottom: '20px' }}>
-                    Attendance Records
-                </Typography>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableHeaderCell>S. No</TableHeaderCell>
-                                <TableHeaderCell>Date</TableHeaderCell>
-                                <TableHeaderCell>Weekday</TableHeaderCell>
-                                <TableHeaderCell>Duration</TableHeaderCell>
-                                <TableHeaderCell>Status</TableHeaderCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((record, index) => (
-                                <TableRow key={index} >
-                                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                                    <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
-                                    <TableCell>{new Date(record.date).toLocaleDateString(undefined, { weekday: 'long' })}</TableCell>
-                                    <TableCell>{record.duration}</TableCell>
-                                    <TableCell>
-                                        <Box display="flex" alignItems="center">
-                                            {record.status === "P" ?
-                                                <CheckCircleIcon style={{ color: '#7cbf6b', marginRight: '10px' }} /> :
-                                                <CancelIcon style={{ color: '#b83d30 ', marginRight: '10px' }} />
-                                            }
-                                            {record.status}
-                                        </Box>
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, 50]}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </TableContainer>
+                            <Typography variant="h5" sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                                Attendance Records
+                            </Typography>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableHeaderCell>S. No</TableHeaderCell>
+                                            <TableHeaderCell>Date</TableHeaderCell>
+                                            <TableHeaderCell>Weekday</TableHeaderCell>
+                                            <TableHeaderCell>Duration</TableHeaderCell>
+                                            <TableHeaderCell>Status</TableHeaderCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((record, index) => (
+                                            <TableRow key={index} >
+                                                <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                                                <TableCell>{new Date(record.date).toLocaleDateString()}</TableCell>
+                                                <TableCell>{new Date(record.date).toLocaleDateString(undefined, { weekday: 'long' })}</TableCell>
+                                                <TableCell>{record.duration}</TableCell>
+                                                <TableCell>
+                                                    <Box display="flex" alignItems="center">
+                                                        {record.status === "P" ?
+                                                            <CheckCircleIcon style={{ color: '#7cbf6b', marginRight: '10px' }} /> :
+                                                            <CancelIcon style={{ color: '#b83d30 ', marginRight: '10px' }} />
+                                                        }
+                                                        {record.status}
+                                                    </Box>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25, 50]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableContainer>
+                        </>     
+                }           
             </Container>
         </NavBar>
     )

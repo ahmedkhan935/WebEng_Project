@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import NavBar from "../components/Navbar";
 
-import MakeAnnouncementCard from "../components/MakeAnnouncementCard";
+import AnnouncementCard from "../components/AnnouncementCard";
 import {
   addAnnouncement,
   viewAnnouncements,
@@ -171,18 +171,9 @@ const AdminThread = () => {
               {posts.map((post) => (
                 <div style={{ marginTop: "20px" }}>
                   {post.attachments.originalName}
-                  <MakeAnnouncementCard
+                   <AnnouncementCard
                     key={post._id}
-                    title={post.title}
-                    content={post.content}
-                    date={new Date(post.date).toLocaleDateString()}
-                    creator="Amir Rehman"
-                    file={
-                      post.attachments ? post.attachments.orignalName : null
-                    }
-                    downloadname={
-                      post.attachments ? post.attachments.name : null
-                    }
+                    post={post}
                     handleEdit={() => handleEditpost(post)}
                     handleDelete={() => handleDeletepost(post)}
                   />

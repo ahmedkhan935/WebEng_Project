@@ -10,6 +10,8 @@ const StudentEval = require("../models/StudentEval");
 const path = require("path");
 const bucket = require("../firebase_init");
 
+
+
 const studentController = {
   getProfile: async (req, res) => {
     try {
@@ -107,23 +109,23 @@ const studentController = {
       let responseEvaluations = studentEval.evaluations;
       let updatedEvaluations = []; // New array to store the updated evaluations
       const courseEval = await CourseEval.findOne({ classCode: classCode });
-      
+
       for (let evaluation of responseEvaluations) {
-          let evalRequired = courseEval.evaluations.find((courseEval) => {
-              return courseEval.title == evaluation.title;
-          });
-      
-          //Create a new object with the updated properties
-          let updatedEvaluation = {
-              ...evaluation._doc, // Spread the properties of the original evaluation
-              totalWeightage: evalRequired.weightage,
-              totalMarks: evalRequired.totalMarks,
-              averageMarks: evalRequired.averageMarks,
-              minMarks: evalRequired.minMarks,
-              maxMarks: evalRequired.maxMarks
-          };
-      
-          updatedEvaluations.push(updatedEvaluation); // Push the updated evaluation into the new array
+        let evalRequired = courseEval.evaluations.find((courseEval) => {
+          return courseEval.title == evaluation.title;
+        });
+
+        //Create a new object with the updated properties
+        let updatedEvaluation = {
+          ...evaluation._doc, // Spread the properties of the original evaluation
+          totalWeightage: evalRequired.weightage,
+          totalMarks: evalRequired.totalMarks,
+          averageMarks: evalRequired.averageMarks,
+          minMarks: evalRequired.minMarks,
+          maxMarks: evalRequired.maxMarks
+        };
+
+        updatedEvaluations.push(updatedEvaluation); // Push the updated evaluation into the new array
       }
 
       //-------haadiya bongi ends---------
@@ -146,15 +148,15 @@ const studentController = {
 
       let todos = [];
       ////-----------------------------------
-      
+
       //-------------------------------------
       classes.forEach((classroom) => {
         classroom.announcements.forEach((announcement) => {
-          if (announcement.dueDate &&  new Date(announcement.dueDate) > new Date()  ) {
+          if (announcement.dueDate && new Date(announcement.dueDate) > new Date()) {
             let todoDone = false;
             announcement.submissions.forEach((submission) => {
-              if(submission.studentId == req.user) {
-                todoDone =true;
+              if (submission.studentId == req.user) {
+                todoDone = true;
               }
             })
             todos.push({
@@ -349,6 +351,7 @@ const studentController = {
     await classs.save();
     res.status(201).json({ message: "Feedback given successfully" });
   },
+  
   getMeetLink: async (req, res) => {
     try {
       const classCode = req.params.classCode;
@@ -366,6 +369,7 @@ const studentController = {
       res.status(500).json({ error: err.message });
     }
   },
+
 };
 
 module.exports = studentController;

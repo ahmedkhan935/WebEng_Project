@@ -351,7 +351,7 @@ const downloadFile = async (req, res) => {
 
         blobStream.on('error', (err) => {
             console.error(err);
-            return res.status(404).send('File not found');
+            return res.status(404).json({message:'File not found'});
         });
 
       
