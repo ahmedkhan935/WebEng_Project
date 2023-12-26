@@ -158,7 +158,7 @@ const teacherOptions = [
 
 
 export default function NavBar({ children }) {
-  const { setDarkMode } = useStore();
+  const { setDarkMode,setUserRole } = useStore();
 
   const location = useLocation();
   let userRole = location.pathname.split("/")[1];
@@ -172,6 +172,8 @@ export default function NavBar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const logouts = () => {
+    setUserRole(null);
+    localStorage.removeItem('role');
     setDarkMode(false);
     logout();
   };

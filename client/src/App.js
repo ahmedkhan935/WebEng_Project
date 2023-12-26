@@ -1,6 +1,7 @@
 import { Route, Routes, BrowserRouter as Router } from "react-router-dom";
 import { CSThemesProvider } from "./assets/theme/CSThemesProvider"; //Custom Clean Slate theme provider
 import { ClassroomProvider } from "./context/ClassroomContext";
+import { useEffect } from "react";
 
 import MainPage from "./pages/MainPage";
 import LoginPage from "./pages/LoginPage";
@@ -46,8 +47,25 @@ import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
 import StudentSchedule from './pages/StudentSchedule';
 import ProtectedRoute from "./components/ProtectedRoute";
+import useStore from "./store/store";
 
 function App() {
+  
+  const {userRole} = useStore();
+  console.log(userRole);
+
+  useEffect(() => {
+    const handlebeforeunload = () => {
+      localStorage.setItem("role", userRole);
+    }
+    window.addEventListener("beforeunload", handlebeforeunload);
+    
+
+    return () => {
+      window.removeEventListener("beforeunload", handlebeforeunload);
+      
+    };
+  }, [userRole]);
   return (
     <CSThemesProvider>
       <Router>
@@ -60,7 +78,7 @@ function App() {
           <Route path="/login" element={<LoginPage />}></Route>
 
           {/* Student Routes */}
-          {/* <Route element={<ProtectedRoute allowedRoles={["student"]} />}> */}
+           <Route element={<ProtectedRoute allowedRoles={["student"]} />}> 
             <Route path="student">
               <Route index element={<UserLandingPage role={"student"} />}></Route>
               <Route path="classes" element={<Classes />}></Route>
@@ -78,7 +96,7 @@ function App() {
               <Route path="todos" element={<Thread />}></Route>
               <Route path="settings" element={<Settings />}></Route>
             </Route>
-          {/* </Route> */}
+          </Route>
 
           {/* Teacher Routes */}
           <Route element={<ProtectedRoute allowedRoles={["teacher"]} />}>
