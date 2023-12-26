@@ -3,7 +3,7 @@ import { getAllAttendance } from "../services/StudentService";
 import NavBar from "../components/Navbar";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Cell, LabelList } from 'recharts';
 import { useNavigate } from 'react-router-dom';
-import { Typography,Box, Container } from "@mui/material";
+import { Typography, Box, CircularProgress, Container } from "@mui/material";
 
 const ATTENDANCE_THRESHOLD = 80;
 const green = '#7cbf6b';
@@ -12,22 +12,29 @@ const red = '#b83d30';
 function ViewAllAttendance() {
     const [attendance, setAttendance] = useState([]);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        getAllAttendance().then(data => {
-            const attendanceData = data.data.map(item => {
-                const totalLectures = item.lectures.length;
-                const totalPresents = item.lectures.filter(lecture => lecture.status === 'P').length;
-                const presentPercentage = (totalPresents / totalLectures) * 100;
+        getAllAttendance()
+            .then(data => {
+                const attendanceData = data.data.map(item => {
+                    const totalLectures = item.lectures.length;
+                    const totalPresents = item.lectures.filter(lecture => lecture.status === 'P').length;
+                    const presentPercentage = (totalPresents / totalLectures) * 100;
 
-                return {
-                    classCode: item.classCode,
-                    presentPercentage,
-                };
+                    return {
+                        classCode: item.classCode,
+                        presentPercentage,
+                    };
+                });
+
+                setAttendance(attendanceData);
+                setLoading(false);
+            })
+            .catch(err => {
+                console.log(err);
+                setLoading(false);
             });
-
-            setAttendance(attendanceData);
-        });
     }, []);
 
     function BarchartLabel(props) {
@@ -35,6 +42,19 @@ function ViewAllAttendance() {
         const onClick = () => {
             navigate(`/student/classes/${value}/attendance`);
         };
+
+        if (loading) return (
+            <NavBar>
+                <Container>
+                    <Typography variant="h5" sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                        Attendance Summary for all classes
+                    </Typography>
+                    <Box sx={{ width: '100%', height: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress />
+                    </Box>
+                </Container>
+            </NavBar>
+        );
 
         return (
             <foreignObject x={x + width / 2 - 50} y={y + height} width={100} height={30}>
@@ -74,28 +94,37 @@ function ViewAllAttendance() {
                 <Typography variant="h5" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                     Attendance Summary for all classes
                 </Typography>
-                <Typography variant="body1" sx={{ marginBottom: '20px' }}>
-                    Click on the classcode to view detailed attendance records and insights.
-                </Typography>
-                <Box sx={{ display: 'flex', marginBottom: '20px' }}>
-                    <Box sx={{ width: 20, height: 20, backgroundColor: green, marginRight: '10px' }} />
-                    <Typography variant="subtitle" color="text.secondary">Sufficient attendance (80% or over)</Typography>
-                </Box>
-                <Box sx={{ display: 'flex', marginBottom: '20px' }}>
-                    <Box sx={{ width: 20, height: 20, backgroundColor: red, marginRight: '10px' }} />
-                    <Typography variant="subtitle" color="text.secondary">Attendance falling short</Typography>
-                </Box>
-                <BarChart width={500} height={300} data={attendance}>
-                    <XAxis dataKey="classCode" />
-                    <YAxis domain={[0, 100]} />
-                    <Tooltip content={<BarchartTooltip />} />
-                    <Bar dataKey="presentPercentage" fill={green}>
-                        {attendance.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.presentPercentage >= ATTENDANCE_THRESHOLD ? green : red} />
-                        ))}
-                        <LabelList dataKey="classCode" content={BarchartLabel} />
-                    </Bar>
-                </BarChart>
+                {
+                    attendance && attendance.length === 0 && !loading ?
+                        <Typography variant="body1" sx={{ marginBottom: '20px' }}>
+                            No attendance records have been uploaded yet. Please contact your teacher or university admin if you think this is a mistake.
+                        </Typography> 
+                        :
+                        <>
+                            <Typography variant="body1" sx={{ marginBottom: '20px' }}>
+                                Click on the classcode to view detailed attendance records and insights.
+                            </Typography>
+                            <Box sx={{ display: 'flex', marginBottom: '20px' }}>
+                                <Box sx={{ width: 20, height: 20, backgroundColor: green, marginRight: '10px' }} />
+                                <Typography variant="subtitle" color="text.secondary">Sufficient attendance (80% or over)</Typography>
+                            </Box>
+                            <Box sx={{ display: 'flex', marginBottom: '20px' }}>
+                                <Box sx={{ width: 20, height: 20, backgroundColor: red, marginRight: '10px' }} />
+                                <Typography variant="subtitle" color="text.secondary">Attendance falling short</Typography>
+                            </Box>
+                            <BarChart width={500} height={300} data={attendance}>
+                                <XAxis dataKey="classCode" />
+                                <YAxis domain={[0, 100]} />
+                                <Tooltip content={<BarchartTooltip />} />
+                                <Bar dataKey="presentPercentage" fill={green}>
+                                    {attendance.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={entry.presentPercentage >= ATTENDANCE_THRESHOLD ? green : red} />
+                                    ))}
+                                    <LabelList dataKey="classCode" content={BarchartLabel} />
+                                </Bar>
+                            </BarChart>
+                        </>
+                }
             </Container>
         </NavBar>
     );

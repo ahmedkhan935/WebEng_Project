@@ -7,7 +7,7 @@ import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { studentlogin, teacherLogin } from "../services/AuthService.js";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import useStore from "../store/store";
 import Stack from "@mui/material/Stack";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
@@ -17,6 +17,8 @@ const LoginPage = () => {
   const [ErrorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
+  const {userRole,setUserRole}=useStore();
+  
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -42,13 +44,19 @@ const LoginPage = () => {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
       if (student)
+      {
+        console.log(userRole);
+        setUserRole("student");
+        console.log(userRole);
         navigate("/student");
-      else
+      }
+      else{
+         setUserRole("teacher");
         navigate("/teacher");
+      }
     } else if (resp.status === 200 && !student) {
       //navigate to teacher page
-    }
-    else {
+    } else {
       const data = await resp.json();
       setErrorMessage(data.errorMessage);
     }
@@ -91,7 +99,7 @@ const LoginPage = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 } }>
+    <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={0}>
         <Grid item xs={12} sm={6} sx={styles.container}>
           <Paper elevation={0} sx={styles.loginPaper}>

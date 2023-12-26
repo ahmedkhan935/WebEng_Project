@@ -19,6 +19,7 @@ const VideoCall = () => {
   const {classCode} = useParams();
 const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
   const location = useLocation();
+  const apikey="vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
   
   const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
   useEffect(() => {
@@ -40,7 +41,8 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
     setMeetingEnded(false);
 
     setTimeout(async () => {
-      await StartMeet(classCode, `https://8x8.vc/${classCode}`);
+      
+      await StartMeet(classCode, `https://8x8.vc/${apikey}${classCode}`);
       setLoading(false);
       setMeetingStarted(true); // Set meetingStarted to true when the meeting starts
     }, 2000);
@@ -59,7 +61,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
 
         {meetingStarted && !meetingEnded ? (
           // Render Jitsi Meet component when the meeting has started
-          <JitsiMeetComponent roomName={classCode} displayName="Teacher" />
+          <JitsiMeetComponent roomName={classCode} displayName="Teacher" apikey={apikey} />
         ) : (
           // Render the start meeting button and image
           <Box

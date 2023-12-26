@@ -4,6 +4,7 @@ const SemesterSchema = new mongoose.Schema({
   name: {
     // Fall, Spring
     type: String,
+    default: "Fall",
     required: true,
   },
   year: {

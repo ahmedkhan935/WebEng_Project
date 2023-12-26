@@ -136,10 +136,13 @@ const studentOptions = [
     Icon: <SchoolIcon color="primary" />,
     linkto: "/student/classes",
   },
-  { title: "Grades", Icon: <GradeIcon color="primary" /> },
+  { title: "Transcript", Icon: <GradeIcon color="primary" /> },
 
-  { title: "Attendance", Icon: <EventAvailableIcon color="primary" /> },
-  { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
+  { 
+    title: "Schedule", 
+    Icon: <EventAvailableIcon color="primary" /> ,
+    linkto: "/student/schedule"},
+ // { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const teacherOptions = [
@@ -155,7 +158,7 @@ const teacherOptions = [
 
 
 export default function NavBar({ children }) {
-  const { setDarkMode } = useStore();
+  const { setDarkMode,setUserRole } = useStore();
 
   const location = useLocation();
   let userRole = location.pathname.split("/")[1];
@@ -169,6 +172,8 @@ export default function NavBar({ children }) {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const logouts = () => {
+    setUserRole(null);
+    localStorage.removeItem('role');
     setDarkMode(false);
     logout();
   };

@@ -20,10 +20,13 @@ import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
 import CampaignOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import NavBar from "../components/Navbar";
 import { getThreads } from "../services/ThreadService";
+import autumn from "../assets/images/autumnFalling.gif";
+import spring from "../assets/images/spring.gif";
 
 import AlarmOnTwoToneIcon from "@mui/icons-material/AlarmOnTwoTone";
 import PendingActionsTwoToneIcon from "@mui/icons-material/PendingActionsTwoTone";
 import { useNavigate } from "react-router-dom";
+import { endSemester, startSemester } from "../services/AdminService";
 
 const LandingPage = () => {
   const navigate = useNavigate();
@@ -31,6 +34,8 @@ const LandingPage = () => {
   const [semesterModalContent, setSemesterModalContent] = useState("");
   const [semesterModalIcon, setSemesterModalIcon] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [showfall, setShowfall] = useState(false);
+  const [showspring, setShowspring] = useState(false);
 
   const [threads, setThreads] = useState([]);
 
@@ -63,12 +68,49 @@ const LandingPage = () => {
     });
   }, []);
 
-  const handleSemesterModalOpen = (message, icon) => {
-    setSemesterModalContent(message);
-    setSemesterModalIcon(icon);
-    setSemesterModalOpen(true);
+  const handleSemesterModalOpen = async (icon) => {
+    const res = await startSemester({});
+    if (res.error) {
+      var message = res.error;
+      setSemesterModalContent(message);
+      setSemesterModalIcon(icon);
+      setSemesterModalOpen(true);
+    } else {
+      console.log(res);
+      if (res.semester === "Fall") {
+        setShowfall(true);
+        setTimeout(() => {
+          setShowfall(false);
+        }, 5000);
+      }
+      if (res.semester === "Spring") {
+        setShowspring(true);
+        setTimeout(() => {
+          setShowspring(false);
+        }, 5000);
+      }
+      var message = res.semester + " semester has started ";
+      setSemesterModalContent(message);
+      setSemesterModalIcon(icon);
+      setSemesterModalOpen(true);
+    }
   };
 
+  const handleSemesterEndModalOpen = async (icon) => {
+    const res = await endSemester({});
+    if (res.error) {
+      var message = res.error;
+      setSemesterModalContent(message);
+      setSemesterModalIcon(icon);
+      setSemesterModalOpen(true);
+    } else {
+      console.log(res);
+      var message = "Semester has Ended ";
+      setSemesterModalContent(message);
+      setSemesterModalIcon(icon);
+      setSemesterModalOpen(true);
+    }
+  };
   const handleSemesterModalClose = () => {
     setSemesterModalOpen(false);
   };
@@ -87,6 +129,31 @@ const LandingPage = () => {
 
   return (
     <NavBar>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+        }}
+      >
+        {showfall && (
+          <img
+            src={autumn}
+            alt="Fall"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
+        {showspring && (
+          <img
+            src={spring}
+            alt="Spring"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        )}
+      </div>
       <div
         style={{
           display: "flex",
@@ -170,12 +237,6 @@ const LandingPage = () => {
                 backgroundColor: (theme) => `${theme.palette.primary.main}`,
                 color: "white",
                 position: "relative",
-                ":hover": {
-                  cursor: "pointer",
-                  "& .rotate-icon": {
-                    transform: "rotate(-90deg)", // Change rotation angle to face left
-                  },
-                },
               }}
             >
               <CardActionArea onClick={() => handleViewThreadPosts(thread)}>
@@ -242,7 +303,6 @@ const LandingPage = () => {
                 variant="contained"
                 onClick={() =>
                   handleSemesterModalOpen(
-                    "New semester has started!",
                     <AlarmOnTwoToneIcon
                       sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
                     />
@@ -255,8 +315,7 @@ const LandingPage = () => {
               <Button
                 variant="contained"
                 onClick={() =>
-                  handleSemesterModalOpen(
-                    "Semester has ended!",
+                  handleSemesterEndModalOpen(
                     <PendingActionsTwoToneIcon
                       sx={{ fontSize: "4rem", mb: "1rem", color: "primary" }}
                     />
