@@ -12,6 +12,7 @@ import {
   CardActionArea,
   CardActions,
   CardMedia,
+  CircularProgress,
 } from "@mui/material";
 import PersonSearchIcon from "@mui/icons-material/PersonSearch";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
@@ -36,6 +37,7 @@ const LandingPage = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [showfall, setShowfall] = useState(false);
   const [showspring, setShowspring] = useState(false);
+  const [downloading, setDownloading] = React.useState(false);
 
   const [threads, setThreads] = useState([]);
 
@@ -69,46 +71,67 @@ const LandingPage = () => {
   }, []);
 
   const handleSemesterModalOpen = async (icon) => {
-    const res = await startSemester({});
-    if (res.error) {
-      var message = res.error;
-      setSemesterModalContent(message);
-      setSemesterModalIcon(icon);
-      setSemesterModalOpen(true);
-    } else {
-      console.log(res);
-      if (res.semester === "Fall") {
-        setShowfall(true);
-        setTimeout(() => {
-          setShowfall(false);
-        }, 5000);
+    try {
+      setDownloading(true);
+
+      const res = await startSemester({});
+
+      if (res.error) {
+        var message = res.error;
+        setSemesterModalContent(message);
+        setSemesterModalIcon(icon);
+        setSemesterModalOpen(true);
+      } else {
+        console.log(res);
+        if (res.semester === "Fall") {
+          setShowfall(true);
+          setTimeout(() => {
+            setShowfall(false);
+          }, 5000);
+        }
+        if (res.semester === "Spring") {
+          setShowspring(true);
+          setTimeout(() => {
+            setShowspring(false);
+          }, 5000);
+        }
+        var message = res.semester + " semester has started ";
+        setSemesterModalContent(message);
+        setSemesterModalIcon(icon);
+        setSemesterModalOpen(true);
       }
-      if (res.semester === "Spring") {
-        setShowspring(true);
-        setTimeout(() => {
-          setShowspring(false);
-        }, 5000);
-      }
-      var message = res.semester + " semester has started ";
-      setSemesterModalContent(message);
-      setSemesterModalIcon(icon);
-      setSemesterModalOpen(true);
+    } catch (error) {
+      // Handle errors, e.g., display an error message
+      console.error("Error setting semester:", error);
+    } finally {
+      setDownloading(false);
     }
   };
 
   const handleSemesterEndModalOpen = async (icon) => {
-    const res = await endSemester({});
-    if (res.error) {
-      var message = res.error;
-      setSemesterModalContent(message);
-      setSemesterModalIcon(icon);
-      setSemesterModalOpen(true);
-    } else {
-      console.log(res);
-      var message = "Semester has Ended ";
-      setSemesterModalContent(message);
-      setSemesterModalIcon(icon);
-      setSemesterModalOpen(true);
+    try {
+      setDownloading(true);
+      const res = await endSemester({});
+      setDownloading(true);
+      if (res.error) {
+        setDownloading(false);
+        var message = res.error;
+        setSemesterModalContent(message);
+        setSemesterModalIcon(icon);
+        setSemesterModalOpen(true);
+      } else {
+        setDownloading(false);
+        console.log(res);
+        var message = "Semester has Ended ";
+        setSemesterModalContent(message);
+        setSemesterModalIcon(icon);
+        setSemesterModalOpen(true);
+      }
+    } catch (error) {
+      // Handle errors, e.g., display an error message
+      console.error("Error setting semester:", error);
+    } finally {
+      setDownloading(false);
     }
   };
   const handleSemesterModalClose = () => {
@@ -339,6 +362,21 @@ const LandingPage = () => {
         <DialogActions>
           <Button onClick={handleSemesterModalClose}>Close</Button>
         </DialogActions>
+      </Dialog>
+      <Dialog open={downloading}>
+        <Box
+          sx={{
+            padding: "24px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            paddingBottom: "48px",
+          }}
+        >
+          <DialogTitle>Setting Semester, please wait...</DialogTitle>
+          <CircularProgress color="secondary" />
+        </Box>
       </Dialog>
     </NavBar>
   );
