@@ -12,7 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import { read, utils } from 'xlsx';
-import { getStudents, getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement } from '../services/TeacherService';
+import { getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement, updateEvaluation } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
@@ -46,7 +46,7 @@ function Evaluations() {
     const [createEvalWeightage, setCreateEvalWeightage] = useState(null);
     const [createEvalTotalMarks, setCreateEvalTotalMarks] = useState(null);
     const [createEvalOpenSubmission, setCreateEvalOpenSubmission] = useState(false);
-    const [createEvalDueDate, setCreateEvalDueDate] = useState(new Date());
+    const [createEvalDueDate, setCreateEvalDueDate] = useState(null);
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
@@ -55,6 +55,13 @@ function Evaluations() {
 
     //states for editing evaluation
     const [editingEval, setEditingEval] = useState(false);
+    const [oldEval, setOldEval] = useState({
+        title: "",
+        content: "",
+        weightage: "",
+        totalMarks: "",
+        dueDate: ""
+    });
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorMarks, setAnchorMarks] = React.useState(null);
 
@@ -67,13 +74,6 @@ function Evaluations() {
     };
 
     useEffect(() => {
-        getStudents(classCode).then((data) => {
-            console.log("GET STUDENTS", data.data);
-            if (data.error) {
-                return;
-            }
-            setStudents(data.data);
-        })
         getAllEvaluations(classCode).then((data) => {
             if (data.error) {
                 return;
@@ -173,8 +173,8 @@ function Evaluations() {
     //Editing in process - updating student marks & validating
     const handleTitleChange = (e) => {
         const title = e.target.value;
-        setCreateEvalTitle(title);
-        setTitleError(evaluations.some(evaluation => evaluation.title === title));
+        setCreateEvalTitle(String(title).trim());
+        setTitleError(evaluations.some(evaluation => String(evaluation.title).toLowerCase() == String(title).toLowerCase().trim()) && String(title).toLowerCase().trim() != String(oldEval.title).toLowerCase());
     };
 
     //Saving evaluation marks after editing
@@ -190,24 +190,33 @@ function Evaluations() {
         //end loading here
 
         populateMarks(evalIndex);
-        setCreateEvalTitle("");
-        setCreateEvalContent(null);
-        setCreateEvalWeightage(null);
-        setCreateEvalTotalMarks(null);
-        setCreateEvalOpenSubmission(false);
-        setEditMode(false);
+
+        //ResetStates
+        resetStates();
     };
 
     //Cancel during editing
     const handleCancel = () => {
+        resetStates();
+        setTempEvaluations(evaluations);
+    };
+
+    const resetStates = () => {
+        setEditingEval(false);
         setEditMode(false);
         setCreateEvalTitle("");
+        setOldEval({
+            title: "",
+            content: "",
+            weightage: "",
+            totalMarks: "",
+            dueDate: ""
+        });
         setCreateEvalContent(null);
         setCreateEvalWeightage(null);
         setCreateEvalTotalMarks(null);
         setCreateEvalOpenSubmission(false);
-        setTempEvaluations(evaluations);
-    };
+    }
 
     const handleFileUpload = () => {
         fileInput.current.click();
@@ -289,6 +298,7 @@ function Evaluations() {
 
     const handleCloseDialog = () => {
         setOpenDialog(false);
+        resetStates();
     };
 
     //handle evaluation edit buttons
@@ -304,6 +314,13 @@ function Evaluations() {
         setEditingEval(true);
         setOpenDialog(true);
         setCreateEvalTitle(evaluations[evalIndex].title);
+        setOldEval({
+            title: evaluations[evalIndex].title,
+            content: evaluations[evalIndex].content,
+            weightage: evaluations[evalIndex].weightage,
+            totalMarks: evaluations[evalIndex].totalMarks,
+            dueDate: evaluations[evalIndex].dueDate
+        });
         setCreateEvalContent(evaluations[evalIndex].content);
         setCreateEvalWeightage(evaluations[evalIndex].weightage);
         setCreateEvalTotalMarks(evaluations[evalIndex].totalMarks);
@@ -314,6 +331,8 @@ function Evaluations() {
 
     //Add new evaluation
     const addEvaluation = () => {
+        setOpenDialog(false);
+
         const evaluation = { //formdata
             type: createEvalOpenSubmission ? "Assignment" : "Other",
             title: createEvalTitle,
@@ -336,15 +355,97 @@ function Evaluations() {
             setTempEvaluations(evaluations);
         });
 
-        // Add the evaluation to your state or database here
-        setOpenDialog(false);
+        resetStates();
+
     };
 
-    const saveEditedEval = () => {
-        //MUSA CALL ENDPOINT HERE.
+    const saveEditedEval = async () => {
+        try {
+            console.log(oldEval);
+
+            let title = createEvalTitle;
+            let content = createEvalContent;
+            let weightage = createEvalWeightage;
+            let totalMarks = createEvalTotalMarks;
+            let dueDate = createEvalDueDate;
+
+            let evaluation = {
+                title: (title === oldEval.title) ? null : title,
+                content: (content === oldEval.content) ? null : content,
+                weightage: (weightage === oldEval.weightage) ? null : weightage,
+                totalMarks: (totalMarks === oldEval.totalMarks) ? null : totalMarks,
+                dueDate: (dueDate === oldEval.dueDate) ? null : dueDate
+            }
+
+            // removing null fields
+            for (let key in evaluation) {
+                if (evaluation[key] === null) {
+                    delete evaluation[key];
+                }
+            }
+
+            console.log("evaluation", evaluation);
+            if (Object.keys(evaluation).length === 0) {
+                alert("No changes made");
+                setOpenDialog(false);
+                return;
+            }
+
+            if(evaluation.totalMarks){
+                // confirmation
+                const confirmation = window.confirm("Are you sure you want to update the total marks? All the marks will be reset to 0.");
+                if(!confirmation){
+                    setCreateEvalTotalMarks(oldEval.totalMarks);
+                    return;
+                }
+            }
+            setOpenDialog(false);
+
+            const data = await updateEvaluation(classCode, oldEval.title, evaluation);
+            console.log("res", data);
+            if (data.error) {
+                return;
+            }
+
+            const updatedEvaluations = produce(evaluations, draft => {
+                let index = draft.findIndex((evalu) => evalu.title == oldEval.title);
+                draft[index].title = title;
+                draft[index].content = content;
+                draft[index].weightage = weightage;
+                draft[index].totalMarks = totalMarks;
+                draft[index].dueDate = dueDate;
+
+                if(evaluation.totalMarks){
+                    draft[index].submissions.forEach((submission) => {
+                        submission.obtainedMarks = 0;
+                        submission.obtainedWeightage = 0;
+                    });
+                }
+            });
+
+            setEvaluations(updatedEvaluations);
+            resetStates();
+            // dialog success
+            alert("Evaluation updated successfully");
+
+        } catch (error) {
+            console.log(error);
+        }
     }
 
+    const formattedDate = (evalDate) => {
+        const date = new Date(evalDate);
+        const isoString = date.toISOString();
 
+        const formattedDate = isoString.slice(0, 10) + ' ' + isoString.slice(11, 16);
+        return formattedDate;
+    }
+
+    const toLocalISO = (date) => {
+        const tzOffset = (new Date()).getTimezoneOffset() * 60000; // offset in milliseconds
+        const localISOTime = (new Date(date - tzOffset)).toISOString().slice(0,-1);
+        return localISOTime.substring(0, 16);
+    };
 
     return (
         <NavBar>
@@ -378,9 +479,12 @@ function Evaluations() {
                                             {evaluation.title}
                                         </TableSubHeaderCell>
                                         <TableSubHeaderCell align="left">
-                                            {evaluation.dueDate ?
+                                            {/* {evaluation.dueDate ?
                                                 new Date(evaluation.dueDate).toLocaleDateString() + ' ' + new Date(evaluation.dueDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
-                                                : " - "
+                                                : " - " }*/
+                                                evaluation.dueDate ?
+                                                    formattedDate(evaluation.dueDate)
+                                                    : " - " 
                                             }
                                         </TableSubHeaderCell>
                                         <TableSubHeaderCell align="left">{evaluation.weightage}</TableSubHeaderCell>
@@ -420,11 +524,11 @@ function Evaluations() {
                                                         onClose={handleManageMarksClose}
                                                     >
                                                         <MenuItem onClick={handleFileUpload}>
-                                                            <FileUploadIcon color="primary" sx={{marginRight: '5px'}} />
+                                                            <FileUploadIcon color="primary" sx={{ marginRight: '5px' }} />
                                                             Import Marks
                                                         </MenuItem>
                                                         <MenuItem onClick={handleEditMarks}>
-                                                            <GradingIcon color="primary" sx={{marginRight: '5px'}} />
+                                                            <GradingIcon color="primary" sx={{ marginRight: '5px' }} />
                                                             Edit Marks
                                                         </MenuItem>
                                                     </Menu>
@@ -570,33 +674,33 @@ function Evaluations() {
                             sx={{ marginTop: '20px' }}
                         />
                         {
-                         (editingEval) ? null :
-                        <FormControlLabel
-                            control={
-                                <Tooltip title="If you select this checkbox, a submission portal for this evaluation will be opened on the classroom.">
-                                    <Checkbox checked={createEvalOpenSubmission} onChange={(e) => setCreateEvalOpenSubmission(e.target.checked)} />
-                                </Tooltip>
-                            }
-                            label="Open Submissions"
-                        />
-                        }           
-                        { 
-                         createEvalOpenSubmission && (
-                            <TextField
-                                label="Due Date"
-                                type="datetime-local"
-                                value={createEvalDueDate}
-                                onChange={(e) => setCreateEvalDueDate(e.target.value)}
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                inputProps={{
-                                    min: new Date().toISOString().split('T')[0],
-                                }}
-                                sx={{ marginTop: '20px' }}
-                                fullWidth
-                            />
-                        )}
+                            (editingEval) ? null :
+                                <FormControlLabel
+                                    control={
+                                        <Tooltip title="If you select this checkbox, a submission portal for this evaluation will be opened on the classroom.">
+                                            <Checkbox checked={createEvalOpenSubmission} onChange={(e) => setCreateEvalOpenSubmission(e.target.checked)} />
+                                        </Tooltip>
+                                    }
+                                    label="Open Submissions"
+                                />
+                        }
+                        {
+                            createEvalOpenSubmission && (
+                                <TextField
+                                    label="Due Date"
+                                    type="datetime-local"
+                                    value={toLocalISO(new Date(createEvalDueDate))}
+                                    onChange={(e) => setCreateEvalDueDate(e.target.value)}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
+                                    inputProps={{
+                                        min: new Date().toISOString().split('T')[0],
+                                    }}
+                                    sx={{ marginTop: '20px' }}
+                                    fullWidth
+                                />
+                            )}
                         <DialogActions>
                             <Button variant="outlined" color="primary" onClick={handleCloseDialog}>Cancel</Button>
                             <Button

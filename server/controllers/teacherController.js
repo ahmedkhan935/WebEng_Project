@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 const bucket = require('../firebase_init');
 
-var cache = {};
+// var cache = {};
 
 const teacherController = {
 
@@ -188,7 +188,7 @@ const teacherController = {
                 comments: [],
                 submissions: []
             };
-            console.log(dueDate);
+            console.log("due Datee", dueDate);
             if (dueDate) {
                 announcement.dueDate = dueDate;
             }
@@ -509,27 +509,57 @@ const teacherController = {
             // console.log(courseEval);
 
             let evaluations = courseEval.evaluations;
-
             if (!evaluations) {
                 evaluations = [];
-            } else {
-                evaluations.sort((a, b) => {
-                    // If both have submissions or both don't, sort by date
-                    if ((a.hasSubmissions && b.hasSubmissions) || (!a.hasSubmissions && !b.hasSubmissions)) {
-                        return new Date(b.createdOn) - new Date(a.createdOn);
-                    }
-                    // If only a has submissions, a should come first
-                    if (a.hasSubmissions) {
-                        return -1;
-                    }
-                    // If only b has submissions, b should come first
-                    if (b.hasSubmissions) {
-                        return 1;
+                return res.status(201).json(evaluations);
+            }
+
+            const classroom = await Classroom.findOne({ code: classCode });
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
+
+            const assignments = classroom.announcements.filter(announcement => (announcement.type == 'Assignment' || announcement.type == 'Other'));
+
+            console.log("assignments", assignments);
+
+            let newEvals = [];
+            if (assignments) {
+                console.log("has assignments");
+                assignments.forEach(assignment => {
+                    let evalIndex = evaluations.indexOf(evaluations.find(evaluation => evaluation.title == assignment.title));
+                    if (evalIndex != -1) {
+                        // console.log("content", assignment.content);
+                        // console.log("eval", evaluations[evalIndex]);
+
+                        //evaluations[evalIndex] = { ...evaluations[evalIndex]._doc, content: assignment.content };
+                        const newEval = { ...evaluations[evalIndex]._doc, content: assignment.content };
+                        // console.log("evaluation", evaluations[evalIndex]);
+                        //console.log("new eval", newEval);
+                        newEvals.push(newEval);
                     }
                 });
             }
 
-            res.status(200).json(evaluations);
+            newEvals.sort((a, b) => {
+                // If both have submissions or both don't, sort by date
+                if ((a.hasSubmissions && b.hasSubmissions) || (!a.hasSubmissions && !b.hasSubmissions)) {
+                    return new Date(b.createdOn) - new Date(a.createdOn);
+                }
+                // If only a has submissions, a should come first
+                if (a.hasSubmissions) {
+                    return -1;
+                }
+                // If only b has submissions, b should come first
+                if (b.hasSubmissions) {
+                    return 1;
+                }
+            });
+
+
+            //console.log("EVAAAALLLL", evaluations);
+
+            res.status(200).json(newEvals);
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: 'Server error', error });
@@ -541,10 +571,10 @@ const teacherController = {
             let { classCode, title } = req.params;
             title = title.replace(/~/g, ' ');
 
-            const cacheKey = `${classCode}-${title}`;
-            if (cache[cacheKey]) {
-                return res.status(200).json(cache[cacheKey]);
-            }
+            // const cacheKey = `${classCode}-${title}`;
+            // if (cache[cacheKey]) {
+            //     return res.status(200).json(cache[cacheKey]);
+            // }
 
             const courseEval = await CourseEval.findOne({ classCode });
             if (!courseEval) {
@@ -616,7 +646,7 @@ const teacherController = {
                 });
             }
 
-            cache[cacheKey] = data;
+            // cache[cacheKey] = data;
             res.status(200).json(data);
 
         } catch (error) {
@@ -633,7 +663,7 @@ const teacherController = {
             const { evaluations } = req.body;
 
             title = title.replace(/~/g, ' ');
-            const cacheKey = `${classCode}-${title}`;
+            // const cacheKey = `${classCode}-${title}`;
 
             const courseEval = await CourseEval.findOne({ classCode }).session(session);
             if (!courseEval) {
@@ -685,11 +715,11 @@ const teacherController = {
             evaluation.minMarks = minMarks;
 
             const studentEvals = await StudentEval.find({ classCode })
-            .populate({
-                path: 'studentId',
-                select: 'rollNumber'
-            })
-            .session(session);
+                .populate({
+                    path: 'studentId',
+                    select: 'rollNumber'
+                })
+                .session(session);
 
             if (!studentEvals) {
                 return res.status(404).json({ message: 'No student evals found' });
@@ -711,14 +741,14 @@ const teacherController = {
                     await studentEval.save({ session });
                 }
 
-                if(cache[cacheKey]){
-                    cache[cacheKey].forEach(student => {
-                        if(student.rollNumber == studentEval.studentId.rollNumber){
-                            student.obtainedMarks = obtainedMarks;
-                            student.obtainedWeightage = obtainedWeightage;
-                        }
-                    });
-                }
+                // if(cache[cacheKey]){
+                //     cache[cacheKey].forEach(student => {
+                //         if(student.rollNumber == studentEval.studentId.rollNumber){
+                //             student.obtainedMarks = obtainedMarks;
+                //             student.obtainedWeightage = obtainedWeightage;
+                //         }
+                //     });
+                // }
             }
 
             await courseEval.save({ session });
@@ -733,47 +763,47 @@ const teacherController = {
             session.endSession();
         }
     },
-    
-    startMeet : async (req,res) => {
-        try{
-            const {classCode} = req.params;
+
+    startMeet: async (req, res) => {
+        try {
+            const { classCode } = req.params;
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
                 return res.status(404).json({ message: 'Classroom not found' });
             }
 
             const meetLink = req.body.meetLink;
-            if(!meetLink){
+            if (!meetLink) {
                 return res.status(404).json({ message: 'Meet link not found' });
             }
-            if(classroom.meetLink){
+            if (classroom.meetLink) {
                 return res.status(404).json({ message: 'Meet link already exists' });
             }
             classroom.meetLink = meetLink;
             await classroom.save();
 
 
-            res.status(200).json({meetLink});
-        }catch(error){
+            res.status(200).json({ meetLink });
+        } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
     },
 
-    endMeet: async (req,res) => {
-        try{
-            const {classCode} = req.params;
+    endMeet: async (req, res) => {
+        try {
+            const { classCode } = req.params;
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
                 return res.status(404).json({ message: 'Classroom not found' });
             }
-            if(!classroom.meetLink){
+            if (!classroom.meetLink) {
                 return res.status(404).json({ message: 'Meet link not found' });
             }
             classroom.meetLink = null;
             await classroom.save();
-            res.status(200).json({message: 'Meet link deleted successfully'});
-        }catch(error){
+            res.status(200).json({ message: 'Meet link deleted successfully' });
+        } catch (error) {
             console.log(error);
             res.status(500).json({ message: 'Server error', error });
         }
@@ -783,10 +813,13 @@ const teacherController = {
         const session = await mongoose.startSession();
         session.startTransaction();
         try {
-            let { classCode, oldTitle } = req.params;
-            let { title, weightage, totalMarks, dueDate } = req.body;
+            let { classCode } = req.params;
+            let oldTitle = req.params.title;
+            let { title, content, weightage, totalMarks, dueDate } = req.body;
 
-            oldTitle = oldTitle.replace(/~/g, ' ');
+            console.log("title: ", title, "weightage: ", weightage, "totalMarks: ", totalMarks, "dueDate: ", dueDate)
+
+            oldTitle = String(oldTitle).replace(/~/g, ' ');
 
             let classroom = await Classroom.findOne({ code: classCode }).session(session);
             if (!classroom) {
@@ -828,8 +861,8 @@ const teacherController = {
                 }
             }
 
-
             if (title) { evaluation.title = title; announcement.title = title; }
+            if (content) { announcement.content = content; }
             if (dueDate) { evaluation.dueDate = dueDate; announcement.dueDate = dueDate; }
             if (weightage) { evaluation.weightage = weightage; }
             if (totalMarks) { evaluation.totalMarks = totalMarks; }
@@ -848,6 +881,74 @@ const teacherController = {
             session.endSession();
         }
     },
+
+    deleteEvaluation: async (req, res) => {
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        try{
+            let { classCode } = req.params;
+            let title = req.params.title;
+
+            title = String(title).replace(/~/g, ' ');
+
+            let classroom = await Classroom.findOne({ code: classCode }).session(session);
+            if (!classroom) {
+                return res.status(404).json({ message: 'Classroom not found' });
+            }
+
+            let announcement = classroom.announcements.find(announcement => announcement.title == title);
+            if (!announcement) {
+                return res.status(404).json({ message: 'Announcement not found' });
+            }
+
+            let courseEval = await CourseEval.findOne({ classCode }).session(session);
+            if (!courseEval) {
+                return res.status(404).json({ message: 'Course eval not found' });
+            }
+
+            let evaluation = courseEval.evaluations.find(evaluation => evaluation.title == title);
+            if (!evaluation) {
+                return res.status(404).json({ message: 'Evaluation not found' });
+            }
+
+            // updating student evals
+            let studentEvals = await StudentEval.find({ classCode }).session(session);
+            if (studentEvals) {
+                for (let i = 0; i < studentEvals.length; i++) {
+                    const studentEval = studentEvals[i];
+                    const eval = studentEval.evaluations.find(eval => eval.title == title);
+                    if (eval) {
+                        const index = studentEval.evaluations.indexOf(eval);
+                        studentEval.evaluations.splice(index, 1);
+                    }
+
+                    await studentEval.save({ session });
+                }
+            }
+
+            const index = classroom.announcements.indexOf(announcement);
+            classroom.announcements.splice(index, 1);
+
+            const evalIndex = courseEval.evaluations.indexOf(evaluation);
+            courseEval.evaluations.splice(evalIndex, 1);
+
+            await courseEval.save({ session });
+            await classroom.save({ session });
+
+            await session.commitTransaction();
+            res.status(200).json({ message: 'Assignment deleted successfully' });
+
+        } catch (error) {
+            await session.abortTransaction();
+            console.log(error);
+            res.status(500).json({ message: 'Server error', error });
+        } finally {
+            session.endSession();
+        }
+    },
+
 };
+
+
 
 module.exports = teacherController;

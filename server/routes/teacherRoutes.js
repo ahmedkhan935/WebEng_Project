@@ -22,13 +22,14 @@ router.post('/classes/:classCode/announcement', Auth, AuthTeacher,teacherControl
 router.post('/classes/:classCode/:announcementId/comment', Auth, AuthTeacher, teacherStudentController.comment);
 router.post('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.addAttendance);
 router.post('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.addEvaluation);
+router.post("/classes/:classCode/startMeeting", Auth, AuthTeacher, teacherController.startMeet);
+router.post("/classes/:classCode/endMeeting", Auth, AuthTeacher, teacherController.endMeet);
 
 router.put('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.editAnnouncement);
 router.put('/classes/:classCode/attendance', Auth, AuthTeacher, teacherController.updateAttendance);
 router.put('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.updateEvaluation);
 
 router.delete('/classes/:classCode/announcement/:announcementId', Auth, AuthTeacher, teacherController.deleteAnnouncement);
-router.post("/classes/:classCode/startMeeting", Auth, AuthTeacher, teacherController.startMeet);
-router.post("/classes/:classCode/endMeeting", Auth, AuthTeacher, teacherController.endMeet);
+router.delete('/classes/:classCode/evaluations/:title', Auth, AuthTeacher, teacherController.deleteEvaluation);
 
 module.exports = router;
