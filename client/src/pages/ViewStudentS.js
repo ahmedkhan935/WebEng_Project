@@ -18,6 +18,7 @@ import {
   MenuItem,
   Button,
   Link,
+  Container,
 } from "@mui/material";
 
 import Pagination from "@mui/material/Pagination";
@@ -99,139 +100,137 @@ const ViewStudents = () => {
   };
 
   return (
-    <div>
-      <NavBar>
-        <h1 style={{ color: "#22717d", float: "left" }}>Students</h1>
+    <NavBar>
+      <h1 style={{ color: "#22717d", float: "left" }}>Students</h1>
 
-        <div
+      <Container
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          marginTop: "20px",
+        }}
+      >
+        <Button
+          component={Link}
+          onClick={handleaddstudent}
+          variant="outlined"
+          color="primary"
+          startIcon={<PersonAddAltTwoToneIcon />}
           style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            alignItems: "center",
-            marginTop: "20px",
+            zIndex: 2000,
+            width: "150px",
+            height: "40px",
+            margin: "10px",
           }}
         >
-          <Button
-            component={Link}
-            onClick={handleaddstudent}
-            variant="outlined"
-            color="primary"
-            startIcon={<PersonAddAltTwoToneIcon />}
-            style={{
-              zIndex: 2000,
-              width: "150px",
-              height: "40px",
-              margin: "10px",
-            }}
+          Add Student
+        </Button>
+        <FormControl variant="outlined" style={{ marginRight: "10px" }}>
+          <InputLabel>Batch</InputLabel>
+          <Select
+            value={filterBatch}
+            onChange={(e) => setFilterBatch(e.target.value)}
+            label="Batch"
+            style={{ zIndex: 2000, width: "200px", height: "40px" }}
           >
-            Add Student
-          </Button>
-          <FormControl variant="outlined" style={{ marginRight: "10px" }}>
-            <InputLabel>Batch</InputLabel>
-            <Select
-              value={filterBatch}
-              onChange={(e) => setFilterBatch(e.target.value)}
-              label="Batch"
-              style={{ zIndex: 2000, width: "200px", height: "40px" }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="2019">2019</MenuItem>
-              <MenuItem value="2020">2020</MenuItem>
-              <MenuItem value="2021">2021</MenuItem>
-              <MenuItem value="2022">2022</MenuItem>
-              <MenuItem value="2023">2023</MenuItem>
-            </Select>
-          </FormControl>
+            <MenuItem value="">All</MenuItem>
+            <MenuItem value="2019">2019</MenuItem>
+            <MenuItem value="2020">2020</MenuItem>
+            <MenuItem value="2021">2021</MenuItem>
+            <MenuItem value="2022">2022</MenuItem>
+            <MenuItem value="2023">2023</MenuItem>
+          </Select>
+        </FormControl>
 
-          <FormControl variant="outlined">
-            <InputLabel>Degree</InputLabel>
-            <Select
-              value={filterDegree}
-              onChange={(e) => setFilterDegree(e.target.value)}
-              label="Degree"
-              style={{ zIndex: 2000, width: "200px", height: "40px" }}
-            >
-              <MenuItem value="">All</MenuItem>
-              {degrees.map((degree) => (
-                <MenuItem value={degree.name}>{degree.name}</MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-          <FormControl
-            variant="outlined"
-            style={{
-              marginLeft: "10px",
-              marginRight: "70px",
-              marginTop: "10px",
-            }}
+        <FormControl variant="outlined">
+          <InputLabel>Degree</InputLabel>
+          <Select
+            value={filterDegree}
+            onChange={(e) => setFilterDegree(e.target.value)}
+            label="Degree"
+            style={{ zIndex: 2000, width: "200px", height: "40px" }}
           >
-            <TextField
-              label="Search"
-              variant="outlined"
-              size="small"
-              onChange={(e) => setSearchKeyword(e.target.value)}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">&#128269;</InputAdornment>
-                ),
-              }}
-              style={{ marginBottom: "10px" }}
-            />
-          </FormControl>
-        </div>
+            <MenuItem value="">All</MenuItem>
+            {degrees.map((degree) => (
+              <MenuItem value={degree.name}>{degree.name}</MenuItem>
+            ))}
+          </Select>
+        </FormControl>
 
-        <TableContainer
-          component={Paper}
-          style={{ width: "95%", marginRight: "10px" }}
-        >
-          <Table>
-            <TableHead>
-              <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
-                <TableCell style={{ color: "#FFFFFF" }}>Student ID</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Batch</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Degree</TableCell>
-                <TableCell style={{ color: "#FFFFFF" }}>Actions</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedRows.map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.studentId}</TableCell>
-                  <TableCell>{row.name}</TableCell>
-                  <TableCell>{row.batch}</TableCell>
-                  <TableCell>{row.degree}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={() => handleUpdate(row._id)}>
-                      <EditIcon color="secondary" />
-                    </IconButton>
-                    <IconButton onClick={() => handleDelete(row._id)}>
-                      <DeleteIcon color="secondary" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-
-        <div
+        <FormControl
+          variant="outlined"
           style={{
-            marginTop: "20px",
-            display: "flex",
-            justifyContent: "center",
+            marginLeft: "10px",
+            marginRight: "70px",
+            marginTop: "10px",
           }}
         >
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={handlePageChange}
+          <TextField
+            label="Search"
             variant="outlined"
+            size="small"
+            onChange={(e) => setSearchKeyword(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">&#128269;</InputAdornment>
+              ),
+            }}
+            style={{ marginBottom: "10px" }}
           />
-        </div>
-      </NavBar>
-    </div>
+        </FormControl>
+      </Container>
+
+      <TableContainer
+        component={Paper}
+        style={{ width: "95%", marginRight: "10px" }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow sx={{ backgroundColor: theme.palette.primary.main }}>
+              <TableCell style={{ color: "#FFFFFF" }}>Student ID</TableCell>
+              <TableCell style={{ color: "#FFFFFF" }}>Name</TableCell>
+              <TableCell style={{ color: "#FFFFFF" }}>Batch</TableCell>
+              <TableCell style={{ color: "#FFFFFF" }}>Degree</TableCell>
+              <TableCell style={{ color: "#FFFFFF" }}>Actions</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {paginatedRows.map((row, index) => (
+              <TableRow key={index}>
+                <TableCell>{row.studentId}</TableCell>
+                <TableCell>{row.name}</TableCell>
+                <TableCell>{row.batch}</TableCell>
+                <TableCell>{row.degree}</TableCell>
+                <TableCell>
+                  <IconButton onClick={() => handleUpdate(row._id)}>
+                    <EditIcon color="secondary" />
+                  </IconButton>
+                  <IconButton onClick={() => handleDelete(row._id)}>
+                    <DeleteIcon color="secondary" />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <div
+        style={{
+          marginTop: "20px",
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Pagination
+          count={totalPages}
+          page={currentPage}
+          onChange={handlePageChange}
+          variant="outlined"
+        />
+      </div>
+    </NavBar>
   );
 };
 

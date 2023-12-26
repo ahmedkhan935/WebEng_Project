@@ -282,7 +282,14 @@ const loginAdmin = async (req, res) => {
     // const savedLogs = await logs.save();
 
     // Send the token in an HTTP-only cookie
-    res.status(200).send({ role: "admin" });
+    res
+      .status(200)
+      .cookie("token", token, {
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      })
+      .send({ role: "admin" });
   } catch (err) {
     console.error(err);
     res.status(500).send();

@@ -136,10 +136,13 @@ const studentOptions = [
     Icon: <SchoolIcon color="primary" />,
     linkto: "/student/classes",
   },
-  { title: "Grades", Icon: <GradeIcon color="primary" /> },
+  { title: "Transcript", Icon: <GradeIcon color="primary" /> },
 
-  { title: "Attendance", Icon: <EventAvailableIcon color="primary" /> },
-  { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
+  { 
+    title: "Schedule", 
+    Icon: <EventAvailableIcon color="primary" /> ,
+    linkto: "/student/schedule"},
+ // { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const teacherOptions = [

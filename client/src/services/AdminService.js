@@ -233,3 +233,11 @@ export async function getDegrees() {
     credentials: "include",
   });
 }
+
+//start semester
+export async function startSemester() {
+  return await fetch(`${BASE_URL}/admin/startSemester`, {
+    method: "GET",
+    credentials: "include",
+  });
+}

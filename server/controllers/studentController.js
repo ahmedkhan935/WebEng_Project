@@ -7,8 +7,8 @@ const Thread = require("../models/Thread");
 const CourseEval = require("../models/CourseEval");
 const Teacher = require("../models/Teacher");
 const StudentEval = require("../models/StudentEval");
-const path = require('path');
-const bucket = require('../firebase_init');
+const path = require("path");
+const bucket = require("../firebase_init");
 
 const studentController = {
   getProfile: async (req, res) => {
@@ -68,7 +68,9 @@ const studentController = {
   getAllEvaluations: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const classCodes = student.classes.map((classroom) => classroom.classCode); 
+      const classCodes = student.classes.map(
+        (classroom) => classroom.classCode
+      );
       const studentEvals = await StudentEval.find({
         studentId: req.user,
         classCode: { $in: classCodes },
@@ -139,21 +141,30 @@ const studentController = {
       const student = await Student.findById(req.user);
       const classCodes = student.classes.map(
         (classroom) => classroom.classCode
-      ); // Get the class codes of all classes
+      ); //get the class codes of all classes
       const classes = await Classroom.find({ code: { $in: classCodes } });
 
       let todos = [];
+      ////-----------------------------------
+      
+      //-------------------------------------
       classes.forEach((classroom) => {
         classroom.announcements.forEach((announcement) => {
-          if (
-            (announcement.type == "Assignment" ||
-              announcement.type == "Quiz") &&
-            new Date(announcement.dueDate) > new Date()
-          ) {
-            todos.push(announcement);
+          if (announcement.dueDate &&  new Date(announcement.dueDate) > new Date()  ) {
+            let todoDone = false;
+            announcement.submissions.forEach((submission) => {
+              if(submission.studentId == req.user) {
+                todoDone =true;
+              }
+            })
+            todos.push({
+              ...announcement._doc, //include the additional properties and methods provided by Mongoose, and use
+              classCode: classroom.code, //add the class code
+              done: todoDone,
+            });
           }
         });
-      }); // Get the todos of all classes
+      }); //get the todos of all classes
 
       res.status(201).json(todos);
     } catch (err) {
@@ -180,7 +191,6 @@ const studentController = {
           (announcement.type == "Assignment" || announcement.type == "Quiz") &&
           new Date(announcement.dueDate) > now
         ) {
-
           todos.push(announcement);
         }
       }); // Get the todos of the class
@@ -203,7 +213,9 @@ const studentController = {
   getAllAttendance: async (req, res) => {
     try {
       const student = await Student.findById(req.user);
-      const classCodes = student.classes.map((classroom) => classroom.classCode);
+      const classCodes = student.classes.map(
+        (classroom) => classroom.classCode
+      );
       const studentEvals = await StudentEval.find({
         studentId: req.user,
         classCode: { $in: classCodes },
@@ -243,7 +255,6 @@ const studentController = {
 
   submitAssignment: async (req, res) => {
     try {
-
       const classCode = req.params.classCode;
       let title = req.params.title;
       title = title.replace(/~/g, " ");
@@ -269,7 +280,10 @@ const studentController = {
         if (file) {
           //add timestamp to file name only excluding path
           const fileExtension = path.extname(file.name);
-          const fileNameWithoutExtension = path.basename(file.name, fileExtension);
+          const fileNameWithoutExtension = path.basename(
+            file.name,
+            fileExtension
+          );
           fileName = `${fileNameWithoutExtension}-${Date.now()}${fileExtension}`;
 
           const blob = bucket.file(fileName);
@@ -278,21 +292,19 @@ const studentController = {
               contentType: file.mimetype,
             },
           });
-          blobWriter.on('error', ((err) => {
-
-            res.status(404).send('File couldnot be uploaded');
-          }));
-          blobWriter.on('finish', async () => {
+          blobWriter.on("error", (err) => {
+            res.status(404).send("File couldnot be uploaded");
+          });
+          blobWriter.on("finish", async () => {
             await blob.makePublic();
             const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
             // Return the file name and its public URL
-
           });
           blobWriter.end(file.data);
         }
         attachments = {
           name: fileName,
-          originalName: file.name
+          originalName: file.name,
         };
       }
 
@@ -321,7 +333,10 @@ const studentController = {
       return res.status(404).json({ error: "Classroom not found" });
     }
 
-    const studenteval = await StudentEval.findOne({ studentId: student._id, classCode: classCode });
+    const studenteval = await StudentEval.findOne({
+      studentId: student._id,
+      classCode: classCode,
+    });
     if (!studenteval) {
       return res.status(404).json({ error: "Student not found" });
     }
@@ -335,30 +350,22 @@ const studentController = {
     res.status(201).json({ message: "Feedback given successfully" });
   },
   getMeetLink: async (req, res) => {
-
-    try
-    {
+    try {
       const classCode = req.params.classCode;
       const classroom = await Classroom.findOne({ code: classCode });
       if (!classroom) {
         return res.status(404).json({ error: "Classroom not found" });
       }
       const link = classroom.meetLink;
-      if(!link)
-      {
+      if (!link) {
         return res.status(201).json({ error: "Class is not live yet" });
       }
       return res.status(201).json({ link: link });
-
-
-
-    }
-    catch (err) {
+    } catch (err) {
       console.log("ERRRRRR", err);
       res.status(500).json({ error: err.message });
     }
-  }
-
+  },
 };
 
 module.exports = studentController;
