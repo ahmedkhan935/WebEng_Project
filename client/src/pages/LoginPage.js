@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import mainPageImage from "../assets/images/MainPage.png";
+import mainPageImage from "../assets/images/animatedHomepage.gif";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { studentlogin, teacherLogin } from "../services/AuthService.js";
@@ -17,8 +17,7 @@ const LoginPage = () => {
   const [ErrorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const {userRole,setUserRole}=useStore();
-  
+  const { userRole, setUserRole } = useStore();
 
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
@@ -43,15 +42,13 @@ const LoginPage = () => {
     if (resp.status === 200) {
       console.log("Login Successful");
       /*change here when teacher ui is done*/
-      if (student)
-      {
+      if (student) {
         console.log(userRole);
         setUserRole("student");
         console.log(userRole);
         navigate("/student");
-      }
-      else{
-         setUserRole("teacher");
+      } else {
+        setUserRole("teacher");
         navigate("/teacher");
       }
     } else if (resp.status === 200 && !student) {
