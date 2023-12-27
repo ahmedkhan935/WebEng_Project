@@ -11,7 +11,7 @@ import {
 } from "../services/AdminService.js";
 
 // The column names must be in camel case notation
-const columns = ["name", "batch", "degreeName"];
+const columns = ["name", "rollNumber", "batch", "degreeName"];
 
 const DeansList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");
