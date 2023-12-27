@@ -104,7 +104,7 @@ const studentOptions = [
   {
     title: "Old Classes",
     Icon: <HistoryIcon color="primary" />,
-    linkto: "/student/classes/old"
+    linkto: "/student/oldclasses"
   },
 ];
 

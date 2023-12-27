@@ -7,7 +7,7 @@ import NavBar from "../components/Navbar.js";
 import { viewDegrees, viewRectorsList } from "../services/AdminService.js";
 
 // Columns
-const columns = ["name", "batch", "degreeName"];
+const columns = ["name", "rollNumber", "batch", "degreeName"];
 
 const RectorsList = () => {
   const [selectedBatch, setSelectedBatch] = useState("2021");

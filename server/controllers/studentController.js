@@ -67,6 +67,29 @@ const studentController = {
     }
   },
 
+  getOldClasses: async (req, res) => {
+    try {
+      const student = await Student.findById(req.user);
+      const classCodes = student.classes.map(
+        (classroom) => classroom.classCode
+      ); // Get the class codes of all classes
+      // fetch the classes from the database
+      const classes = await Classroom.find({ code: { $in: classCodes }, status: { $ne: "Ongoing" }})
+        .populate({
+          path: "createdBy",
+          select: "name",
+        })
+        .populate({
+          path: "teachers.teacherId",
+          select: "name",
+        })
+        .populate("courseId");
+      res.status(201).json(classes);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  },
+
   getAllEvaluations: async (req, res) => {
     try {
       const student = await Student.findById(req.user);

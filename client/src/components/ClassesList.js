@@ -2,7 +2,7 @@ import { Container } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import ClassCard from "./ClassCard";
 import { Typography, Button, Box } from "@mui/material";
-import { getClasses as getStudentClasses } from "../services/StudentService";
+import { getClasses as getStudentClasses, getOldClasses } from "../services/StudentService";
 import { getClasses as getTeacherClasses } from "../services/TeacherService";
 import { Link } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
@@ -10,22 +10,30 @@ import Grid from "@mui/material/Grid";
 import { useLocation } from "react-router-dom";
 import useStore from "../store/store";
 
-function ClassesList({ isFullList }) {
-  const [classes, setClasses] = React.useState([]);
-  const [classesError, setClassesError] = React.useState(null);
-  const [classesFetched, setClassesFetched] = React.useState(false); //To check if classes have been fetched or no
+function ClassesList({ isFullList, oldList }) {
+  const [classes, setClasses] = useState([]);
+  const [classesError, setClassesError] = useState(null);
+  const [classesFetched, setClassesFetched] = useState(false); //To check if classes have been fetched or no
 
   const location = useLocation();
-  const {userRole} = useStore();
+  const { userRole } = useStore();
 
   let classesUrl = "/" + userRole + "/classes";
 
   useEffect(() => {
     if (userRole == "student") {
-      getStudentClasses()
-        .then((data) => {
-          handleData(data);
-        });
+      if (!oldList) {
+        getStudentClasses()
+          .then((data) => {
+            handleData(data);
+          });
+      }
+      else {
+        getOldClasses()
+          .then((data) => {
+            handleData(data);
+          });
+      }
     } else if (userRole == "teacher") {
       getTeacherClasses().then((data) => {
         handleData(data);
@@ -76,7 +84,7 @@ function ClassesList({ isFullList }) {
         }}
       >
         <Typography variant="h5" sx={{ width: "100%", marginBottom: "0px" }}>
-          Your Classes
+          {oldList ? "Your past classes" : "Your ongoing classes"}
         </Typography>
 
         {!classesFetched ? (
@@ -89,21 +97,22 @@ function ClassesList({ isFullList }) {
               </Grid>
             ))}
           </Grid>
-        ) : classes.length == 0 ? (
+        ) : ((classes && classes.length == 0) || !classes) ? (
           <Typography variant="subtitle">No classes found.</Typography>
         ) : classesError ? (
           <Typography variant="subtitle" color="warning">
             Sorry! An error occurred.
           </Typography>
         ) : (
-          (isFullList ? classes : classes.slice(0, 3)).map((classroom) => {
+
+          ((isFullList) ? classes : classes.slice(0, 3)).map((classroom) => {
             return (
               <ClassCard classroom={classroom} key={classroom.code}></ClassCard>
             );
           })
         )}
       </Container>
-      {(!isFullList && classes.length > 3) ? (
+      {(classes && classes.length > 3) ? (
         <Button
           variant="contained"
           sx={{ alignSelf: "flex-end", marginRight: "22px", marginTop: "10px" }}

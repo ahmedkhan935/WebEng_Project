@@ -7,14 +7,7 @@ import Stack from "@mui/material/Stack";
 import { viewDegrees, viewMedalHoldersList } from "../services/AdminService.js";
 
 //the column names must be in camel case notation
-const columns = [
-  "rollNo",
-  "studentName",
-  "medalType",
-  "sgpa",
-  "batch",
-  "degree",
-];
+const columns = ["studentName", "medalType", "sgpa", "batch", "degree"];
 
 const MedalHoldersPage = () => {
   const [selectedBatch, setSelectedBatch] = useState("2022"); // Initial selected batch
