@@ -115,5 +115,6 @@ adminRouter.get(
 );
 adminRouter.post("/endSemester", Auth, AuthAdmin, adminController.endSemester);
 // adminRouter.post("/send-email", adminController.sendEmail);
+adminRouter.get("/final", Auth, AuthAdmin, adminController.updateStudentFinalEvals);
 
 module.exports = adminRouter;

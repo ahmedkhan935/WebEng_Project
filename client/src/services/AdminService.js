@@ -252,6 +252,15 @@ export async function endSemester() {
   return handleResponse(response);
 }
 
+export async function updateStudentFinalEvals()
+{
+  const response = await fetch(`${BASE_URL}/admin/final`, {
+    method: "GET",
+    credentials: "include",
+  });
+  return handleResponse(response);
+
+}
 // //send mail
 // export async function sendMail() {
 //   const response = await fetch(`${BASE_URL}/admin/send-email`, {

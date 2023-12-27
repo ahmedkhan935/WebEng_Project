@@ -749,6 +749,97 @@ const createClassrooms = async (newSemesterCourses) => {
 
   return classrooms;
 };
+const updateStudentFinalEvals = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+  try {
+    const semester = await Semester.findOne({ isCurrent: true }).session(session); // get current semester
+    if (!semester) {
+      return res.status(500).json({ success: false, message: "No semester is in progress" });
+    }
+    const classes = await Classroom.find({ semesterId: semester._id }).session(session); // get all classes for current semester
+    if (classes.length == 0) {
+      return res.status(500).json({ success: false, message: "No classes found for current semester" });
+    }
+    const courses = await Course.find({ _id: { $in: classes.map((c) => c.courseId) } }).session(session); // get all courses for those classes
+    if (courses.length == 0) {
+      return res.status(500).json({ success: false, message: "No courses found for current semester" });
+    }
+    const students = await Student.find({ "classes.classCode": { $in: classes.map((c) => c.code) } }).session(session); // get all students in those classes
+    if (students.length == 0) {
+      return res.status(500).json({ success: false, message: "No students found for current semester" });
+    }
+    const allStudentEvals = await StudentEval.find({ classCode: { $in: classes.map((c) => c.code) } }).populate("studentId", "name rollNumber").session(session); // get all student evals for those classes
+    if (allStudentEvals.length == 0) {
+      return res.status(500).json({ success: false, message: "No student evals found for current semester" });
+    }
+    const allCourseEvals = await CourseEval.find({ classCode: { $in: classes.map((c) => c.code) } }).session(session); // get all course evals for those classes
+    if (allCourseEvals.length == 0) {
+      return res.status(500).json({ success: false, message: "No course evals found for current semester" });
+    }
+
+    //let finalEvals = [];
+    students.forEach(async (student) => {
+      let studentSemeseter = student.semesters.find((sem) => sem.semesterId.toString() == semester._id.toString());
+      let studentClasses = student.classes.filter((c) => classes.map((c) => c.code).includes(c.classCode));
+      let studentCourses = courses.filter((c) => studentClasses.map((c) => c.courseId).includes(c._id));
+      let studentCourseEvals = allCourseEvals.filter((ev) => studentClasses.map((c) => c.classCode).includes(ev.classCode));
+
+      let totalAttempted = studentSemeseter.totalAttempted;
+      let totalEarned = totalAttempted;
+      let SGPA = 0.0;
+      let CGPA = student.cgpa;
+
+      let studentEvals = allStudentEvals.filter((ev) => ev.studentId._id.toString() == student._id.toString());
+
+      studentEvals.forEach(async (ev) => {
+        console.log("EV", ev);
+        let clas = studentClasses.find((c) => c.classCode == ev.classCode);
+        console.log("CLAS", clas)
+        console.log("courseID", clas.courseId.toString());
+        let evalCourse = studentCourses.find((c) => c._id.toString() == clas.courseId.toString());
+        console.log("COURSE", evalCourse);
+        let studentCourseEval = studentCourseEvals.find((c) => c.classCode == ev.classCode);
+        let totalAbs = studentCourseEval.evaluations.reduce((acc, curr) => acc + curr.totalWeightage, 0);
+        let obtainedAbs = ev.totalObtainedAbs;
+        let earnedPerc = (obtainedAbs / totalAbs) * 100;
+
+        let gradeObj = gradeRange.find((g) => earnedPerc >= g.range[0] && earnedPerc < g.range[1]);
+        let earnedGrade = gradeObj ? gradeObj.grade : "I";
+        let gradeObj2 = grades.find((g) => g.grade == earnedGrade);
+        let earnedGradePoint = gradeObj2 ? gradeObj2.value : 0;
+
+        if (earnedGrade == "F") {
+          totalEarned -= evalCourse.courseCredits;
+        }
+
+        SGPA += earnedGradePoint * evalCourse.courseCredits;
+
+        ev.totalObtainedAbs = obtainedAbs;
+        ev.grade = earnedGrade;
+
+        await ev.save({ session });
+      });
+
+      SGPA /= totalAttempted;
+
+      studentSemeseter.totalEarned = totalEarned;
+      studentSemeseter.sgpa = SGPA;
+
+      await student.save({ session });
+    });
+
+    await session.commitTransaction();
+    res.json({ success: true, message: "Final evaluations updated successfully" });
+
+  } catch (error) {
+    await session.abortTransaction();
+    console.error(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  } finally {
+    session.endSession();
+  }
+};
 const startSemester = async (req, res) => {
   try {
     const semesters = await Semester.find({});
@@ -839,8 +930,9 @@ const startSemester = async (req, res) => {
         if (student.semesters.length != 8) {
           const studentDegree = student.degreeName;
           var currsem;
+          console.log(student.semesters);
           if(student.semesters && student.semesters.length>0)
-            currsem=student.semesters[student.semesters.length-1].semesterNumber;
+            currsem=student.semesters[student.semesters.length-1].semesterNumber+1;
           else
             currsem=1;
 
@@ -861,6 +953,15 @@ const startSemester = async (req, res) => {
               }
             });
           }
+          student.semesters.push({
+            semesterNumber: currsem,
+            semesterId: newSemester._id,
+            totalAttempted: 0,
+            totalEarned: 0,
+            sgpa: 0.0,
+            cgpa: 0.0,
+            courses: [],
+          });
         }
       });
 
@@ -886,6 +987,7 @@ const startSemester = async (req, res) => {
             if (classroomstudent.studentId.equals(student._id)) {
               student.classes = student.classes || [];
               student.classes.push({ classCode: classroom.code });
+              student.semesters[student.semesters.length-1].totalAttempted+=classroom.credits;
               
 
               const studenteval = await StudentEval.create({
@@ -914,15 +1016,15 @@ const startSemester = async (req, res) => {
             : 1;
 
           // Add a new semester to the student's semesters array
-          student.semesters.push({
-            semesterNumber: nextSemesterNumber,
-            semesterId: newSemester._id,
-            totalAttempted: 0,
-            totalEarned: 0,
-            sgpa: 0.0,
-            cgpa: 0.0,
-            courses: [],
-          });
+          // student.semesters.push({
+          //   semesterNumber: nextSemesterNumber,
+          //   semesterId: newSemester._id,
+          //   totalAttempted: 0,
+          //   totalEarned: 0,
+          //   sgpa: 0.0,
+          //   cgpa: 0.0,
+          //   courses: [],
+          // });
         }
 
         await student.save();
@@ -1051,4 +1153,5 @@ module.exports = {
   getDegreeCourses,
   startSemester,
   endSemester,
+  updateStudentFinalEvals,
 };
