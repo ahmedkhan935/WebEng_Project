@@ -35,7 +35,7 @@ const teacherController = {
                 (classroom) => classroom.classCode
             ); // Get the class codes of all classes
             // fetch the classes from the database
-            const classes = await Classroom.find({ code: { $in: classCodes } })
+            const classes = await Classroom.find({ code: { $in: classCodes },status:"Ongoing" })
                 .populate({
                     path: "createdBy",
                     select: "name",
