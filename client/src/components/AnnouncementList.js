@@ -13,7 +13,7 @@ function AnnouncementList({ isFullList, thread }) {
     const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
     const [announcementsError, setAnnouncementsError] = React.useState(null); //To check if classes have been fetched or not
     const location = useLocation();
-    const {userRole} = useStore;// Extract userRole from the URL
+    const {userRole} = useStore();// Extract userRole from the URL
 
     let threadsUrl = "/" + userRole + "/threads";
 
