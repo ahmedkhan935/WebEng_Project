@@ -18,6 +18,7 @@ function ThreadCard({ thread }) {
     
     const location = useLocation();
     const userRole = location.pathname.split('/')[1];
+    
     if(!thread) return (<></>);
 
     const url = "/" + userRole + "/threads/" + thread._id;
@@ -37,8 +38,8 @@ function ThreadCard({ thread }) {
                     <AnnouncementOutlined sx={{
                         color: alpha(theme.palette.secondary.main, 0.5),
                         position: 'absolute',
-                        left: '0', // Adjust this value
-                        transform: 'translateY(19%) translateX(-12%) ', // Adjust this value
+                        left: '0',
+                        transform: 'translateY(19%) translateX(-12%) ', 
                         fontSize: '120px',
                     }} />
                     <Box display="flex" alignItems="center" mb={2}>

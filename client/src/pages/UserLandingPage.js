@@ -10,7 +10,7 @@ function UserLandingPage({role}) {
         <NavBar>
             <Container>
                 <AnnouncementList></AnnouncementList>
-                <ClassesList></ClassesList>
+                <ClassesList isFullList={false}></ClassesList>
             </Container>
         </NavBar>
     )

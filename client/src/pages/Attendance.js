@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from "react-router-dom";
 import {
-    Container, Table, TablePagination, Typography, TableBody,
+    Container, Table, TablePagination, Typography, TableBody, CircularProgress,
     TableCell, Dialog, DialogTitle, DialogActions, TableContainer, TableHead, TableRow, Paper, Button, Box,
     TextField, Select, MenuItem, Collapse, useMediaQuery
 } from '@mui/material';
@@ -92,6 +92,7 @@ function Attendance() {
 
 
     const handleClickOpen = () => {
+        setSelectedDate(new Date().toISOString().split('T')[0]);
         setOpen(!open);
     };
 
@@ -102,22 +103,36 @@ function Attendance() {
     };
 
     const handleSaveAttendance = () => {
+        console.log("ROWSSSS", rows)
         if (!selectedDate || !duration) {
             setDialogMessage('Please fill all the fields');
             setDialogOpen(true);
             return;
         }
         if (buttonLabel == "Save New Record") {
-            addAttendance(classCode, selectedDate, duration, students).then((data) => {
-                handleData(data);
+            setLoading(true);
+            addAttendance(classCode, selectedDate, duration, students)
+                .then((data) => {
+                    console.log("DATA", data);
+                    handleData(data);
 
-            });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+            setLoading(false);
         }
         else if (buttonLabel == "Update and Save") {
+            setLoading(true);
             updateAttendance(classCode, selectedDate, duration, students).then((data) => {
+                console.log("DATA", data);
                 handleData(data);
 
-            });
+            })
+                .catch((err) => {
+                    console.log(err);
+                })
+            setLoading(false);
         }
     };
 
@@ -126,7 +141,7 @@ function Attendance() {
             console.log(data.data.attendanceData);
             setDialogMessage('Attendance added successfully');
             setDialogOpen(true);
-            setRows([...rows, data.data.attendanceData]);
+            setRows([data.data.attendanceData, ...rows]);
         }
         else {
             console.log(data.error);
@@ -197,141 +212,154 @@ function Attendance() {
                 <Typography variant="h5" sx={{ width: '100%', marginBottom: '10px' }}>
                     Attendance for this class
                 </Typography>
-                
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow sx={{ backgroundColor: 'primary.main' }}>
-                                <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>S.No</TableCell>
-                                <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Date</TableCell>
-                                {!isSmallScreen && <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Day</TableCell>}
-                                <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '15%' }}>Duration (Hrs)</TableCell>
-                                {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Presents</TableCell>}
-                                {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Absents</TableCell>}
-                                <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold', width: '20%' }}>Ratio</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                                <TableRow key={index} onClick={() => console.log('Redirect to detail page')}>
-                                    <TableCell>{page * rowsPerPage + index + 1}</TableCell>
-                                    <TableCell component="th" scope="row">
-                                        {row.date}
-                                    </TableCell>
-                                    {!isSmallScreen && <TableCell align="left">{new Date(row.date).toLocaleDateString('en-US', { weekday: 'long' })}</TableCell>}
-                                    <TableCell align="left">{row.duration}</TableCell>
-                                    {!isSmallScreen && <TableCell align="left">{row.presents}</TableCell>}
-                                    {!isSmallScreen && <TableCell align="left">{row.absents}</TableCell>}
-                                    <TableCell align="left">
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '10px',
-                                                borderRadius: '5px',
-                                                background: `linear-gradient(to right, #b83d30 ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b 100%)`
-                                            }}
-                                        />
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                    <TablePagination
-                        rowsPerPageOptions={[5, 10, 25, 50]}
-                        component="div"
-                        count={rows.length}
-                        rowsPerPage={rowsPerPage}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                    />
-                </TableContainer>
-
-                <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ marginTop: '20px' }}>
-                    {open ? <CloseIcon /> : <AddIcon />}
-                    Add Attendance
-                </Button>
-                <Collapse in={open}>
-                    <Box sx={{ border: '1px solid gray', padding: '20px', marginTop: '20px' }}>
-                        <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
-                            Add new attendance
+                {
+                    loading ? 
+                    <Box sx={{ width: '100%', height: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <CircularProgress />
+                    </Box> 
+                    :
+                    rows && rows.length == 0 ? 
+                        <Typography variant="body1" sx={{ width: '100%', marginBottom: '10px' }}>
+                            No attendance data found. Please contact admin if you think this is a mistake.
                         </Typography>
-                        <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px', marginBottom: '20px', color: "#fff" }} startIcon={<FileUploadIcon />}>
-                            Import From Excel File
-                        </Button>
-                        <Box display="flex" alignItems="baseline" >
-                            <TextField
-                                id="date"
-                                label="Date"
-                                type="date"
-                                value={selectedDate}
-                                onChange={(event) => setSelectedDate(event.target.value)}
-                                inputProps={{ max: new Date().toISOString().split('T')[0] }}
-                                sx={{ marginBottom: '10px', marginTop: '15px' }}
-                            />
-                            <TextField
-                                id="duration"
-                                label="Class Duration (hrs)"
-                                type="number"
-                                value={duration}
-                                inputProps={{ min: 1 }}
-                                sx={{ marginBottom: '10px', marginLeft: '10px' }}
-                                onChange={(event) => setDuration(event.target.value)}
-                                maxWidth='120px'
-                            />
-                        </Box>
-                        <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
-                            <Table>
-                                <TableHead>
-                                    <TableRow>
-                                        <TableHeaderCell>Roll Number</TableHeaderCell>
-                                        <TableHeaderCell>Name</TableHeaderCell>
-                                        <TableHeaderCell>Status</TableHeaderCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {students.map((student, index) => (
-                                        <TableRow key={student.rollNumber}>
-                                            <TableCell>{student.rollNumber}</TableCell>
-                                            <TableCell>{student.name}</TableCell>
-                                            <TableCell>
-                                                <Select
-                                                    value={student.status}
-                                                    onChange={(event) => handleStatusChange(event, index)}
-                                                >
-                                                    <MenuItem value={'P'}>P</MenuItem>
-                                                    <MenuItem value={'A'}>A</MenuItem>
-                                                </Select>
-                                            </TableCell>
+                        :
+                        <>
+                            <TableContainer component={Paper}>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow sx={{ backgroundColor: 'primary.main' }}>
+                                            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>S.No</TableCell>
+                                            <TableCell sx={{ color: '#fff', fontWeight: 'bold' }}>Date</TableCell>
+                                            {!isSmallScreen && <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold' }}>Day</TableCell>}
+                                            <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '15%' }}>Duration (Hrs)</TableCell>
+                                            {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Presents</TableCell>}
+                                            {!isSmallScreen && <TableCell sx={{ color: '#fff', fontWeight: 'bold', width: '10%' }}>Absents</TableCell>}
+                                            <TableCell align="left" sx={{ color: '#fff', fontWeight: 'bold', width: '20%' }}>Ratio</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }} startIcon={<CheckCircleIcon />}>
-                            {buttonLabel}
-                        </Button>
-                        <input
-                            type="file"
-                            accept=".xlsx,.xls"
-                            onChange={handleImportAttendance}
-                            style={{ display: 'none' }}
-                            ref={fileInput}
-                        />
+                                    </TableHead>
+                                    <TableBody>
+                                        {rows && rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                                            <TableRow key={index} onClick={() => console.log('Redirect to detail page')}>
+                                                <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                                                <TableCell component="th" scope="row">
+                                                    {row.date}
+                                                </TableCell>
+                                                {!isSmallScreen && <TableCell align="left">{new Date(row.date).toLocaleDateString('en-US', { weekday: 'long' })}</TableCell>}
+                                                <TableCell align="left">{row.duration}</TableCell>
+                                                {!isSmallScreen && <TableCell align="left">{row.presents}</TableCell>}
+                                                {!isSmallScreen && <TableCell align="left">{row.absents}</TableCell>}
+                                                <TableCell align="left">
+                                                    <Box
+                                                        sx={{
+                                                            width: '100%',
+                                                            height: '10px',
+                                                            borderRadius: '5px',
+                                                            background: `linear-gradient(to right, #b83d30 ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b ${row.absents / (row.absents + row.presents) * 100}%, #7cbf6b 100%)`
+                                                        }}
+                                                    />
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                                <TablePagination
+                                    rowsPerPageOptions={[5, 10, 25, 50]}
+                                    component="div"
+                                    count={rows.length}
+                                    rowsPerPage={rowsPerPage}
+                                    page={page}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                />
+                            </TableContainer>
 
-                    </Box>
-                </Collapse>
-                <Dialog
-                    open={dialogOpen}
-                    onClose={() => setDialogOpen(false)}
-                >
-                    <DialogTitle>{dialogMessage}</DialogTitle>
-                    <DialogActions>
-                        <Button onClick={() => setDialogOpen(false)}>
-                            OK
-                        </Button>
-                    </DialogActions>
-                </Dialog>
+                            <Button variant="contained" color="primary" onClick={handleClickOpen} sx={{ marginTop: '20px' }}>
+                                {open ? <CloseIcon /> : <AddIcon />}
+                                Add Attendance
+                            </Button>
+                            <Collapse in={open}>
+                                <Box sx={{ border: '1px solid gray', padding: '20px', marginTop: '20px' }}>
+                                    <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
+                                        Add new attendance
+                                    </Typography>
+                                    <Button variant="contained" color="primary" onClick={handleFileUpload} sx={{ marginTop: '20px', marginBottom: '20px', color: "#fff" }} startIcon={<FileUploadIcon />}>
+                                        Import From Excel File
+                                    </Button>
+                                    <Box display="flex" alignItems="baseline" >
+                                        <TextField
+                                            id="date"
+                                            label="Date"
+                                            type="date"
+                                            value={selectedDate}
+                                            onChange={(event) => setSelectedDate(event.target.value)}
+                                            inputProps={{ max: new Date().toISOString().split('T')[0] }}
+                                            sx={{ marginBottom: '10px', marginTop: '15px' }}
+                                        />
+                                        <TextField
+                                            id="duration"
+                                            label="Class Duration (hrs)"
+                                            type="number"
+                                            value={duration}
+                                            inputProps={{ min: 1 }}
+                                            sx={{ marginBottom: '10px', marginLeft: '10px' }}
+                                            onChange={(event) => setDuration(event.target.value)}
+                                            maxWidth='120px'
+                                        />
+                                    </Box>
+                                    <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
+                                        <Table>
+                                            <TableHead>
+                                                <TableRow>
+                                                    <TableHeaderCell>Roll Number</TableHeaderCell>
+                                                    <TableHeaderCell>Name</TableHeaderCell>
+                                                    <TableHeaderCell>Status</TableHeaderCell>
+                                                </TableRow>
+                                            </TableHead>
+                                            <TableBody>
+                                                {students.map((student, index) => (
+                                                    <TableRow key={student.rollNumber}>
+                                                        <TableCell>{student.rollNumber}</TableCell>
+                                                        <TableCell>{student.name}</TableCell>
+                                                        <TableCell>
+                                                            <Select
+                                                                value={student.status}
+                                                                onChange={(event) => handleStatusChange(event, index)}
+                                                            >
+                                                                <MenuItem value={'P'}>P</MenuItem>
+                                                                <MenuItem value={'A'}>A</MenuItem>
+                                                            </Select>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    <Button variant="contained" color="primary" onClick={handleSaveAttendance} sx={{ marginTop: '20px' }} startIcon={<CheckCircleIcon />}>
+                                        {buttonLabel}
+                                    </Button>
+                                    <input
+                                        type="file"
+                                        accept=".xlsx,.xls"
+                                        onChange={handleImportAttendance}
+                                        style={{ display: 'none' }}
+                                        ref={fileInput}
+                                    />
+
+                                </Box>
+                            </Collapse>
+                            <Dialog
+                                open={dialogOpen}
+                                onClose={() => setDialogOpen(false)}
+                            >
+                                <DialogTitle>{dialogMessage}</DialogTitle>
+                                <DialogActions>
+                                    <Button onClick={() => setDialogOpen(false)}>
+                                        OK
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                        </>
+                }
             </Container>
         </NavBar>
     );

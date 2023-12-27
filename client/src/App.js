@@ -46,8 +46,11 @@ import ViewAllAttendance from "./pages/ViewAllAttendance";
 import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
 import StudentSchedule from './pages/StudentSchedule';
+import Transcript from "./pages/Transcript";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import useStore from "./store/store";
+
 
 function App() {
   
@@ -90,6 +93,7 @@ function App() {
                 <Route path="evaluations" element={<ViewEvaluations />}></Route>
               </Route>
               <Route path="schedule" element={<StudentSchedule />}></Route>
+              <Route path="transcript" element={<Transcript />}></Route>
               <Route path="threads" element={<Threads />}></Route>
               <Route path="attendance" element={<ViewAllAttendance />}></Route>
               <Route path="threads/:id" element={<Thread />}></Route>

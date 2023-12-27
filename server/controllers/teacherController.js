@@ -7,9 +7,6 @@ const CourseEval = require("../models/CourseEval");
 const mongoose = require("mongoose");
 const path = require("path");
 const bucket = require("../firebase_init");
-const debounce = require("lodash").debounce;
-
-// var cache = {};
 
 const teacherController = {
     getClasses: async (req, res) => {
@@ -63,13 +60,17 @@ const teacherController = {
             if (!classroom) {
                 console.log("sad");
             }
+            console.log("claaaaaaaaaaas",classroom)
             let students = classroom.students;
             students = students.map((student) => {
+                console.log(student)
                 return {
-                    rollNumber: student.studentId.rollNumber,
-                    name: student.studentId.name,
+                    rollNumber: student.studentId? student.studentId.rollNumber : null,
+                    name: student.studentId? student.studentId.name : null,
                 };
             });
+
+            students.filter((student) => student.rollNumber != null);
 
             res.status(201).json(students);
         } catch (error) {
@@ -349,8 +350,20 @@ const teacherController = {
                 // console.log("studentAttendance: ", studentAttendance);
                 const status = studentAttendance.status;
                 studentEvals[i].lectures.push({ date, duration, status });
+
+                //------------------haadiya bongi start------------------
+
+                // Count total and attended lectures for each student
+                const totalLectures = studentEvals[i].lectures.length;
+                const attendedLectures = studentEvals[i].lectures.filter(lecture => lecture.status == 'P').length;
+
+                // Calculate attendance percentage
+                const attendancePerc = ((attendedLectures / totalLectures) * 100).toFixed(2);
+
+                studentEvals[i].attendance = attendancePerc;
+
+                ///------------------haadiya bongi end------------------
                 await studentEvals[i].save({ session });
-                // console.log("saved", studentEvals[i]);
             }
 
             await courseEval.save({ session });
@@ -424,13 +437,34 @@ const teacherController = {
                 if (studentLecture) {
                     studentLecture.status = status;
                     studentLecture.duration = duration;
+
+                    //------------------haadiya bongi start------------------
+
+                    // Count total and attended lectures for each student
+                    const totalLectures = studentEvals[i].lectures.length;
+                    const attendedLectures = studentEvals[i].lectures.filter(lecture => lecture.status == 'P').length;
+
+                    // Calculate attendance percentage
+                    const attendancePerc = ((attendedLectures / totalLectures) * 100).toFixed(2);
+
+                    studentEvals[i].attendance = attendancePerc;
+
+                    ///------------------haadiya bongi end------------------
+
                     await studentEvals[i].save({ session });
                 }
             }
 
+            let attendanceData = {
+                date,
+                duration,
+                presents: attendance.filter((student) => student.status === "P").length,
+                absents: attendance.filter((student) => student.status === "A").length,
+            };
+
             await courseEval.save({ session });
             await session.commitTransaction();
-            res.status(200).json({ message: "Attendance updated successfully" });
+            res.status(200).json({ message: "Attendance updated successfully", attendanceData });
         } catch (error) {
             await session.abortTransaction();
             console.log(error);
