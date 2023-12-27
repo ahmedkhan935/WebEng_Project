@@ -7,7 +7,7 @@ const CourseEval = require("../models/CourseEval");
 const mongoose = require("mongoose");
 const path = require("path");
 const bucket = require("../firebase_init");
-const debounce = require("lodash").debounce;
+const io = require("../server").io;
 
 // var cache = {};
 
@@ -848,7 +848,9 @@ const teacherController = {
     },
 
     endMeet: async (req, res) => {
+
         try {
+
             const { classCode } = req.params;
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
@@ -859,6 +861,13 @@ const teacherController = {
             }
             classroom.meetLink = null;
             await classroom.save();
+            // io.on("connection", (socket) => {
+            //     socket.on("endMeet", (classCode) => {
+            //         socket.emit("call ended", classCode);
+            //     }
+            //     );
+            // }
+            // );
             res.status(200).json({ message: "Meet link deleted successfully" });
         } catch (error) {
             console.log(error);
