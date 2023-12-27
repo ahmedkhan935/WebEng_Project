@@ -16,18 +16,18 @@ function Transcript() {
         setLoading(true);
         setTranscriptData([
             {
-                semesterName: 'Fall 2020', semesterGPA: 3.8, semesterCredits: 15, semesterCreditsEarned: 15,
+                semesterName: 'Fall 2020', semesterGPA: 3.3, semesterCredits: 15, semesterCreditsEarned: 10,
                 courses: [
-                    { courseCode: 'CSE 201', courseName: 'Data Structures', grade: 'A', credits: 3, creditsEarned: 3 },
+                    { courseCode: 'CSE 201', courseName: 'Data Structures', grade: 'B+', credits: 3, creditsEarned: 2 },
                     { courseCode: 'CSE 202', courseName: 'Discrete Mathematics', grade: 'A', credits: 3, creditsEarned: 3 },
-                    { courseCode: 'CSE 203', courseName: 'Digital Logic Design', grade: 'A', credits: 3, creditsEarned: 3 },
+                    { courseCode: 'CSE 203', courseName: 'Digital Logic Design', grade: 'C', credits: 3, creditsEarned: 1.5 },
                 ]
             },
             {
-                semesterName: 'Spring 2020', semesterGPA: 3.8, semesterCredits: 15, semesterCreditsEarned: 15,
+                semesterName: 'Spring 2020', semesterGPA: 3.7, semesterCredits: 15, semesterCreditsEarned: 12,
                 courses: [
                     { courseCode: 'CSE 201', courseName: 'Data Structures', grade: 'A', credits: 3, creditsEarned: 3 },
-                    { courseCode: 'CSE 202', courseName: 'Discrete Mathematics', grade: 'A', credits: 3, creditsEarned: 3 },
+                    { courseCode: 'CSE 202', courseName: 'Discrete Mathematics', grade: 'B', credits: 3, creditsEarned: 3 },
                     { courseCode: 'CSE 203', courseName: 'Digital Logic Design', grade: 'A', credits: 3, creditsEarned: 3 },
                 ]
             },
