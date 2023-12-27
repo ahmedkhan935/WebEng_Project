@@ -646,9 +646,7 @@ const saveSemesterCourses = async (req, res) => {
       });
 
       if (existingSemester) {
-        console.log(existingSemester + "exists for " + semester.semester);
         existingSemester.courses = semester.courses;
-        console.log(existingSemester.courses + " courses added");
       } else {
         // Semester doesn't exist, add a new entry (store course IDs)
         degree.semCourses.push({
@@ -684,7 +682,6 @@ const getDegreeCourses = async (req, res) => {
       return { semester: semester.semNumber, courseIds };
     });
 
-    console.log(coursesBySemester);
     // Fetch course details for each course ID
     const coursesDetails = await Promise.all(
       coursesBySemester.map(async (semester) => {
@@ -736,8 +733,10 @@ const createClassrooms = async (newSemesterCourses) => {
       teachers,
       students,
       createdBy: teacherId,
+      coursecode: c.courseCode,
       announcements: [],
       status: "Ongoing",
+      credits: c.courseCredits,
     });
 
     classrooms.push(classroom);
@@ -840,6 +839,7 @@ const startSemester = async (req, res) => {
           const studentDegree = student.degreeName;
 
           // Find the degreeId from the Degree schema based on the degree name
+
           const degreeId = degrees.find(
             (degree) => degree.name === studentDegree
           )?._id;
@@ -870,54 +870,53 @@ const startSemester = async (req, res) => {
         await teacher.save();
       });
 
+      var credits;
       students.forEach(async (student) => {
-        if (student.semesters.length != 8) {
-          classrooms.forEach((classroom) => {
-            classroom.students.forEach(async (classroomstudent) => {
-              if (classroomstudent.studentId.equals(student._id)) {
-                student.classes = student.classes || [];
-                student.classes.push({ classCode: classroom.code });
+        classrooms.forEach((classroom) => {
+          classroom.students.forEach(async (classroomstudent) => {
+            if (classroomstudent.studentId.equals(student._id)) {
+              student.classes = student.classes || [];
+              student.classes.push({ classCode: classroom.code });
 
-                const studenteval = await StudentEval.create({
-                  classCode: classroom.code,
-                  studentId: student._id,
-                  evaluations: [],
-                  lectures: [],
-                });
-              }
-            });
+              const studenteval = await StudentEval.create({
+                classCode: classroom.code,
+                studentId: student._id,
+                evaluations: [],
+                lectures: [],
+              });
+            }
           });
+          credits = classroom.credits;
+        });
 
-          // Find the last semester of the student
-          const lastSemester =
-            student.semesters.length > 0
-              ? student.semesters[student.semesters.length - 1]
-              : null;
+        // Find the last semester of the student
+        const lastSemester =
+          student.semesters.length > 0
+            ? student.semesters[student.semesters.length - 1]
+            : null;
 
-          // Check if there is room for a new semester (semester number less than 8)
-          if (!lastSemester || lastSemester.semesterNumber < 8) {
-            // Increment the semester number
-            const nextSemesterNumber = lastSemester
-              ? lastSemester.semesterNumber + 1
-              : 1;
+        // Check if there is room for a new semester (semester number less than 8)
+        if (!lastSemester || lastSemester.semesterNumber < 8) {
+          // Increment the semester number
+          const nextSemesterNumber = lastSemester
+            ? lastSemester.semesterNumber + 1
+            : 1;
 
-            // Add a new semester to the student's semesters array
-            student.semesters.push({
-              semesterNumber: nextSemesterNumber,
-              semesterId: newSemester._id,
-              totalAttempted: 0,
-              totalEarned: 0,
-              sgpa: 0.0,
-              cgpa: 0.0,
-              courses: [],
-            });
-            console.log(student.semesters);
-          }
-          await student.save();
+          // Add a new semester to the student's semesters array
+          student.semesters.push({
+            semesterNumber: nextSemesterNumber,
+            semesterId: newSemester._id,
+            totalAttempted: 0,
+            totalEarned: 0,
+            sgpa: 0.0,
+            cgpa: 0.0,
+            courses: [],
+          });
         }
+
+        await student.save();
       });
 
-      console.log(nextSemesterName);
       var message = nextSemesterName + " semester has started";
       res.json({
         success: true,
@@ -927,7 +926,6 @@ const startSemester = async (req, res) => {
         classrooms,
       });
     } else {
-      console.log(currentSemester);
       var mes = currentSemester.name + " semester is in progress";
       res.json({
         success: false,
