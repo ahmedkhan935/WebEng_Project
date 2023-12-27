@@ -43,9 +43,9 @@ import BottomNavigationAction from '@mui/material/BottomNavigationAction';
 //zustand
 import useStore from "../store/store";
 import { Link, useLocation } from "react-router-dom";
-import {logout} from '../services/AuthService';
+import { logout } from '../services/AuthService';
 import LogoImage from '../assets/images/logo.png'
-import { DrawerHeader,AppBar, Drawer} from "../assets/theme/StyledComponents";
+import { DrawerHeader, AppBar, Drawer } from "../assets/theme/StyledComponents";
 
 const Footer = () => {
   const theme = useTheme();
@@ -127,22 +127,28 @@ const adminOptions = [
 ];
 
 const studentOptions = [
-  { title: "Attendance", 
+  {
+    title: "Attendance",
     Icon: <ChecklistIcon color="primary" />,
-    linkto: '/student/attendance' 
+    linkto: '/student/attendance'
   },
   {
     title: "Classes",
     Icon: <SchoolIcon color="primary" />,
     linkto: "/student/classes",
   },
-  { title: "Transcript", Icon: <GradeIcon color="primary" /> },
+  {
+    title: "Transcript",
+    Icon: <GradeIcon color="primary" />,
+    linkto: "/student/transcript"
+  },
 
-  { 
-    title: "Schedule", 
-    Icon: <EventAvailableIcon color="primary" /> ,
-    linkto: "/student/schedule"},
- // { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
+  {
+    title: "Schedule",
+    Icon: <EventAvailableIcon color="primary" />,
+    linkto: "/student/schedule"
+  },
+  // { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
 ];
 
 const teacherOptions = [
@@ -151,14 +157,14 @@ const teacherOptions = [
     Icon: <SchoolIcon color="primary" />,
     linkto: "/teacher/classes",
   },
-  { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
+  // { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
 
 
 
 export default function NavBar({ children }) {
-  const { setDarkMode,setUserRole } = useStore();
+  const { setDarkMode, setUserRole } = useStore();
 
   const location = useLocation();
   let userRole = location.pathname.split("/")[1];
@@ -196,7 +202,12 @@ export default function NavBar({ children }) {
       Icon: <SettingsIcon color="primary" />,
       linkto: "/" + userRole + "/settings",
     },
-    { title: "Logout", Icon: <LogoutIcon color="primary" />, linkto: "/",onClick: logouts },
+    {
+      title: "Logout",
+      Icon: <LogoutIcon color="primary" />,
+      linkto: "/",
+      onClick: logouts
+    },
   ];
 
   const handleDrawerOpen = () => {
@@ -208,7 +219,7 @@ export default function NavBar({ children }) {
   };
 
   return (
-    <Box sx={{ display: "flex", minHeight:'100vh' }}>
+    <Box sx={{ display: "flex", minHeight: '100vh' }}>
       <CssBaseline />
 
       {/* Navbar (Top bar) with button to open drawer */}
@@ -226,7 +237,8 @@ export default function NavBar({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div">
+          <Typography variant="h6" noWrap component="div" style={{ display: 'flex', alignItems: 'center' }}>
+            <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px', marginRight: '5px' }} />
             CleanSlate
           </Typography>
         </Toolbar>
@@ -394,13 +406,13 @@ export default function NavBar({ children }) {
           </>
         )}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1,minHeight:'' }}>
-    <DrawerHeader />
-        <Box sx={{ p: 3,minHeight:'100%' }}>
+      <Box component="main" sx={{ flexGrow: 1, minHeight: '' }}>
+        <DrawerHeader />
+        <Box sx={{ p: 3, minHeight: '100%' }}>
           {children}
           {/* This is where the content of the page will be rendered */}
         </Box>
-      <Footer  />
+        <Footer />
       </Box>
     </Box>
   );

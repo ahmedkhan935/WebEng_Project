@@ -12,8 +12,8 @@ function Settings() {
     return (
         <NavBar>
             <Container>
-                <Card  sx={{ padding: '20px',marginTop:'20px' }}>
-                    <Typography variant="h4" component="div" gutterBottom>
+                <Card sx={{ padding: '20px', marginTop: '20px' }}>
+                    <Typography variant="h5" sx={{ width: '100%', marginBottom: '10px' }}>
                         Settings
                     </Typography>
                     <FormControlLabel

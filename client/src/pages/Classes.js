@@ -3,7 +3,7 @@ import { Box, Typography, Button, Container } from "@mui/material";
 import ClassesList from "../components/ClassesList";
 import NavBar from "../components/Navbar";
 
-function Thread() {
+function Classes() {
 
   return (
     <NavBar>
@@ -21,4 +21,4 @@ function Thread() {
   );
 }
 
-export default Thread;
+export default Classes;

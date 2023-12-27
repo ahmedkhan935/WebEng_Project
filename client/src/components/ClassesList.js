@@ -21,9 +21,10 @@ function ClassesList({ isFullList }) {
 
   useEffect(() => {
     if (userRole == "student") {
-      getStudentClasses().then((data) => {
-        handleData(data);
-      });
+      getStudentClasses()
+        .then((data) => {
+          handleData(data);
+        });
     } else if (userRole == "teacher") {
       getTeacherClasses().then((data) => {
         handleData(data);
@@ -82,10 +83,8 @@ function ClassesList({ isFullList }) {
             {Array.from(new Array(3)).map((_, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <Skeleton variant="rectangular" width="100%" height={200} />{" "}
-                {/* Adjust height as needed */}
-                <Skeleton height={40} /> {/* Adjust height as needed */}
+                <Skeleton height={40} />
                 <Skeleton width="60%" height={40} />{" "}
-                {/* Adjust height as needed */}
               </Grid>
             ))}
           </Grid>
@@ -96,14 +95,14 @@ function ClassesList({ isFullList }) {
             Sorry! An error occurred.
           </Typography>
         ) : (
-          classes.map((classroom) => {
+          (isFullList ? classes : classes.slice(0, 3)).map((classroom) => {
             return (
               <ClassCard classroom={classroom} key={classroom.code}></ClassCard>
             );
           })
         )}
       </Container>
-      {!isFullList && classes.length > 3 ? (
+      {(!isFullList && classes.length > 3) ? (
         <Button
           variant="contained"
           sx={{ alignSelf: "flex-end", marginRight: "22px", marginTop: "10px" }}
