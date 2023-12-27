@@ -50,6 +50,7 @@ useEffect(() => {
     // Check if the classCode matches the current class
    
       // Hide the iframe
+      setMeetingEnded(true);
       setMeetingStarted(false);
   });
 

@@ -62,7 +62,7 @@ io.on('connection',(socket)=>{
   console.log("socket connected");
   socket.on('endMeet',(classCode)=>{
     console.log("endMeet");
-    socket.emit('call ended',classCode);
+    io.emit('call ended',classCode);
   })
 });
 
