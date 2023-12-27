@@ -61,7 +61,7 @@ function App() {
   useEffect(() => {
     const handlebeforeunload = () => {
       localStorage.setItem("role", userRole);
-      localStorage.setItem("darkMode", darkMode);
+      
 
     }
     window.addEventListener("beforeunload", handlebeforeunload);
