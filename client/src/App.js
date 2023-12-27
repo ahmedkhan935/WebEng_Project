@@ -88,7 +88,7 @@ function App() {
             <Route path="student">
               <Route index element={<UserLandingPage role={"student"} />}></Route>
               <Route path="classes" element={<Classes />}></Route>
-              <Route path="classes/old" element={<OldClasses />}></Route>
+              <Route path="oldclasses" element={<OldClasses />}></Route>
               <Route path="classes/:classCode">
                 <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider>}></Route>
                 <Route path="videoCall" element={<VideoCall />}></Route>
