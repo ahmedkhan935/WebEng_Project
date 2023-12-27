@@ -38,6 +38,7 @@ function Attendance() {
 
 
     useEffect(() => {
+        setLoading(true);
         try {
             getStudents(classCode).then((data) => {
                 if (data.data) {
@@ -278,7 +279,7 @@ function Attendance() {
                                 Add Attendance
                             </Button>
                             <Collapse in={open}>
-                                <Box sx={{ border: '1px solid gray', padding: '20px', marginTop: '20px' }}>
+                                <Box sx={{ border: '1px solid text.secondary', borderRadius: '10px', padding: '20px', marginTop: '20px' }}>
                                     <Typography variant="h5" sx={{ width: '100%', marginBottom: '0px' }}>
                                         Add new attendance
                                     </Typography>

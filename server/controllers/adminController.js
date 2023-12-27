@@ -755,11 +755,10 @@ const startSemester = async (req, res) => {
 
     const currentSemester =
       semesters.length > 0 ? semesters[semesters.length - 1] : null;
+      console.log(currentSemester);
 
-    if (currentSemester.isCurrent == false) {
-      await Semester.findByIdAndUpdate(currentSemester._id, {
-        isCurrent: false,
-      });
+    if ((currentSemester && currentSemester.isCurrent == false) || (!currentSemester)) {
+     
       // Find the next semester (Fall or Spring)
       const nextSemesterName =
         currentSemester && currentSemester.name === "Fall" ? "Spring" : "Fall";
@@ -807,11 +806,13 @@ const startSemester = async (req, res) => {
               const courseInfo = {
                 degreeId: degree._id,
                 degreeName: degree.abbreviation,
+                degreeSemester: semNumber,
                 courseId: course._id,
                 semesterNumber: semNumber,
                 semesterName: nextSemesterName,
                 year: newSemester.year,
                 semesterId: newSemester._id,
+
               };
 
               newSemesterCourses.push(courseInfo);
@@ -837,6 +838,12 @@ const startSemester = async (req, res) => {
       students.forEach((student) => {
         if (student.semesters.length != 8) {
           const studentDegree = student.degreeName;
+          var currsem;
+          if(student.semesters && student.semesters.length>0)
+            currsem=student.semesters[student.semesters.length-1].semesterNumber;
+          else
+            currsem=1;
+
 
           // Find the degreeId from the Degree schema based on the degree name
 
@@ -846,7 +853,9 @@ const startSemester = async (req, res) => {
 
           if (degreeId) {
             newSemesterCourses.forEach((semesterCourse) => {
-              if (semesterCourse.degreeId.equals(degreeId)) {
+              console.log(currsem);
+              console.log(semesterCourse);
+              if (semesterCourse.degreeId.equals(degreeId) && currsem==semesterCourse.degreeSemester) {
                 semesterCourse.students = semesterCourse.students || [];
                 semesterCourse.students.push({ studentId: student._id });
               }
@@ -877,6 +886,7 @@ const startSemester = async (req, res) => {
             if (classroomstudent.studentId.equals(student._id)) {
               student.classes = student.classes || [];
               student.classes.push({ classCode: classroom.code });
+              
 
               const studenteval = await StudentEval.create({
                 classCode: classroom.code,
@@ -886,7 +896,8 @@ const startSemester = async (req, res) => {
               });
             }
           });
-          credits = classroom.credits;
+          
+          
         });
 
         // Find the last semester of the student
@@ -916,6 +927,7 @@ const startSemester = async (req, res) => {
 
         await student.save();
       });
+
 
       var message = nextSemesterName + " semester has started";
       res.json({

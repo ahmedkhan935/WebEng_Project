@@ -16,25 +16,33 @@ function ClassCard({ classroom }) {
   const {userRole} = useStore();
 
   let url = "/" + userRole + "/classes/" + classroom.code;
-
   return (
-    <Card sx={{ maxWidth: isSmallScreen ? '100%' : 345, minWidth: isSmallScreen ? '100%' : 345, marginTop: '10px' }}>
-      <CardActionArea component={Link} to={url} >
-        <CardMedia
-          sx={{ height: 100 }}
-          image={classroomHeader}
-          title="courseimg"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h4" component="div">
-            {classroom.name}
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            {"Classroom code: " + classroom.code} <br />
-            {"Welcome to the " + classroom.courseId.courseType + " Class of " + classroom.courseId.courseName} <br />
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+    <Card sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'space-between',
+      maxWidth: isSmallScreen ? '100%' : 345,
+      minWidth: isSmallScreen ? '100%' : 345,
+      marginTop: '10px'
+    }}>
+      <div>
+        <CardActionArea component={Link} to={url} >
+          <CardMedia
+            sx={{ height: 100 }}
+            image={classroomHeader}
+            title="courseimg"
+          />
+          <CardContent>
+            <Typography gutterBottom variant="h4" component="div">
+              {classroom.name}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {"Classroom code: " + classroom.code} <br />
+              {"Welcome to the " + classroom.courseId.courseType + " Class of " + classroom.courseId.courseName} <br />
+            </Typography>
+          </CardContent>
+        </CardActionArea>
+      </div>
       <CardActions>
         <Button
           size="small"
@@ -65,6 +73,7 @@ function ClassCard({ classroom }) {
       </CardActions>
     </Card>
   );
+
 }
 
 export default ClassCard;

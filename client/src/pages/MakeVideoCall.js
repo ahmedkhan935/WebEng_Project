@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import NavBar from "../components/Navbar";
 import VideoCallImg from "../assets/images/vid.gif";
 import JitsiMeetComponent from "../components/JitsiMeetComponent"; // Import the JitsiMeetComponent
@@ -19,8 +19,8 @@ import io from "socket.io-client";
 const VideoCall = () => {
   const [loading, setLoading] = useState(false);
   const [meetingStarted, setMeetingStarted] = useState(false); // Track if the meeting has started
-  const {classCode} = useParams();
-const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
+  const { classCode } = useParams();
+  const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
   const location = useLocation();
   const apikey="vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
  
@@ -29,16 +29,15 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
   const teacher= userRole=="teacher";
   useEffect(() => {
     if (userRole == "student") {
-      getMeetLink(classCode).then((res)=>
-      { 
-        if(res.data.link){
+      getMeetLink(classCode).then((res) => {
+        if (res.data.link) {
           setMeetingStarted(true);
           setMeetingEnded(false);
         }
 
       })
-        //setMeetingStarted(true);
-  };
+      //setMeetingStarted(true);
+    };
   }, [])
   const socket = io(url);
   socket.on('connect', () => {
@@ -54,21 +53,21 @@ useEffect(() => {
       // Hide the iframe
       setMeetingEnded(true);
       setMeetingStarted(false);
-  });
+    });
 
-  // Cleanup function to remove the listener when the component unmounts
-  return () => {
-    socket.off('call ended');
-  };
-}, []);
-  
+    // Cleanup function to remove the listener when the component unmounts
+    return () => {
+      socket.off('call ended');
+    };
+  }, []);
+
 
   const handleStartMeeting = () => {
     setLoading(true);
     setMeetingEnded(false);
     
     setTimeout(async () => {
-      
+
       await StartMeet(classCode, `https://8x8.vc/${apikey}${classCode}`);
       setLoading(false);
       setMeetingStarted(true); // Set meetingStarted to true when the meeting starts
@@ -113,11 +112,10 @@ useEffect(() => {
               }}
             >
               {
-        !meetingStarted && meetingEnded && userRole=="student" && (
-          <Typography variant="h5">Meeting is not Live</Typography>
-          
-        )
-      }
+                !meetingStarted && meetingEnded && userRole == "student" && (
+                  <Typography variant="h4" sx= {{marginBottom: '20px', marginTop: '20px'}} >Meeting is not Live, please come back later. </Typography>
+                )
+              }
               <img
                 src={VideoCallImg}
                 alt="Zoom Background"
@@ -147,10 +145,10 @@ useEffect(() => {
             )}
           </Box>
         )}
-        {meetingStarted && userRole=="teacher" &&  (
-        <Button onClick={endMeeting}>End Call</Button>
-      )}
-      
+        {meetingStarted && userRole == "teacher" && (
+          <Button onClick={endMeeting}>End Call</Button>
+        )}
+
       </Container>
     </NavBar>
   );
