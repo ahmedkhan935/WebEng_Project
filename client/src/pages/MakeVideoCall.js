@@ -13,6 +13,7 @@ import {url} from "../services/url";
 import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
+import useStore from "../store/store";
 
 import io from "socket.io-client";
 const VideoCall = () => {
@@ -24,7 +25,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
   const apikey="vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
  
   
-  const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+  const {userRole} = useStore(); // Extract userRole from the URL
   const teacher= userRole=="teacher";
   useEffect(() => {
     if (userRole == "student") {

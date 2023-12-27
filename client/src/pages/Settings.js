@@ -6,7 +6,8 @@ function Settings() {
     const { darkMode, setDarkMode } = useStore();
 
     const handleThemeChange = () => {
-        setDarkMode(!darkMode); //update zustand store
+        setDarkMode(!darkMode);
+        console.log(darkMode); //update zustand store
     };
 
     return (

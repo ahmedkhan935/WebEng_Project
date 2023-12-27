@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import classroomHeader from '../assets/images/classroomHeader.jpg'; // import the image
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import useStore from '../store/store';
 
 //Course card represents a small tile containing brief info about the course.
 function ClassCard({ classroom }) {
@@ -12,7 +13,7 @@ function ClassCard({ classroom }) {
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
 
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1];
+  const {userRole} = useStore();
 
   let url = "/" + userRole + "/classes/" + classroom.code;
 

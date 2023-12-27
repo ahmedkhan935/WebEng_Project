@@ -164,11 +164,9 @@ const teacherOptions = [
 
 
 export default function NavBar({ children }) {
-  const { setDarkMode, setUserRole } = useStore();
+  const { setDarkMode, setUserRole,userRole } = useStore();
 
   const location = useLocation();
-  let userRole = location.pathname.split("/")[1];
-  userRole = userRole.toLowerCase();
 
   //checking if pathname includes the word was buggy, as it detected isStudent=true for /admin/lists/students, so i changed it
   const isStudent = userRole === "student";

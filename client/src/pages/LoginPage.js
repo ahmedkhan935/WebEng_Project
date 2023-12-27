@@ -35,7 +35,7 @@ const LoginPage = () => {
 
     event.preventDefault();
     let resp;
-    const student = location.pathname.includes("student");
+    const student =location.pathname.includes("student");
 
     if (student) resp = await studentlogin(email, password);
     else resp = await teacherLogin(email, password);

@@ -20,13 +20,14 @@ import { useLocation } from 'react-router-dom';
 import { deleteAnnouncement, editAnnouncement, deleteEvaluation } from '../services/TeacherService';
 import { ClassroomContext } from '../context/ClassroomContext';
 import { downloadFile } from '../services/ThreadService';
+import useStore from '../store/store';
 
 function ClassroomStreamCard({ card }) {
 
     const theme = useTheme();
 
     const location = useLocation();
-    const userRole = location.pathname.split('/')[1];
+    const {userRole} = useStore();
 
     const [Icon, setIcon] = useState(null);
     const [cardId, setCardId] = useState('');
