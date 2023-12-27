@@ -7,6 +7,7 @@ import {getThread as getTeacherThread} from '../services/TeacherService'
 import { useParams } from "react-router";
 import AnnouncementList from "../components/AnnouncementList";
 import { useLocation } from 'react-router-dom';
+import useStore from "../store/store";
 
 function Thread() {
   const [thread, setThread] = React.useState();
@@ -15,7 +16,7 @@ function Thread() {
   const threadId = useParams().id;
 
   const location = useLocation();
-  const userRole = location.pathname.split('/')[1];
+  const userRole = useStore();
 
   useEffect(() => {
     if (userRole == "student") {

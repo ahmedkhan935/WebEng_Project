@@ -9,9 +9,11 @@ import {
   CircularProgress,
   Container,
 } from "@mui/material";
+import {url} from "../services/url";
 import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
+import useStore from "../store/store";
 
 import io from "socket.io-client";
 const VideoCall = () => {
@@ -20,11 +22,11 @@ const VideoCall = () => {
   const { classCode } = useParams();
   const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
   const location = useLocation();
-  const apikey = "vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
-
-
-  const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
-  const teacher = userRole == "teacher";
+  const apikey="vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
+ 
+  
+  const {userRole} = useStore(); // Extract userRole from the URL
+  const teacher= userRole=="teacher";
   useEffect(() => {
     if (userRole == "student") {
       getMeetLink(classCode).then((res) => {
@@ -37,14 +39,19 @@ const VideoCall = () => {
       //setMeetingStarted(true);
     };
   }, [])
-  const socket = io('http://localhost:3000');
+  const socket = io(url);
+  socket.on('connect', () => {
+    console.log('Successfully connected to the server');
+  });
 
-  useEffect(() => {
-    // Listen for the 'call ended' event
-    socket.on('call ended', (classCode) => {
-      // Check if the classCode matches the current class
-
+useEffect(() => {
+  // Listen for the 'call ended' event
+  socket.on('call ended', (classCode) => {
+    console.log("call ended");
+    // Check if the classCode matches the current class
+   
       // Hide the iframe
+      setMeetingEnded(true);
       setMeetingStarted(false);
     });
 
@@ -58,7 +65,7 @@ const VideoCall = () => {
   const handleStartMeeting = () => {
     setLoading(true);
     setMeetingEnded(false);
-    socket.emit('endMeet', classCode);
+    
     setTimeout(async () => {
 
       await StartMeet(classCode, `https://8x8.vc/${apikey}${classCode}`);
@@ -68,6 +75,7 @@ const VideoCall = () => {
   };
   const endMeeting = async () => {
     await endMeet(classCode);
+    socket.emit('endMeet', classCode);
     setMeetingEnded(true);
 
     setMeetingStarted(false);

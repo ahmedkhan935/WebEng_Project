@@ -30,7 +30,7 @@ const studentSchema = new mongoose.Schema({
           //Courses array for each semester
           type: [
             {
-              courseCode: { type: String, default: "" }, //Course code of the course
+              courseCode: { type: String, default: "" },
             },
           ],
         },

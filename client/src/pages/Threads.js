@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { getThreads as getStudentThreads } from "../services/StudentService";
 import { getThreads as getTeacherThreads } from "../services/TeacherService";
 import { useLocation } from 'react-router-dom';
+import useStore from "../store/store";
 
 
 function ThreadCard({ thread }) {
@@ -17,7 +18,7 @@ function ThreadCard({ thread }) {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
     
     const location = useLocation();
-    const userRole = location.pathname.split('/')[1];
+    const {userRole} = useStore();
     
     if(!thread) return (<></>);
 
@@ -63,7 +64,7 @@ function Threads() {
     const [threadsFetched, setThreadsFetched] = React.useState(false); //To check if classes have been fetched or not
     const location = useLocation();
 
-    const userRole = location.pathname.split('/')[1];
+    const {userRole} = useStore();
 
 
     useEffect(() => {

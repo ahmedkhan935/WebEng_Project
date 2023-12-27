@@ -24,6 +24,7 @@ import { getClass as getTeacherClass } from "../services/TeacherService";
 import TeacherClassroomBtns from "../components/TeacherClassroomBtns";
 import StudentClassroomBtns from "../components/StudentClassroomBtns";
 import { ClassroomContext } from "../context/ClassroomContext";
+import useStore from "../store/store";
 
 function Classroom() {
   const navigate = useNavigate();
@@ -35,7 +36,7 @@ function Classroom() {
     useContext(ClassroomContext);
 
   const location = useLocation();
-  const userRole = location.pathname.split("/")[1];
+  const {userRole} = useStore();
 
   useEffect(() => {
     if (userRole == "student") {

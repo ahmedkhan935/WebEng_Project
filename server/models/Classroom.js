@@ -125,6 +125,10 @@ const ClassroomSchema = new mongoose.Schema({
       },
     ],
   },
+  coursecode: {
+    type: String,
+    default: "",
+  },
   students: {
     type: [
       {
@@ -152,6 +156,10 @@ const ClassroomSchema = new mongoose.Schema({
   meetLink: {
     type: String,
     default: null,
+  },
+  credits: {
+    type: Number,
+    default: 0,
   },
 });
 

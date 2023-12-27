@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Skeleton from "@mui/material/Skeleton";
 import Grid from "@mui/material/Grid";
 import { useLocation } from "react-router-dom";
+import useStore from "../store/store";
 
 function ClassesList({ isFullList }) {
   const [classes, setClasses] = React.useState([]);
@@ -15,7 +16,7 @@ function ClassesList({ isFullList }) {
   const [classesFetched, setClassesFetched] = React.useState(false); //To check if classes have been fetched or no
 
   const location = useLocation();
-  const userRole = location.pathname.split("/")[1];
+  const {userRole} = useStore();
 
   let classesUrl = "/" + userRole + "/classes";
 

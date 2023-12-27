@@ -55,12 +55,14 @@ import useStore from "./store/store";
 
 function App() {
   
-  const {userRole} = useStore();
-  console.log(userRole);
+  const {userRole,darkMode} = useStore();
+  
 
   useEffect(() => {
     const handlebeforeunload = () => {
       localStorage.setItem("role", userRole);
+      localStorage.setItem("darkMode", darkMode);
+
     }
     window.addEventListener("beforeunload", handlebeforeunload);
     

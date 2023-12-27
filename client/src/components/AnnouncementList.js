@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useEffect } from 'react'
 import { getThreads as getStudentThreads } from '../services/StudentService';
 import { getThreads as getTeacherThreads } from '../services/TeacherService';
+import useStore from '../store/store';
 //import { getThreadsTeacher } from '../services/TeacherService'
 
 function AnnouncementList({ isFullList, thread }) {
@@ -12,7 +13,7 @@ function AnnouncementList({ isFullList, thread }) {
     const [announcementFetched, setAnnouncementFetched] = React.useState(false); //To check if classes have been fetched or not
     const [announcementsError, setAnnouncementsError] = React.useState(null); //To check if classes have been fetched or not
     const location = useLocation();
-    const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+    const {userRole} = useStore;// Extract userRole from the URL
 
     let threadsUrl = "/" + userRole + "/threads";
 

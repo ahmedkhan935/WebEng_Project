@@ -120,11 +120,9 @@ const teacherOptions = [
 
 
 export default function NavBar({ children }) {
-  const { setDarkMode, setUserRole } = useStore();
+  const { setDarkMode, setUserRole,userRole } = useStore();
 
   const location = useLocation();
-  let userRole = location.pathname.split("/")[1];
-  userRole = userRole.toLowerCase();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const openMenu = Boolean(anchorEl);
