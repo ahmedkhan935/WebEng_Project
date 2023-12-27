@@ -7,7 +7,7 @@ const CourseEval = require("../models/CourseEval");
 const mongoose = require("mongoose");
 const path = require("path");
 const bucket = require("../firebase_init");
-const io = require("../server").io;
+
 
 // var cache = {};
 
