@@ -171,7 +171,7 @@ const AdminThread = () => {
               {posts.map((post) => (
                 <div style={{ marginTop: "20px" }}>
                   {post.attachments.originalName}
-                   <AnnouncementCard
+                  <AnnouncementCard
                     key={post._id}
                     post={post}
                     handleEdit={() => handleEditpost(post)}

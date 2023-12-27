@@ -8,6 +8,7 @@ const Classroom = require("../models/Classroom");
 const StudentEval = require("../models/StudentEval");
 const CourseEval = require("../models/CourseEval");
 const Thread = require("../models/Thread");
+const nodemailer = require("nodemailer");
 
 const validateSemesterFields = (req) => {
   const { name, year, startDate, endDate, isCurrent } = req.body;
@@ -961,6 +962,37 @@ const endSemester = async (req, res) => {
   }
 };
 
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   host: "smtp.gmail.com",
+//   auth: {
+//     user: "fb71459@gmail.com",
+//     pass: "phph yuzs zwhl wohj",
+//   },
+// });
+
+// const sendEmail = async (req, res) => {
+//   const { to, subject, text } = req.body;
+//   console.log(to, subject, text);
+
+//   const mailOptions = {
+//     from: "fb71459@gmail.com",
+//     to,
+//     subject,
+//     text,
+//   };
+
+//   //sending the email
+//   transporter.sendMail(mailOptions, (error, info) => {
+//     if (error) {
+//       console.error(error);
+//       res.status(500).json({ error: "Failed to send email" });
+//     } else {
+//       console.log("Email sent: " + info.response);
+//       res.json({ success: true });
+//     }
+//   });
+// };
 module.exports = {
   createSemester,
   getAllSemesters,

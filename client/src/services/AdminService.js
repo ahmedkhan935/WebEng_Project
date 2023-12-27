@@ -251,3 +251,12 @@ export async function endSemester() {
   });
   return handleResponse(response);
 }
+
+// //send mail
+// export async function sendMail() {
+//   const response = await fetch(`${BASE_URL}/admin/send-email`, {
+//     method: "POST",
+//     credentials: "include",
+//   });
+//   return handleResponse(response);
+// }

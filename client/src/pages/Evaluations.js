@@ -1,5 +1,6 @@
 import React, { useState, Fragment, useEffect, useRef } from 'react';
 import {
+    CircularProgress,
     alpha, Alert, AlertTitle, Typography, Dialog, DialogTitle, DialogContent,
     Checkbox, FormControlLabel, Tooltip, Button, Container, Table, TableBody,
     TableCell, TableContainer, TableHead, TableRow, TextField, Collapse, Box,
@@ -11,8 +12,11 @@ import GradeIcon from '@mui/icons-material/Grade';
 import EditIcon from '@mui/icons-material/Edit';
 import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AssignmentIcon from '@mui/icons-material/Assignment'; 
 import { read, utils } from 'xlsx';
-import { getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement, updateEvaluation } from '../services/TeacherService';
+import { getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement, 
+        updateEvaluation, deleteEvaluation } from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
@@ -34,6 +38,7 @@ function Evaluations() {
     const { classCode } = useParams();
     const [open, setOpen] = useState([]);//Array to keep track of multiple open/closed collapses
     const [students, setStudents] = useState([]);
+    
 
     //States for editing marks
     const [tempEvaluations, setTempEvaluations] = useState(evaluations); //for updating text fields and dealig with cancel, we use this
@@ -64,14 +69,8 @@ function Evaluations() {
     });
     const [anchorEl, setAnchorEl] = useState(null);
     const [anchorMarks, setAnchorMarks] = React.useState(null);
+    const [anchorEvaluation, setAnchorEvaluation] = useState(null);
 
-    const handleManageMarksClick = (event) => {
-        setAnchorMarks(event.currentTarget);
-    };
-
-    const handleManageMarksClose = () => {
-        setAnchorMarks(null);
-    };
 
     useEffect(() => {
         getAllEvaluations(classCode).then((data) => {
@@ -326,7 +325,32 @@ function Evaluations() {
         setCreateEvalTotalMarks(evaluations[evalIndex].totalMarks);
         setCreateEvalOpenSubmission(evaluations[evalIndex].dueDate ? true : false);
         setCreateEvalDueDate(evaluations[evalIndex].dueDate);
+    }
 
+    const handleDeleteEvaluation = (evalIndex) => {
+        try {
+            let confirm = window.confirm("Are you sure you want to delete this evaluation? All the student's marks will be lost.");
+           if(!confirm) 
+           return;
+            let title = evaluations[evalIndex].title;
+            title = title.replace(/ /g, '~');
+            deleteEvaluation(classCode, title)
+                .then((res) => {
+                    console.log(res);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+            let revertedTitle = title.replace(/~/g, ' ')
+            //update announcements state according to delete
+            setEvaluations(evaluations.filter((evaluation) => evaluation.title !== revertedTitle));
+            setTempEvaluations(tempEvaluations.filter((evaluation) => evaluation.title !== revertedTitle));
+            setOpen(open.filter((value, index) => index !== evalIndex));
+            setAnchorEvaluation(null);
+        } catch (error) {
+            console.error('Error deleting announcement:', error);
+        }
     }
 
     //Add new evaluation
@@ -391,10 +415,10 @@ function Evaluations() {
                 return;
             }
 
-            if(evaluation.totalMarks){
+            if (evaluation.totalMarks) {
                 // confirmation
-                const confirmation = window.confirm("Are you sure you want to update the total marks? All the marks will be reset to 0.");
-                if(!confirmation){
+                const confirmation = window.confirm("Are you sure you want to update the total marks? All the student's marks will be reset to 0.");
+                if (!confirmation) {
                     setCreateEvalTotalMarks(oldEval.totalMarks);
                     return;
                 }
@@ -415,7 +439,7 @@ function Evaluations() {
                 draft[index].totalMarks = totalMarks;
                 draft[index].dueDate = dueDate;
 
-                if(evaluation.totalMarks){
+                if (evaluation.totalMarks) {
                     draft[index].submissions.forEach((submission) => {
                         submission.obtainedMarks = 0;
                         submission.obtainedWeightage = 0;
@@ -441,9 +465,10 @@ function Evaluations() {
         return formattedDate;
     }
 
+    //musa's over perfectionism for date
     const toLocalISO = (date) => {
         const tzOffset = (new Date()).getTimezoneOffset() * 60000; // offset in milliseconds
-        const localISOTime = (new Date(date - tzOffset)).toISOString().slice(0,-1);
+        const localISOTime = (new Date(date - tzOffset)).toISOString().slice(0, -1);
         return localISOTime.substring(0, 16);
     };
 
@@ -484,7 +509,7 @@ function Evaluations() {
                                                 : " - " }*/
                                                 evaluation.dueDate ?
                                                     formattedDate(evaluation.dueDate)
-                                                    : " - " 
+                                                    : " - "
                                             }
                                         </TableSubHeaderCell>
                                         <TableSubHeaderCell align="left">{evaluation.weightage}</TableSubHeaderCell>
@@ -513,7 +538,7 @@ function Evaluations() {
                                                         style={{ display: 'none' }}
                                                         ref={fileInput}
                                                     />
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={handleManageMarksClick} startIcon={<GradeIcon />}>
+                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={(event) => setAnchorMarks(event.currentTarget)} startIcon={<GradeIcon />}>
                                                         Manage Marks
                                                     </Button>
                                                     <Menu
@@ -521,7 +546,7 @@ function Evaluations() {
                                                         anchorEl={anchorMarks}
                                                         keepMounted
                                                         open={Boolean(anchorMarks)}
-                                                        onClose={handleManageMarksClose}
+                                                        onClose={() => setAnchorMarks(null)}
                                                     >
                                                         <MenuItem onClick={handleFileUpload}>
                                                             <FileUploadIcon color="primary" sx={{ marginRight: '5px' }} />
@@ -532,7 +557,32 @@ function Evaluations() {
                                                             Edit Marks
                                                         </MenuItem>
                                                     </Menu>
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px', marginLeft: '10px' }} onClick={() => handleManageEvaluation(evalIndex)} startIcon={<EditIcon />}> Manage Evaluation </Button>
+                                                    <Button
+                                                        variant="contained"
+                                                        color="primary"
+                                                        sx={{ marginTop: '10px', marginLeft: '10px' }}
+                                                        onClick={(event) => setAnchorEvaluation(event.currentTarget)}
+                                                        startIcon={<AssignmentIcon />}
+                                                    >
+                                                        Manage Evaluation
+                                                    </Button>
+                                                    <Menu
+                                                        id="evaluation-menu"
+                                                        anchorEl={anchorEvaluation}
+                                                        keepMounted
+                                                        open={Boolean(anchorEvaluation)}
+                                                        onClose={() => setAnchorEvaluation(null)}
+                                                    >
+                                                        <MenuItem onClick={() => handleManageEvaluation(evalIndex)}>
+                                                            <EditIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                            Edit Evaluation
+                                                        </MenuItem>
+                                                        <MenuItem onClick={() => handleDeleteEvaluation(evalIndex)}>
+                                                            <DeleteIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                            Delete Evaluation
+                                                        </MenuItem>
+                                                    </Menu>
+
                                                     <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
                                                         <TableHead>
                                                             <TableRow>
@@ -672,6 +722,7 @@ function Evaluations() {
                             fullWidth
                             inputProps={{ min: 1 }}
                             sx={{ marginTop: '20px' }}
+                            helperText= { editingEval ? "Warning: Changing total marks will reset all the student's marks to 0." : ""}
                         />
                         {
                             (editingEval) ? null :
@@ -714,7 +765,12 @@ function Evaluations() {
                         </DialogActions>
                     </DialogContent>
                 </Dialog>
-
+                <Dialog open={downloading}>
+        <Box sx={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '48px' }}>
+          <DialogTitle>Downloading file, please wait...</DialogTitle>
+          <CircularProgress color="secondary" />
+        </Box>
+      </Dialog>
             </Container>
         </NavBar>
     );

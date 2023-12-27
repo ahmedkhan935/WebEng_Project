@@ -101,6 +101,7 @@ const ViewStudents = () => {
 
   return (
     <NavBar>
+      <Container>
       <h1 style={{ color: "#22717d", float: "left" }}>Students</h1>
 
       <Container
@@ -230,6 +231,7 @@ const ViewStudents = () => {
           variant="outlined"
         />
       </div>
+      </Container>
     </NavBar>
   );
 };

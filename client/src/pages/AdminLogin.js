@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Box, Button, Container, Grid, Paper, Typography } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import mainPageImage from "../assets/images/MainPage.png";
+import mainPageImage from "../assets/images/animatedHomepage.gif";
 import cleanSlateImage from "../assets/images/Hat.png";
 import theme from "../assets/theme/theme.js";
 import { adminlogin } from "../services/AuthService.js";
@@ -31,8 +31,6 @@ const AdminLoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-
-
     event.preventDefault();
     let resp;
     const admin = location.pathname.includes("admin");
@@ -43,7 +41,6 @@ const AdminLoginPage = () => {
       console.log("Login Successful");
       setUserRole("admin");
 
-      
       if (admin) navigate("/admin");
     } else {
       const data = await resp.json();

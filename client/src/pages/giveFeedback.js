@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import TagFacesIcon from "@mui/icons-material/TagFaces";
 import SentimentVeryDissatisfiedIcon from "@mui/icons-material/SentimentVeryDissatisfied";
-import { Button, TextField, Modal, Box, Typography } from "@mui/material";
+import { Button, Container,TextField, Modal, Box, Typography } from "@mui/material";
 import NavBar from "../components/Navbar";
 import { useParams } from "react-router";
 import { givefeedback } from "../services/StudentService";
@@ -10,21 +10,12 @@ const GiveFeedback = () => {
   const styles = {
     form: {
       width: "50%",
-      margin: "auto",
-      marginTop: "50px",
       border: "2px solid white",
       padding: "20px",
       borderRadius: "10px",
-      marginTop: "100px",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
       background: "#ffffff",
-      boxShadow: "0 0 10px rgba(118, 130, 142, 0.977)",
     },
   };
-
   const [rating, setRating] = useState("");
   const [comment, setComment] = useState("");
   const [isFormSubmitted, setFormSubmitted] = useState(false);
@@ -57,14 +48,21 @@ const GiveFeedback = () => {
 
   return (
     <NavBar>
-      <h1 style={{ color: "#22717d", width: "100%", float: "right" }}>
-        Give Feedback
-      </h1>
+      <Container sx={{padding: 1}}>
+      <Typography variant="h5" color="primary" >
+      Give feedback to your teacher
+      </Typography>
+
+      <Typography variant="subtitle1" color="text.secondary" style={{marginTop:"20px", marginBottom:"20px"}}>
+        Please remember to be respectful and constructive in your feedback.
+        <br></br>
+        Feedback is not anonymous, your teacher will be able to see your name with your comments.
+      </Typography>
 
       <form
         onSubmit={handleFormSubmit}
         style={
-          ({ width: "50%", margin: "auto", marginTop: "50px" }, styles.form)
+          ({ width: "80%", margin: "auto", marginTop: "50px" }, styles.form)
         }
       >
         <TextField
@@ -81,7 +79,7 @@ const GiveFeedback = () => {
 
         <Button
           type="submit"
-          variant="outlined"
+          variant="contained"
           color="primary"
           style={{ marginTop: "10px" }}
         >
@@ -98,14 +96,9 @@ const GiveFeedback = () => {
         >
           <Box
             sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 400,
+              width: '400px',
               borderRadius: "10px",
               bgcolor: "background.paper",
-              boxShadow: "2px 2px 2px 1px #ffffff",
               p: 4,
               textAlign: "center",
             }}
@@ -120,12 +113,13 @@ const GiveFeedback = () => {
             <Typography id="modal-modal-title" variant="h6" component="h2">
               {isFormSubmitted && <>{submitmsg}</>}
             </Typography>
-            <Button onClick={handleModalClose} style={{ marginTop: "10px" }}>
+            <Button variant="contained" color="primary" onClick={handleModalClose} style={{ marginTop: "10px" }}>
               Close
             </Button>
           </Box>
         </Modal>
       )}
+      </Container>
     </NavBar>
   );
 };

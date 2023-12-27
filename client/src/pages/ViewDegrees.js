@@ -9,6 +9,7 @@ import {
   TableRow,
   Paper,
   FormControl,
+  Container,
   TextField,
   InputAdornment,
   Link,
@@ -60,8 +61,8 @@ const ViewDegrees = () => {
   };
 
   return (
-    <div>
       <NavBar>
+        <Container>
         <h1 style={styles.h2}>Degrees</h1>
 
         <div
@@ -151,8 +152,8 @@ const ViewDegrees = () => {
             variant="outlined"
           />
         </div>
+        </Container>
       </NavBar>
-    </div>
   );
 };
 
