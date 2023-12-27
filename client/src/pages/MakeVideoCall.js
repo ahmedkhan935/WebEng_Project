@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Container,
 } from "@mui/material";
+import {url} from "../services/url";
 import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
@@ -38,7 +39,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
         //setMeetingStarted(true);
   };
   }, [])
-  const socket = io('http://localhost:3000');
+  const socket = io(url);
   socket.on('connect', () => {
     console.log('Successfully connected to the server');
   });
