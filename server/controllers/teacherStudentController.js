@@ -12,7 +12,7 @@ const teacherStudentController = {
   getClass: async (req, res) => {
     try {
       console.log(req.params.classCode);
-      let classroom = await Classroom.findOne({ code: req.params.classCode })
+      let classroom = await Classroom.findOne({ code: req.params.classCode,status:"Ongoing" })
         .populate({
           path: "createdBy",
           select: "name",

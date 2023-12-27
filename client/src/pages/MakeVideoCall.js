@@ -13,6 +13,7 @@ import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
 
+import io from "socket.io-client";
 const VideoCall = () => {
   const [loading, setLoading] = useState(false);
   const [meetingStarted, setMeetingStarted] = useState(false); // Track if the meeting has started
@@ -20,8 +21,10 @@ const VideoCall = () => {
 const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting has ended
   const location = useLocation();
   const apikey="vpaas-magic-cookie-fb99e6b0dca443f9bb85db7b2561f865";
+ 
   
   const userRole = location.pathname.split('/')[1]; // Extract userRole from the URL
+  const teacher= userRole=="teacher";
   useEffect(() => {
     if (userRole == "student") {
       getMeetLink(classCode).then((res)=>
@@ -35,11 +38,28 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
         //setMeetingStarted(true);
   };
   }, [])
+  const socket = io('http://localhost:3000');
+
+useEffect(() => {
+  // Listen for the 'call ended' event
+  socket.on('call ended', (classCode) => {
+    // Check if the classCode matches the current class
+   
+      // Hide the iframe
+      setMeetingStarted(false);
+  });
+
+  // Cleanup function to remove the listener when the component unmounts
+  return () => {
+    socket.off('call ended');
+  };
+}, []);
+  
 
   const handleStartMeeting = () => {
     setLoading(true);
     setMeetingEnded(false);
-
+    socket.emit('endMeet', classCode);
     setTimeout(async () => {
       
       await StartMeet(classCode, `https://8x8.vc/${apikey}${classCode}`);
@@ -50,6 +70,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
   const endMeeting = async () => {
     await endMeet(classCode);
     setMeetingEnded(true);
+
     setMeetingStarted(false);
   }
 
@@ -118,7 +139,7 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
             )}
           </Box>
         )}
-        {meetingStarted && userRole=="teacher" (
+        {meetingStarted && userRole=="teacher" &&  (
         <Button onClick={endMeeting}>End Call</Button>
       )}
       

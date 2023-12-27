@@ -8,6 +8,9 @@ const mongoose = require("mongoose");
 const path = require("path");
 const bucket = require("../firebase_init");
 
+
+// var cache = {};
+
 const teacherController = {
     getClasses: async (req, res) => {
         // try {
@@ -32,7 +35,7 @@ const teacherController = {
                 (classroom) => classroom.classCode
             ); // Get the class codes of all classes
             // fetch the classes from the database
-            const classes = await Classroom.find({ code: { $in: classCodes } })
+            const classes = await Classroom.find({ code: { $in: classCodes },status:"Ongoing" })
                 .populate({
                     path: "createdBy",
                     select: "name",
@@ -882,7 +885,9 @@ const teacherController = {
     },
 
     endMeet: async (req, res) => {
+
         try {
+
             const { classCode } = req.params;
             const classroom = await Classroom.findOne({ code: classCode });
             if (!classroom) {
@@ -893,6 +898,13 @@ const teacherController = {
             }
             classroom.meetLink = null;
             await classroom.save();
+            // io.on("connection", (socket) => {
+            //     socket.on("endMeet", (classCode) => {
+            //         socket.emit("call ended", classCode);
+            //     }
+            //     );
+            // }
+            // );
             res.status(200).json({ message: "Meet link deleted successfully" });
         } catch (error) {
             console.log(error);
