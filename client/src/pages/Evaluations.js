@@ -13,10 +13,12 @@ import EditIcon from '@mui/icons-material/Edit';
 import GradingIcon from '@mui/icons-material/Grading';
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import DeleteIcon from '@mui/icons-material/Delete';
-import AssignmentIcon from '@mui/icons-material/Assignment'; 
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import { read, utils } from 'xlsx';
-import { getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement, 
-        updateEvaluation, deleteEvaluation } from '../services/TeacherService';
+import {
+    getAllEvaluations, getEvaluationMarks, addEvaluation as updateMarks, addAnnouncement,
+    updateEvaluation, deleteEvaluation
+} from '../services/TeacherService';
 import { useParams } from 'react-router';
 import { produce } from 'immer';
 import { downloadFile } from '../services/ThreadService';
@@ -38,7 +40,7 @@ function Evaluations() {
     const { classCode } = useParams();
     const [open, setOpen] = useState([]);//Array to keep track of multiple open/closed collapses
     const [students, setStudents] = useState([]);
-    
+
 
     //States for editing marks
     const [tempEvaluations, setTempEvaluations] = useState(evaluations); //for updating text fields and dealig with cancel, we use this
@@ -55,6 +57,7 @@ function Evaluations() {
     const [openDialog, setOpenDialog] = useState(false);
     const [titleError, setTitleError] = useState(false);
     const [downloading, setDownloading] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const fileInput = useRef();
 
@@ -73,6 +76,7 @@ function Evaluations() {
 
 
     useEffect(() => {
+        setLoading(true);
         getAllEvaluations(classCode).then((data) => {
             if (data.error) {
                 return;
@@ -84,6 +88,11 @@ function Evaluations() {
             setTempEvaluations(updatedEvaluations);
             setOpen(new Array(newEvaluations.length).fill(false)); //all will be closed by default
         })
+            .catch((err) => {
+                console.log(err);
+            }
+            );
+        setLoading(false);
     }, []);
 
     useEffect(() => {
@@ -256,8 +265,8 @@ function Evaluations() {
             if (!headings || headings.length !== 3 || headings[0] !== 'Rno' || headings[1] !== 'Name' || headings[2] !== 'Marks') {
                 console.log('Invalid headings');
                 alert('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
-                // setDialogMessage('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
-                // setDialogOpen(true);
+                //setDialogMessage('Invalid headings. Please make sure the headings are "Rno", "Name", and "Marks".');
+                //setDialogOpen(true);
                 return;
             }
             console.log('Headings are valid');
@@ -330,8 +339,8 @@ function Evaluations() {
     const handleDeleteEvaluation = (evalIndex) => {
         try {
             let confirm = window.confirm("Are you sure you want to delete this evaluation? All the student's marks will be lost.");
-           if(!confirm) 
-           return;
+            if (!confirm)
+                return;
             let title = evaluations[evalIndex].title;
             title = title.replace(/ /g, '~');
             deleteEvaluation(classCode, title)
@@ -401,7 +410,7 @@ function Evaluations() {
                 dueDate: (dueDate === oldEval.dueDate) ? null : dueDate
             }
 
-            // removing null fields
+            //removing null fields
             for (let key in evaluation) {
                 if (evaluation[key] === null) {
                     delete evaluation[key];
@@ -416,7 +425,7 @@ function Evaluations() {
             }
 
             if (evaluation.totalMarks) {
-                // confirmation
+                //confirmation
                 const confirmation = window.confirm("Are you sure you want to update the total marks? All the student's marks will be reset to 0.");
                 if (!confirmation) {
                     setCreateEvalTotalMarks(oldEval.totalMarks);
@@ -478,299 +487,315 @@ function Evaluations() {
                 <Typography variant="h5" sx={{ width: '100%', marginBottom: '10px' }}>
                     Evaluations for this class
                 </Typography>
-                <Button variant="contained" color="primary" onClick={handleOpenDialog} sx={{ marginTop: '10px', marginBottom: '20px' }}>
-                    Add Evaluation
-                </Button>
-                <TableContainer component={Paper}>
-                    <Table>
-                        <TableHead>
-                            <TableRow>
-                                <TableHeaderCell>Title</TableHeaderCell>
-                                <TableHeaderCell>Due Date</TableHeaderCell>
-                                <TableHeaderCell align="left">Weightage</TableHeaderCell>
-                                <TableHeaderCell align="left">Total Marks</TableHeaderCell>
-                                <TableHeaderCell align="right">Average Marks</TableHeaderCell>
-                                <TableHeaderCell align="right">Minimum Marks</TableHeaderCell>
-                                <TableHeaderCell align="right">Maximum Marks</TableHeaderCell>
-                            </TableRow>
-                        </TableHead>
+                {
+                    loading ?
+                        <Box sx={{ width: '100%', height: '50vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <CircularProgress />
+                        </Box>
+                        :
+                        tempEvaluations && tempEvaluations.length == 0 ?
+                            <Typography variant="body1" sx={{ width: '100%', marginBottom: '10px' }}>
+                                No evaluations data found. Please contact admin if you think this is a mistake.
+                            </Typography>
+                            :
+                            <>
+                                <Button variant="contained" color="primary" onClick={handleOpenDialog} sx={{ marginTop: '10px', marginBottom: '20px' }}>
+                                    Add Evaluation
+                                </Button>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableHeaderCell>Title</TableHeaderCell>
+                                                <TableHeaderCell>Due Date</TableHeaderCell>
+                                                <TableHeaderCell align="left">Weightage</TableHeaderCell>
+                                                <TableHeaderCell align="left">Total Marks</TableHeaderCell>
+                                                <TableHeaderCell align="right">Average Marks</TableHeaderCell>
+                                                <TableHeaderCell align="right">Minimum Marks</TableHeaderCell>
+                                                <TableHeaderCell align="right">Maximum Marks</TableHeaderCell>
+                                            </TableRow>
+                                        </TableHead>
 
-                        <TableBody>
-                            {tempEvaluations.map((evaluation, evalIndex) => (
+                                        <TableBody>
+                                            {tempEvaluations.map((evaluation, evalIndex) => (
 
-                                <Fragment key={evalIndex}>
-                                    <TableRow onClick={() => handleClick(evalIndex)}>
-                                        <TableSubHeaderCell component="th" scope="row">
-                                            {evaluation.title}
-                                        </TableSubHeaderCell>
-                                        <TableSubHeaderCell align="left">
-                                            {/* {evaluation.dueDate ?
+                                                <Fragment key={evalIndex}>
+                                                    <TableRow onClick={() => handleClick(evalIndex)}>
+                                                        <TableSubHeaderCell component="th" scope="row">
+                                                            {evaluation.title}
+                                                        </TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="left">
+                                                            {/* {evaluation.dueDate ?
                                                 new Date(evaluation.dueDate).toLocaleDateString() + ' ' + new Date(evaluation.dueDate).toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
                                                 : " - " }*/
-                                                evaluation.dueDate ?
-                                                    formattedDate(evaluation.dueDate)
-                                                    : " - "
-                                            }
-                                        </TableSubHeaderCell>
-                                        <TableSubHeaderCell align="left">{evaluation.weightage}</TableSubHeaderCell>
-                                        <TableSubHeaderCell align="left">{evaluation.totalMarks}</TableSubHeaderCell>
-                                        <TableSubHeaderCell align="right">{evaluation.averageMarks}</TableSubHeaderCell>
-                                        <TableSubHeaderCell align="right">{evaluation.minMarks}</TableSubHeaderCell>
-                                        <TableSubHeaderCell align="right">{evaluation.maxMarks}</TableSubHeaderCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
-                                            <Collapse in={open[evalIndex]} timeout="auto" unmountOnExit>
-                                                <Box margin={1}>
-                                                    {
-                                                        evaluation.dueDate && evaluation.dueDate > new Date().toISOString() ?
-                                                            <Alert severity="warning">
-                                                                <AlertTitle>Due date has not passed.</AlertTitle>
-                                                                Some students may not have submitted their work yet.
-                                                            </Alert>
-                                                            :
-                                                            null
+                                                                evaluation.dueDate ?
+                                                                    formattedDate(evaluation.dueDate)
+                                                                    : " - "
+                                                            }
+                                                        </TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="left">{evaluation.weightage}</TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="left">{evaluation.totalMarks}</TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="right">{evaluation.averageMarks}</TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="right">{evaluation.minMarks}</TableSubHeaderCell>
+                                                        <TableSubHeaderCell align="right">{evaluation.maxMarks}</TableSubHeaderCell>
+                                                    </TableRow>
+                                                    <TableRow>
+                                                        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={7}>
+                                                            <Collapse in={open[evalIndex]} timeout="auto" unmountOnExit>
+                                                                <Box margin={1}>
+                                                                    {
+                                                                        evaluation.dueDate && evaluation.dueDate > new Date().toISOString() ?
+                                                                            <Alert severity="warning">
+                                                                                <AlertTitle>Due date has not passed.</AlertTitle>
+                                                                                Some students may not have submitted their work yet.
+                                                                            </Alert>
+                                                                            :
+                                                                            null
+                                                                    }
+                                                                    <input
+                                                                        type="file"
+                                                                        accept=".xlsx,.xls"
+                                                                        onChange={(event) => handleImportMarks(event, evalIndex)}
+                                                                        style={{ display: 'none' }}
+                                                                        ref={fileInput}
+                                                                    />
+                                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={(event) => setAnchorMarks(event.currentTarget)} startIcon={<GradeIcon />}>
+                                                                        Manage Marks
+                                                                    </Button>
+                                                                    <Menu
+                                                                        id="simple-menu"
+                                                                        anchorEl={anchorMarks}
+                                                                        keepMounted
+                                                                        open={Boolean(anchorMarks)}
+                                                                        onClose={() => setAnchorMarks(null)}
+                                                                    >
+                                                                        <MenuItem onClick={handleFileUpload}>
+                                                                            <FileUploadIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                                            Import Marks
+                                                                        </MenuItem>
+                                                                        <MenuItem onClick={handleEditMarks}>
+                                                                            <GradingIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                                            Edit Marks
+                                                                        </MenuItem>
+                                                                    </Menu>
+                                                                    <Button
+                                                                        variant="contained"
+                                                                        color="primary"
+                                                                        sx={{ marginTop: '10px', marginLeft: '10px' }}
+                                                                        onClick={(event) => setAnchorEvaluation(event.currentTarget)}
+                                                                        startIcon={<AssignmentIcon />}
+                                                                    >
+                                                                        Manage Evaluation
+                                                                    </Button>
+                                                                    <Menu
+                                                                        id="evaluation-menu"
+                                                                        anchorEl={anchorEvaluation}
+                                                                        keepMounted
+                                                                        open={Boolean(anchorEvaluation)}
+                                                                        onClose={() => setAnchorEvaluation(null)}
+                                                                    >
+                                                                        <MenuItem onClick={() => handleManageEvaluation(evalIndex)}>
+                                                                            <EditIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                                            Edit Evaluation
+                                                                        </MenuItem>
+                                                                        <MenuItem onClick={() => handleDeleteEvaluation(evalIndex)}>
+                                                                            <DeleteIcon color="primary" sx={{ marginRight: '5px' }} />
+                                                                            Delete Evaluation
+                                                                        </MenuItem>
+                                                                    </Menu>
+
+                                                                    <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
+                                                                        <TableHead>
+                                                                            <TableRow>
+                                                                                <SmallTableHeaderCell>S.No</SmallTableHeaderCell>
+                                                                                <SmallTableHeaderCell>Roll Number</SmallTableHeaderCell>
+                                                                                <SmallTableHeaderCell>Name</SmallTableHeaderCell>
+                                                                                <SmallTableHeaderCell align="left">Attachment</SmallTableHeaderCell>
+                                                                                <SmallTableHeaderCell align="right">Obtained Weightage</SmallTableHeaderCell>
+                                                                                <SmallTableHeaderCell align="right">Obtained Marks</SmallTableHeaderCell>
+                                                                            </TableRow>
+                                                                        </TableHead>
+                                                                        <TableBody>
+                                                                            {evaluation.submissions?.map((submission, subIndex) => {
+                                                                                const obtainedWeightage = (submission.obtainedMarks / evaluation.totalMarks) * evaluation.weightage;
+                                                                                return (
+                                                                                    <TableRow key={subIndex}>
+                                                                                        <TableCell>{subIndex + 1}</TableCell>
+                                                                                        <TableCell component="th" scope="row">
+                                                                                            {submission.rollNumber}
+                                                                                        </TableCell>
+                                                                                        <TableCell>{submission.name}</TableCell>
+                                                                                        <TableCell align="left">
+                                                                                            {submission.submission &&
+                                                                                                <Chip
+                                                                                                    icon={<AttachmentIcon />}
+                                                                                                    label={submission.submission.originalName.length > 30 //trim if too many chars
+                                                                                                        ? `${submission.submission.originalName.substring(0, 30)}...`
+                                                                                                        : submission.submission.originalName}
+                                                                                                    clickable
+                                                                                                    component="a"
+                                                                                                    target="_blank"
+                                                                                                    rel="noopener noreferrer"
+                                                                                                    variant="outlined"
+                                                                                                    sx={{
+                                                                                                        margin: "5px",
+                                                                                                        backgroundColor: (theme) =>
+                                                                                                            `${theme.palette.primary.main}1A`,
+                                                                                                    }}
+                                                                                                    onClick={() => downloadSubmission(submission.submission.name, submission.submission.originalName)}
+                                                                                                />
+                                                                                            }
+                                                                                        </TableCell>
+                                                                                        <TableCell align="right">{obtainedWeightage.toFixed(2)}</TableCell>
+                                                                                        <TableCell align="right">
+                                                                                            {editMode ? (
+                                                                                                <TextField
+                                                                                                    value={submission.obtainedMarks}
+                                                                                                    inputProps={{ min: 0, max: evaluation.totalMarks }}
+                                                                                                    type="number"
+                                                                                                    error={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0}
+                                                                                                    helperText={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0 ? "Marks should be between 0 and " + evaluation.totalMarks : ""}
+                                                                                                    onChange={(event) => {
+                                                                                                        setEditMarksError(submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0);
+                                                                                                        handleMarksChange(event, evalIndex, subIndex);
+                                                                                                    }}
+                                                                                                    style={{ maxWidth: '80px' }}
+                                                                                                    variant="standard"
+                                                                                                    size="small"
+                                                                                                />
+                                                                                            ) : (
+                                                                                                submission.obtainedMarks
+                                                                                            )}
+                                                                                        </TableCell>
+                                                                                    </TableRow>
+                                                                                );
+                                                                            })}
+                                                                        </TableBody>
+
+                                                                    </Table>
+                                                                    {editMode && (
+                                                                        <Box display="flex" justifyContent="flex-end" mt={2}>
+                                                                            <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
+                                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evalIndex)} disabled={editMarksError}>Save</Button>
+                                                                        </Box>
+                                                                    )}
+                                                                </Box>
+                                                            </Collapse>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                </Fragment>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+
+                                { /* Adding new evaluation */}
+                                <Dialog open={openDialog} onClose={handleCloseDialog}>
+                                    <DialogTitle sx={{ pb: 0 }}>
+                                        <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
+                                            {editingEval ? "Edit Evaluation" : "Add Evaluation"}
+                                        </Typography>
+                                    </DialogTitle>
+
+                                    <DialogContent>
+                                        <TextField
+                                            label="Title"
+                                            value={createEvalTitle}
+                                            onChange={handleTitleChange}
+                                            fullWidth
+                                            sx={{ marginTop: '20px' }}
+                                            error={titleError || createEvalTitle.match(/[$%^~*]/)}
+                                            helperText={titleError ? "An evaluation item with this title already exists." : createEvalTitle.match(/[$%^~*]/) ? "Please avoid special characters ($%^~*)" : ""}
+                                        />
+                                        <TextField
+                                            label="Content"
+                                            value={createEvalContent}
+                                            onChange={(e) => setCreateEvalContent(e.target.value)}
+                                            fullWidth
+                                            sx={{ marginTop: '20px' }}
+                                            helperText="Optionally, add some descriptory content/instructions. They will be displayed in your classroom stream."
+                                        />
+
+                                        <TextField
+                                            label="Weightage"
+                                            value={createEvalWeightage}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value);
+                                                if (value >= 1 && value <= 100) {
+                                                    setCreateEvalWeightage(e.target.value);
+                                                }
+                                            }}
+                                            type="number"
+                                            fullWidth
+                                            inputProps={{ min: 1, max: 100 }}
+                                            sx={{ marginTop: '20px' }}
+                                        />
+                                        <TextField
+                                            label="Total Marks"
+                                            value={createEvalTotalMarks}
+                                            onChange={(e) => {
+                                                const value = parseInt(e.target.value);
+                                                if (value >= 1 || e.target.value === '') {
+                                                    setCreateEvalTotalMarks(e.target.value);
+                                                }
+                                            }}
+                                            type="number"
+                                            fullWidth
+                                            inputProps={{ min: 1 }}
+                                            sx={{ marginTop: '20px' }}
+                                            helperText={editingEval ? "Warning: Changing total marks will reset all the student's marks to 0." : ""}
+                                        />
+                                        {
+                                            (editingEval) ? null :
+                                                <FormControlLabel
+                                                    control={
+                                                        <Tooltip title="If you select this checkbox, a submission portal for this evaluation will be opened on the classroom.">
+                                                            <Checkbox checked={createEvalOpenSubmission} onChange={(e) => setCreateEvalOpenSubmission(e.target.checked)} />
+                                                        </Tooltip>
                                                     }
-                                                    <input
-                                                        type="file"
-                                                        accept=".xlsx,.xls"
-                                                        onChange={(event) => handleImportMarks(event, evalIndex)}
-                                                        style={{ display: 'none' }}
-                                                        ref={fileInput}
-                                                    />
-                                                    <Button variant="contained" color="primary" sx={{ marginTop: '10px' }} onClick={(event) => setAnchorMarks(event.currentTarget)} startIcon={<GradeIcon />}>
-                                                        Manage Marks
-                                                    </Button>
-                                                    <Menu
-                                                        id="simple-menu"
-                                                        anchorEl={anchorMarks}
-                                                        keepMounted
-                                                        open={Boolean(anchorMarks)}
-                                                        onClose={() => setAnchorMarks(null)}
-                                                    >
-                                                        <MenuItem onClick={handleFileUpload}>
-                                                            <FileUploadIcon color="primary" sx={{ marginRight: '5px' }} />
-                                                            Import Marks
-                                                        </MenuItem>
-                                                        <MenuItem onClick={handleEditMarks}>
-                                                            <GradingIcon color="primary" sx={{ marginRight: '5px' }} />
-                                                            Edit Marks
-                                                        </MenuItem>
-                                                    </Menu>
-                                                    <Button
-                                                        variant="contained"
-                                                        color="primary"
-                                                        sx={{ marginTop: '10px', marginLeft: '10px' }}
-                                                        onClick={(event) => setAnchorEvaluation(event.currentTarget)}
-                                                        startIcon={<AssignmentIcon />}
-                                                    >
-                                                        Manage Evaluation
-                                                    </Button>
-                                                    <Menu
-                                                        id="evaluation-menu"
-                                                        anchorEl={anchorEvaluation}
-                                                        keepMounted
-                                                        open={Boolean(anchorEvaluation)}
-                                                        onClose={() => setAnchorEvaluation(null)}
-                                                    >
-                                                        <MenuItem onClick={() => handleManageEvaluation(evalIndex)}>
-                                                            <EditIcon color="primary" sx={{ marginRight: '5px' }} />
-                                                            Edit Evaluation
-                                                        </MenuItem>
-                                                        <MenuItem onClick={() => handleDeleteEvaluation(evalIndex)}>
-                                                            <DeleteIcon color="primary" sx={{ marginRight: '5px' }} />
-                                                            Delete Evaluation
-                                                        </MenuItem>
-                                                    </Menu>
+                                                    label="Open Submissions"
+                                                />
+                                        }
+                                        {
+                                            createEvalOpenSubmission && (
+                                                <TextField
+                                                    label="Due Date"
+                                                    type="datetime-local"
+                                                    value={toLocalISO(new Date(createEvalDueDate))}
+                                                    onChange={(e) => setCreateEvalDueDate(e.target.value)}
+                                                    InputLabelProps={{
+                                                        shrink: true,
+                                                    }}
+                                                    inputProps={{
+                                                        min: new Date().toISOString().split('T')[0],
+                                                    }}
+                                                    sx={{ marginTop: '20px' }}
+                                                    fullWidth
+                                                />
+                                            )}
+                                        <DialogActions>
+                                            <Button variant="outlined" color="primary" onClick={handleCloseDialog}>Cancel</Button>
+                                            <Button
+                                                variant="contained"
+                                                color="primary"
+                                                onClick={editingEval ? saveEditedEval : addEvaluation}
+                                                disabled={!createEvalTitle || !createEvalWeightage || !createEvalTotalMarks || (createEvalOpenSubmission && !createEvalDueDate) || titleError}
+                                            >
+                                                {editingEval ? "Save Changes" : "Add"}
+                                            </Button>
+                                        </DialogActions>
+                                    </DialogContent>
+                                </Dialog>
 
-                                                    <Table size="small" sx={{ marginTop: '20px', marginBottom: '20px' }}>
-                                                        <TableHead>
-                                                            <TableRow>
-                                                                <SmallTableHeaderCell>S.No</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell>Roll Number</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell>Name</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell align="left">Attachment</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell align="right">Obtained Weightage</SmallTableHeaderCell>
-                                                                <SmallTableHeaderCell align="right">Obtained Marks</SmallTableHeaderCell>
-                                                            </TableRow>
-                                                        </TableHead>
-                                                        <TableBody>
-                                                            {evaluation.submissions?.map((submission, subIndex) => {
-                                                                const obtainedWeightage = (submission.obtainedMarks / evaluation.totalMarks) * evaluation.weightage;
-                                                                return (
-                                                                    <TableRow key={subIndex}>
-                                                                        <TableCell>{subIndex + 1}</TableCell>
-                                                                        <TableCell component="th" scope="row">
-                                                                            {submission.rollNumber}
-                                                                        </TableCell>
-                                                                        <TableCell>{submission.name}</TableCell>
-                                                                        <TableCell align="left">
-                                                                            {submission.submission &&
-                                                                                <Chip
-                                                                                    icon={<AttachmentIcon />}
-                                                                                    label={submission.submission.originalName.length > 30 //trim if too many chars
-                                                                                        ? `${submission.submission.originalName.substring(0, 30)}...`
-                                                                                        : submission.submission.originalName}
-                                                                                    clickable
-                                                                                    component="a"
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                    variant="outlined"
-                                                                                    sx={{
-                                                                                        margin: "5px",
-                                                                                        backgroundColor: (theme) =>
-                                                                                            `${theme.palette.primary.main}1A`,
-                                                                                    }}
-                                                                                    onClick={() => downloadSubmission(submission.submission.name, submission.submission.originalName)}
-                                                                                />
-                                                                            }
-                                                                        </TableCell>
-                                                                        <TableCell align="right">{obtainedWeightage.toFixed(2)}</TableCell>
-                                                                        <TableCell align="right">
-                                                                            {editMode ? (
-                                                                                <TextField
-                                                                                    value={submission.obtainedMarks}
-                                                                                    inputProps={{ min: 0, max: evaluation.totalMarks }}
-                                                                                    type="number"
-                                                                                    error={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0}
-                                                                                    helperText={submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0 ? "Marks should be between 0 and " + evaluation.totalMarks : ""}
-                                                                                    onChange={(event) => {
-                                                                                        setEditMarksError(submission.obtainedMarks > evaluation.totalMarks || submission.obtainedMarks < 0);
-                                                                                        handleMarksChange(event, evalIndex, subIndex);
-                                                                                    }}
-                                                                                    style={{ maxWidth: '80px' }}
-                                                                                    variant="standard"
-                                                                                    size="small"
-                                                                                />
-                                                                            ) : (
-                                                                                submission.obtainedMarks
-                                                                            )}
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                );
-                                                            })}
-                                                        </TableBody>
-
-                                                    </Table>
-                                                    {editMode && (
-                                                        <Box display="flex" justifyContent="flex-end" mt={2}>
-                                                            <Button variant="outlined" color="primary" onClick={handleCancel} sx={{ ml: 1, mr: 1 }}>Cancel</Button>
-                                                            <Button variant="contained" color="primary" onClick={() => handleSave(evalIndex)} disabled={editMarksError}>Save</Button>
-                                                        </Box>
-                                                    )}
-                                                </Box>
-                                            </Collapse>
-                                        </TableCell>
-                                    </TableRow>
-                                </Fragment>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-
-                { /* Adding new evaluation */}
-                <Dialog open={openDialog} onClose={handleCloseDialog}>
-                    <DialogTitle sx={{ pb: 0 }}>
-                        <Typography variant="h6" color="primary" style={{ fontWeight: 'bold' }}>
-                            {editingEval ? "Edit Evaluation" : "Add Evaluation"}
-                        </Typography>
-                    </DialogTitle>
-
-                    <DialogContent>
-                        <TextField
-                            label="Title"
-                            value={createEvalTitle}
-                            onChange={handleTitleChange}
-                            fullWidth
-                            sx={{ marginTop: '20px' }}
-                            error={titleError || createEvalTitle.match(/[$%^~*]/)}
-                            helperText={titleError ? "An evaluation item with this title already exists." : createEvalTitle.match(/[$%^~*]/) ? "Please avoid special characters ($%^~*)" : ""}
-                        />
-                        <TextField
-                            label="Content"
-                            value={createEvalContent}
-                            onChange={(e) => setCreateEvalContent(e.target.value)}
-                            fullWidth
-                            sx={{ marginTop: '20px' }}
-                            helperText="Optionally, add some descriptory content/instructions. They will be displayed in your classroom stream."
-                        />
-
-                        <TextField
-                            label="Weightage"
-                            value={createEvalWeightage}
-                            onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                if (value >= 1 && value <= 100) {
-                                    setCreateEvalWeightage(e.target.value);
-                                }
-                            }}
-                            type="number"
-                            fullWidth
-                            inputProps={{ min: 1, max: 100 }}
-                            sx={{ marginTop: '20px' }}
-                        />
-                        <TextField
-                            label="Total Marks"
-                            value={createEvalTotalMarks}
-                            onChange={(e) => {
-                                const value = parseInt(e.target.value);
-                                if (value >= 1 || e.target.value === '') {
-                                    setCreateEvalTotalMarks(e.target.value);
-                                }
-                            }}
-                            type="number"
-                            fullWidth
-                            inputProps={{ min: 1 }}
-                            sx={{ marginTop: '20px' }}
-                            helperText= { editingEval ? "Warning: Changing total marks will reset all the student's marks to 0." : ""}
-                        />
-                        {
-                            (editingEval) ? null :
-                                <FormControlLabel
-                                    control={
-                                        <Tooltip title="If you select this checkbox, a submission portal for this evaluation will be opened on the classroom.">
-                                            <Checkbox checked={createEvalOpenSubmission} onChange={(e) => setCreateEvalOpenSubmission(e.target.checked)} />
-                                        </Tooltip>
-                                    }
-                                    label="Open Submissions"
-                                />
-                        }
-                        {
-                            createEvalOpenSubmission && (
-                                <TextField
-                                    label="Due Date"
-                                    type="datetime-local"
-                                    value={toLocalISO(new Date(createEvalDueDate))}
-                                    onChange={(e) => setCreateEvalDueDate(e.target.value)}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                    inputProps={{
-                                        min: new Date().toISOString().split('T')[0],
-                                    }}
-                                    sx={{ marginTop: '20px' }}
-                                    fullWidth
-                                />
-                            )}
-                        <DialogActions>
-                            <Button variant="outlined" color="primary" onClick={handleCloseDialog}>Cancel</Button>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={editingEval ? saveEditedEval : addEvaluation}
-                                disabled={!createEvalTitle || !createEvalWeightage || !createEvalTotalMarks || (createEvalOpenSubmission && !createEvalDueDate) || titleError}
-                            >
-                                {editingEval ? "Save Changes" : "Add"}
-                            </Button>
-                        </DialogActions>
-                    </DialogContent>
-                </Dialog>
-                <Dialog open={downloading}>
-        <Box sx={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '48px' }}>
-          <DialogTitle>Downloading file, please wait...</DialogTitle>
-          <CircularProgress color="secondary" />
-        </Box>
-      </Dialog>
+                                { /* Downloading file */ }
+                                <Dialog open={downloading}>
+                                    <Box sx={{ padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', paddingBottom: '48px' }}>
+                                        <DialogTitle>Downloading file, please wait...</DialogTitle>
+                                        <CircularProgress color="secondary" />
+                                    </Box>
+                                </Dialog>
+                            </>
+                }
             </Container>
         </NavBar>
     );

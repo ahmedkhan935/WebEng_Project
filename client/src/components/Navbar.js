@@ -1,5 +1,3 @@
-import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import {
   alpha,
   Box,
@@ -14,6 +12,9 @@ import {
   ListItem,
   ListItemButton,
   ListItemIcon,
+  Avatar,
+  Menu,
+  MenuItem,
   ListItemText,
 } from "@mui/material";
 
@@ -36,9 +37,14 @@ import {
   AssignmentTurnedIn as AssignmentTurnedInIcon,
   VpnKey as VpnKeyIcon,
   Checklist as ChecklistIcon,
+  Person as PersonIcon,
+  AccountCircle as AccountCircleIcon,
+  History as HistoryIcon,
 } from "@mui/icons-material";
+
 import BottomNavigation from '@mui/material/BottomNavigation';
 import BottomNavigationAction from '@mui/material/BottomNavigationAction';
+import { useState, useEffect } from "react";
 
 //zustand
 import useStore from "../store/store";
@@ -46,62 +52,9 @@ import { Link, useLocation } from "react-router-dom";
 import { logout } from '../services/AuthService';
 import LogoImage from '../assets/images/logo.png'
 import { DrawerHeader, AppBar, Drawer } from "../assets/theme/StyledComponents";
-
-const Footer = () => {
-  const theme = useTheme();
-  return (
-    <Box sx={{
-      position: 'static',
-      bottom: 0,
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: '20px',
-      paddingTop: '40px',
-      paddingBottom: '40px',
-      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-      marginTop: 'auto'
-    }}>
-      <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />
-      <Typography variant="body1" sx={{ color: theme.palette.primary.main }}>
-        © 2023 Clean Slate Inc.
-      </Typography>
-      <Typography variant="subtitle1" color="text.secondary" >
-        github.com/cleanSlate
-      </Typography>
-    </Box>
-  );
-};
-// const Footer = () => {
-//   const [value, setValue] = React.useState(0);
-//   const theme = useTheme();
-//   return (
-//     <BottomNavigation
-//       value={value}
-//       onChange={(event, newValue) => {
-//         setValue(newValue);
-//       }}
-
-//       showLabels
-//       sx={{ 
-//         justifyContent: 'center',
-//         alignItems: 'center',
-//         padding: '20px',
-//         paddingTop: '40px',
-//         paddingBottom: '40px',
-//         backgroundColor: alpha(theme.palette.primary.main, 0.1),
-//         marginTop: 'auto',
-//         fontSize: '10px',
-//       }}
-//     >
-//       <BottomNavigationAction label="" icon={<img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px' }} />} />
-//       <BottomNavigationAction label="© 2023 Clean Slate Inc." icon={<Typography variant="body1" sx={{ color: theme.palette.primary.main }} />} />
-//       <BottomNavigationAction label="github.com/cleanSlate" icon={<Typography variant="subtitle1" color="text.secondary" />} />
-//     </BottomNavigation>
-//   );
-// };
+import Footer from "./Footer";
+import useTheme from "@mui/material/styles/useTheme";
+import { useNavigate } from "react-router-dom";
 
 const adminOptions = [
   {
@@ -148,7 +101,11 @@ const studentOptions = [
     Icon: <EventAvailableIcon color="primary" />,
     linkto: "/student/schedule"
   },
-  // { title: "Schedule", Icon: <ScheduleIcon color="primary" /> },
+  {
+    title: "Old Classes",
+    Icon: <HistoryIcon color="primary" />,
+    linkto: "/student/classes/old"
+  },
 ];
 
 const teacherOptions = [
@@ -157,7 +114,6 @@ const teacherOptions = [
     Icon: <SchoolIcon color="primary" />,
     linkto: "/teacher/classes",
   },
-  // { title: "View Feedbacks", Icon: <RemoveRedEyeIcon color="primary" /> },
 ];
 
 
@@ -168,13 +124,16 @@ export default function NavBar({ children }) {
 
   const location = useLocation();
 
+  const [anchorEl, setAnchorEl] = useState(null);
+  const openMenu = Boolean(anchorEl);
+
   //checking if pathname includes the word was buggy, as it detected isStudent=true for /admin/lists/students, so i changed it
   const isStudent = userRole === "student";
   const isAdmin = userRole === "admin";
   const isTeacher = userRole === "teacher";
-
+  const navigate = useNavigate();
   const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const logouts = () => {
     let confirm = window.confirm("Are you sure you want to logout?");
     if (!confirm) return;
@@ -216,6 +175,19 @@ export default function NavBar({ children }) {
     setOpen(false);
   };
 
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleProfile = () => {
+    setAnchorEl(null);
+    navigate(`/${userRole}/profile`);
+  };
+
   return (
     <Box sx={{ display: "flex", minHeight: '100vh' }}>
       <CssBaseline />
@@ -239,6 +211,49 @@ export default function NavBar({ children }) {
             <img src={LogoImage} alt="Logo" style={{ width: '30px', height: '30px', marginRight: '5px' }} />
             CleanSlate
           </Typography>
+          {userRole != 'admin' &&
+            <>
+              <Box sx={{ flexGrow: 1 }} />
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls="menu-appbar"
+                aria-haspopup="true"
+                onClick={handleMenu}
+                color="inherit"
+              >
+                <Avatar sx={{ marginRight: '10px' }}>
+                  <PersonIcon />
+                </Avatar>
+              </IconButton>
+              <Menu
+                id="menu-appbar"
+                anchorEl={anchorEl}
+                anchorOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={openMenu}
+                onClose={handleClose}
+              >
+                <MenuItem onClick={handleProfile}>
+                  <AccountCircleIcon sx={{ mr: 1 }} />
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={logouts}>
+                  <LogoutIcon sx={{ mr: 1 }} />
+                  Logout
+                </MenuItem>
+              </Menu>
+            </>
+          }
+
         </Toolbar>
       </AppBar>
 

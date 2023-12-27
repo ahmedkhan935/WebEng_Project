@@ -47,7 +47,8 @@ import DegreeCourseSelection from "./pages/DegreeCourseSelection";
 import AdminLoginPage from "./pages/AdminLogin";
 import StudentSchedule from './pages/StudentSchedule';
 import Transcript from "./pages/Transcript";
-
+import OldClasses from "./pages/OldClasses";
+import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import useStore from "./store/store";
 
@@ -87,6 +88,7 @@ function App() {
             <Route path="student">
               <Route index element={<UserLandingPage role={"student"} />}></Route>
               <Route path="classes" element={<Classes />}></Route>
+              <Route path="classes/old" element={<OldClasses />}></Route>
               <Route path="classes/:classCode">
                 <Route index element={<ClassroomProvider><Classroom /></ClassroomProvider>}></Route>
                 <Route path="videoCall" element={<VideoCall />}></Route>
@@ -101,6 +103,7 @@ function App() {
               <Route path="threads/:id" element={<Thread />}></Route>
               <Route path="todos" element={<Thread />}></Route>
               <Route path="settings" element={<Settings />}></Route>
+              <Route path="profile" element={<Profile />}></Route>
             </Route>
           </Route>
 
@@ -126,6 +129,7 @@ function App() {
                 <Route path="evaluations" element={<Evaluations />}></Route>
               </Route>
               <Route path="settings" element={<Settings />}></Route>
+              <Route path="profile" element={<Profile />}></Route>
             </Route>
           </Route>
 
