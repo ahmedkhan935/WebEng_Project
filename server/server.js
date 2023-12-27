@@ -7,6 +7,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const fileUpload = require("express-fileupload");
 const bucket = require("./firebase_init");
+const socket=require('socket.io');
 
 
 require("dotenv").config();
@@ -39,6 +40,7 @@ app.use(
     credentials: true, // include credentials
   })
 );
+const server=require('http').createServer(app);
 
 const adminRoutes = require("./routes/adminRoutes");
 const studentRoutes = require("./routes/studentRoutes");
@@ -50,6 +52,19 @@ app.use("/student", studentRoutes);
 app.use("/teacher", teacherRoutes);
 app.use("/auth", authRouter);
 app.use("/thread", threadRouter);
+const io=socket(server,{
+  cors: {
+    origin: ["http://localhost:5000", "https://web-eng-project.vercel.app"],
+    credentials: true, // include credentials
+  }
+});
+io.on('connection',(socket)=>{
+  console.log("socket connected");
+  socket.on('endMeet',(classCode)=>{
+    console.log("endMeet");
+    io.emit('call ended',classCode);
+  })
+});
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -84,6 +99,6 @@ app.post("/admin/send-email", async (req, res) => {
 });
 
 const port = 3000;
-app.listen(port, () =>
+server.listen(port, () =>
   console.log("Server is running, Listening on port " + port)
 );

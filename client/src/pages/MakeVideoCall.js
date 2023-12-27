@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Container,
 } from "@mui/material";
+import {url} from "../services/url";
 import { useParams, useLocation } from "react-router-dom";
 import { getMeetLink } from "../services/StudentService";
 import { StartMeet, endMeet } from "../services/TeacherService";
@@ -38,14 +39,19 @@ const [meetingEnded, setMeetingEnded] = useState(true); // Track if the meeting 
         //setMeetingStarted(true);
   };
   }, [])
-  const socket = io('http://localhost:3000');
+  const socket = io(url);
+  socket.on('connect', () => {
+    console.log('Successfully connected to the server');
+  });
 
 useEffect(() => {
   // Listen for the 'call ended' event
   socket.on('call ended', (classCode) => {
+    console.log("call ended");
     // Check if the classCode matches the current class
    
       // Hide the iframe
+      setMeetingEnded(true);
       setMeetingStarted(false);
   });
 
@@ -59,7 +65,7 @@ useEffect(() => {
   const handleStartMeeting = () => {
     setLoading(true);
     setMeetingEnded(false);
-    socket.emit('endMeet', classCode);
+    
     setTimeout(async () => {
       
       await StartMeet(classCode, `https://8x8.vc/${apikey}${classCode}`);
@@ -69,6 +75,7 @@ useEffect(() => {
   };
   const endMeeting = async () => {
     await endMeet(classCode);
+    socket.emit('endMeet', classCode);
     setMeetingEnded(true);
 
     setMeetingStarted(false);
