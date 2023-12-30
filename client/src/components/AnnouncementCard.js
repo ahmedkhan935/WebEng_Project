@@ -149,7 +149,6 @@ function AnnouncementCard({ post, handleEdit, handleDelete }) {
             {expanded ? "View Less" : "View More"}
           </Typography>
         </IconButton>
-
         <Collapse in={expanded} timeout="auto" unmountOnExit>
           <Typography sx={{ marginTop: "10px" }}>{post.content}</Typography>
           {file && (
